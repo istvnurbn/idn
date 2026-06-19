@@ -6,15 +6,9 @@
   ...
 }:
 {
-  imports = [
-    ./disko-config.nix
-  ];
-
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.resumeDevice = "/dev/disk/by-partlabel/disk-main-root";
-  boot.kernelParams = [ "resume_offset=533760" ];
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
