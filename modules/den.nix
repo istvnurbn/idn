@@ -8,13 +8,28 @@
   };
 
   den.aspects.vermilion = {
-    includes = [ den.batteries.hostname ];
+    includes = [
+      den.batteries.hostname
+      den.aspects.amdcpu
+      den.aspects.amdgpu
+    ];
     nixos =
-      { pkgs, ... }:
+      { pkgs, lib, ... }:
       {
         imports = [
           ./_nixos/configuration.nix
           inputs.disko.nixosModules.disko
+        ];
+        # Enables non-free firmware on devices not recognized by `nixos-generate-config`.
+        hardware.enableRedistributableFirmware = lib.mkDefault true;
+
+        boot.initrd.availableKernelModules = [
+          "nvme"
+          "xhci_pci"
+          "ahci"
+          "usb_storage"
+          "usbhid"
+          "sd_mod"
         ];
       };
   };
