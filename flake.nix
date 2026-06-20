@@ -17,6 +17,7 @@
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
     };
     import-tree.url = "github:denful/import-tree";
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-lib.follows = "nixpkgs";
   };

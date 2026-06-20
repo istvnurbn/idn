@@ -3,6 +3,7 @@
     includes = [
       den.aspects.boot
       den.aspects.plymouth
+      den.aspects.cachyos-kernel
       den.aspects.firmware
       den.aspects.amdcpu
       den.aspects.amdgpu
@@ -22,28 +23,23 @@
       den.aspects.browsers
     ];
 
-    nixos =
-      { pkgs, ... }:
-      {
-        # Use latest kernel.
-        boot.kernelPackages = pkgs.linuxPackages_latest;
+    nixos = {
+      # Enables hibernation from swap file on a btrfs subvol
+      # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
+      boot.resumeDevice = "/dev/disk/by-partlabel/disk-main-root";
+      boot.kernelParams = [ "resume_offset=533760" ];
 
-        # Enables hibernation from swap file on a btrfs subvol
-        # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
-        boot.resumeDevice = "/dev/disk/by-partlabel/disk-main-root";
-        boot.kernelParams = [ "resume_offset=533760" ];
+      boot.initrd.availableKernelModules = [
+        "nvme"
+        "xhci_pci"
+        "ahci"
+        "usb_storage"
+        "usbhid"
+        "sd_mod"
+      ];
 
-        boot.initrd.availableKernelModules = [
-          "nvme"
-          "xhci_pci"
-          "ahci"
-          "usb_storage"
-          "usbhid"
-          "sd_mod"
-        ];
-
-        # Disable printing
-        services.printing.enable = false;
-      };
+      # Disable printing
+      services.printing.enable = false;
+    };
   };
 }
