@@ -8,9 +8,21 @@
         fzf
         zoxide
         bat
+        tree
         mc
         wget
         curl
+        rsync
+        msedit # just for the fun of it
+      ];
+    };
+
+    darwin = { pkgs, ... }: {
+      environment.systemPackages = with pkgs; [
+        coreutils
+        nano
+        gnutar # macOS tar fails me sometimes
+        openssh
       ];
     };
   };

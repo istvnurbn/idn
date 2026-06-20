@@ -1,5 +1,5 @@
 {
-  den.aspects.efi-boot = {
+  den.aspects.boot = {
     nixos = {
       # Use the systemd-boot EFI boot loader.
       boot.loader = {

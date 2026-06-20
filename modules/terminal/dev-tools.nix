@@ -5,6 +5,9 @@
       environment.systemPackages = with pkgs; [
         git
         lazygit
+        jq
+        just
+        just-lsp
       ];
     };
   };

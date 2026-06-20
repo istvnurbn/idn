@@ -1,7 +1,7 @@
 { den, ... }: {
   den.aspects.vermilion = {
     includes = [
-      den.aspects.efi-boot
+      den.aspects.boot
       den.aspects.plymouth
       den.aspects.firmware
       den.aspects.amdcpu
@@ -23,7 +23,7 @@
     ];
 
     nixos =
-      { pkgs, lib, ... }:
+      { pkgs, ... }:
       {
         # Use latest kernel.
         boot.kernelPackages = pkgs.linuxPackages_latest;
