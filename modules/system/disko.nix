@@ -1,4 +1,12 @@
 { inputs, ... }: {
+
+  flake-file.inputs = {
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
   # Parametric provider - takes device path and swap size as an argument
   den.provides.disko-btrfs-main = device: swapSize: {
     nixos = {
