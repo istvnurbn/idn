@@ -39,7 +39,7 @@ boot *args:
 # Build and activate the new configuration, and make it the boot default
 [linux]
 switch *args:
-    nh os swtitch {{ args }}
+    nh os switch {{ args }}
 
 # List available generations from profile path
 [linux]
@@ -76,7 +76,7 @@ boot *args:
 # Build and activate the new configuration, and make it the boot default
 [macos]
 switch *args:
-    nh darwin swtitch {{ args }}
+    nh darwin switch {{ args }}
 
 # List available generations from profile path
 [macos]

@@ -69,6 +69,12 @@
           NH_FLAKE = "$HOME/idn";
         };
       };
+
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        backupFileExtension = "backup";
+      };
     };
 
     nixos = {
