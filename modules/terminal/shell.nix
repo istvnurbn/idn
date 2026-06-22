@@ -5,6 +5,7 @@
       programs.zsh.enable = true;
 
       environment.systemPackages = with pkgs; [
+        atuin
         fzf
         zoxide
         bat
@@ -14,6 +15,9 @@
         curl
         rsync
         msedit # just for the fun of it
+        pv
+        mmv
+        xdg-utils
       ];
     };
 

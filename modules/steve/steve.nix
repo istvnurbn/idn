@@ -1,6 +1,9 @@
 { den, ... }: {
   den.aspects.steve = {
-    includes = [ den.batteries.primary-user ];
+    includes = [
+      den.batteries.primary-user
+      (den.batteries.user-shell "zsh")
+    ];
     nixos = {
       users.users.steve = {
         description = "István Urbán";

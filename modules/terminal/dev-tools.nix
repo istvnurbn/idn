@@ -8,6 +8,7 @@
         jq
         just
         just-lsp
+        gawk
       ];
     };
   };

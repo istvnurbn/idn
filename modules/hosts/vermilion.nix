@@ -19,7 +19,10 @@
       den.aspects.shell
       den.aspects.nix-tools
       den.aspects.dev-tools
+      den.aspects.tui-utils
       den.aspects.kde-desktop
+      den.aspects.styling
+      den.aspects.gui-base
       den.aspects.browsers
     ];
 

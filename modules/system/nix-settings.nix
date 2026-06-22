@@ -57,14 +57,28 @@
         # A lot of stuff says it doesn't work on aarch64-darwin, but it actually does.
         allowUnsupportedSystem = true;
       };
+
+      programs.nh = {
+        enable = true;
+        clean.enable = true;
+        clean.extraArgs = "--keep-since 4d --keep 3";
+      };
+
+      environment = {
+        variables = {
+          NH_FLAKE = "$HOME/idn";
+        };
+      };
     };
 
     nixos = {
-      nix.gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 7d";
-      };
+      # programs.nh.clean.enable is true, so this is redundant
+      # Do garbage collection to keep disk usage low
+      # nix.gc = {
+      #   automatic = true;
+      #   dates = "weekly";
+      #   options = "--delete-older-than 7d";
+      # };
 
       programs.nix-ld.enable = true;
       # programs.nix-ld.libraries = with pkgs; [
@@ -74,18 +88,19 @@
     };
 
     darwin = {
+      # programs.nh.clean.enable is true, so this is redundant
       # Do garbage collection to keep disk usage low
-      nix.gc = {
-        automatic = true;
-        interval = [
-          {
-            Hour = 3;
-            Minute = 15;
-            Weekday = 7;
-          }
-        ];
-        options = "--delete-older-than 7d";
-      };
+      # nix.gc = {
+      #   automatic = true;
+      #   interval = [
+      #     {
+      #       Hour = 3;
+      #       Minute = 15;
+      #       Weekday = 7;
+      #     }
+      #   ];
+      #   options = "--delete-older-than 7d";
+      # };
     };
   };
 }
