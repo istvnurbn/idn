@@ -1,0 +1,12 @@
+columns:
+  - status
+  - compose
+  - name
+  - id
+  - cpu
+  - memory
+  - net_tx
+  - net_rx
+  - uptime
+sort: compose
+icons: nerd

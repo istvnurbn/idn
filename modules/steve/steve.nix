@@ -1,8 +1,9 @@
-{ den, ... }: {
+{den, ...}: {
   den.aspects.steve = {
     includes = [
       den.batteries.primary-user
-      (den.batteries.user-shell "zsh")
+      (den.provides.user-shell "zsh")
+      den.aspects.dotfiles
     ];
     nixos = {
       users.users.steve = {

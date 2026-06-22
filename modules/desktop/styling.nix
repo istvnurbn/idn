@@ -1,6 +1,6 @@
 {
   den.aspects.styling = {
-    os = { pkgs, ... }: {
+    os = {pkgs, ...}: {
       fonts.packages = with pkgs; [
         nerd-fonts.zed-mono
         meslo-lgs-nf
@@ -11,6 +11,8 @@
         source-sans-pro
         source-code-pro
         inter
+        maple-mono.truetype
+        maple-mono.NF-unhinted
       ];
     };
   };

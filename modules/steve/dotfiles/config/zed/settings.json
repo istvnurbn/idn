@@ -1,0 +1,148 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "auto_install_extensions": {
+    "catppuccin": true,
+    "catppuccin-icons": true,
+    "nix": true,
+    "just": true,
+    "docker-compose": true,
+    "dockerfile": true,
+    "toml": true,
+  },
+
+  "cli_default_open_behavior": "new_window",
+
+  "session": {
+    "trust_all_worktrees": true,
+  },
+
+  "title_bar": {
+    "show_sign_in": false,
+  },
+
+  "project_panel": {
+    "dock": "left",
+    "bold_folder_labels": true,
+  },
+
+  "outline_panel": {
+    "dock": "right",
+  },
+
+  "git_panel": {
+    "dock": "left",
+  },
+
+  "collaboration_panel": {
+    "dock": "left",
+    "button": false,
+  },
+
+  "debugger": {
+    "button": false,
+  },
+
+  "disable_ai": true,
+
+  "when_closing_with_no_tabs": "close_window",
+
+  "theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Mocha",
+  },
+
+  "icon_theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Mocha",
+  },
+
+  "ui_font_family": ".SystemUIFont",
+  "ui_font_size": 14,
+
+  "buffer_font_family": "Maple Mono",
+  "buffer_font_size": 14,
+  "buffer_line_height": "standard",
+  "buffer_font_features": {
+    "calt": true, // Default ligatures
+    "cv01": true, // Remove gaps
+    "cv02": true, // Alternative a
+    "cv04": false, // Alternative l
+    "cv08": true, // Alternative r
+    "cv11": true, // Alternative f
+    "cv31": true, // Alternative italic a
+    "cv32": true, // Alternative italic f
+    "cv34": true, // Alternative italic k
+    "cv35": true, // Alternative italic l
+    "cv36": true, // Alternative italic x
+    "cv39": true, // Alternative italic i
+    "cv41": true, // Alternative italic r
+    "cv66": true, // Alternative pipe arrows
+    "ss06": true, // Break connected strokes
+    "ss09": true, // Alternative not equal
+    "ss10": true, // Approximately equal
+    "ss11": true, // Extra equal ligatures
+  },
+
+  "terminal": {
+    "font_family": "Maple Mono NF",
+    "font_size": 15,
+    "line_height": "standard",
+    "font_features": {
+      "calt": true, // Default ligatures
+      "cv01": true, // Remove gaps
+      "cv02": true, // Alternative a
+      "cv04": false, // Alternative l
+      "cv08": true, // Alternative r
+      "cv11": true, // Alternative f
+      "cv32": true, // Alternative italic f
+      "cv33": true, // Alternative italic x
+      "cv34": true, // Alternative italic k
+      "cv35": true, // Alternative italic l
+      "cv36": true, // Alternative italic x
+      "cv41": true, // Alternative italic r
+      "cv66": true, // Alternative pipe arrows
+      "ss06": true, // Break connected strokes
+      "ss09": true, // Alternative not equal
+      "ss10": true, // Approximately equal
+      "ss11": true, // Extra equal ligatures
+    },
+  },
+
+  "soft_wrap": "editor_width",
+
+  "languages": {
+    "Nix": {
+      "language_servers": ["nixd", "!nil"],
+      "formatter": {
+        "external": {
+          "command": "alejandra",
+          "arguments": ["--quiet", "--"],
+        },
+      },
+    },
+  },
+
+  "lsp": {
+    "nixd": {
+      "settings": {
+        "diagnostic": {
+          "suppress": ["sema-extra-with"],
+        },
+      },
+    },
+  },
+
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+  },
+}
