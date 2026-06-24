@@ -1,6 +1,6 @@
 {
   den.aspects.shell = {
-    os = { pkgs, ... }: {
+    os = {pkgs, ...}: {
       # Configure zsh as an interactive shell
       programs.zsh.enable = true;
 
@@ -11,6 +11,7 @@
         bat
         tree
         mc
+        just
         wget
         curl
         rsync
@@ -21,7 +22,7 @@
       ];
     };
 
-    darwin = { pkgs, ... }: {
+    darwin = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         coreutils
         nano

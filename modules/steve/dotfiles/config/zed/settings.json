@@ -118,6 +118,10 @@
   },
 
   "soft_wrap": "editor_width",
+  "format_on_save": "on",
+  "inlay_hints": {
+    "enabled": true,
+  },
 
   "languages": {
     "Nix": {
@@ -128,6 +132,7 @@
           "arguments": ["--quiet", "--"],
         },
       },
+      "show_edit_predictions": true,
     },
   },
 
