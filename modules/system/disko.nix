@@ -1,5 +1,8 @@
-{ inputs, ... }: {
-
+{
+  den,
+  inputs,
+  ...
+}: {
   flake-file.inputs = {
     disko = {
       url = "github:nix-community/disko";
@@ -10,7 +13,11 @@
   # Parametric provider - takes device path and swap size as an argument
   den.provides.disko-btrfs-main = device: swapSize: {
     nixos = {
-      imports = [ inputs.disko.nixosModules.disko ];
+      host,
+      lib,
+      ...
+    }: {
+      imports = [inputs.disko.nixosModules.disko];
 
       disko.devices.disk.main = {
         inherit device;
@@ -26,7 +33,7 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
+                mountOptions = ["umask=0077"];
               };
             };
 
@@ -59,7 +66,7 @@
                       "noatime"
                     ];
                   };
-                  "/persist" = {
+                  "/persist" = lib.mkIf (host.hasAspect den.aspects.impermanence) {
                     mountpoint = "/persist";
                     mountOptions = [
                       "subvol=persist"
@@ -84,6 +91,12 @@
           };
         };
       };
+
+      fileSystems."/persist" =
+        lib.mkIf (host.hasAspect den.aspects.impermanence)
+        {
+          neededForBoot = true;
+        };
     };
   };
 }

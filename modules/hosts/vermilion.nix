@@ -1,4 +1,4 @@
-{ den, ... }: {
+{den, ...}: {
   den.aspects.vermilion = {
     includes = [
       den.aspects.boot
@@ -13,6 +13,8 @@
       # Takes the device id and swap size as an argument
       # In case you want to hibernate, check disko.nix file.
       (den.provides.disko-btrfs-main "/dev/disk/by-id/nvme-CT1000T710SSD8_2536530B906D" "48G")
+      den.aspects.impermanence
+      (den.provides.impermanence "/persist")
       den.aspects.security
       den.aspects.locale
       den.aspects.nix-settings
@@ -30,7 +32,7 @@
       # Enables hibernation from swap file on a btrfs subvol
       # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
       boot.resumeDevice = "/dev/disk/by-partlabel/disk-main-root";
-      boot.kernelParams = [ "resume_offset=533760" ];
+      boot.kernelParams = ["resume_offset=533760"];
 
       boot.initrd.availableKernelModules = [
         "nvme"

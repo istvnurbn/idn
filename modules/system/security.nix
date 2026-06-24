@@ -1,10 +1,10 @@
-{
-  den.aspects.security = {
+{den, ...}: {
+  den.aspects.security = {host, ...}: {
     nixos = {
       # Extra rules for sudo
       security.sudo.extraRules = [
         {
-          users = [ "steve" ];
+          users = ["steve"];
           commands = [
             {
               command = "ALL";
@@ -25,10 +25,26 @@
           PasswordAuthentication = false;
           KbdInteractiveAuthentication = false;
           PermitRootLogin = "no";
-          AllowUsers = [ "steve" ];
+          AllowUsers = ["steve"];
           MaxAuthTries = 3;
           PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
         };
+
+        # Default host keys (overridden by impermanence aspect)
+        hostKeys =
+          if host.hasAspect den.aspects.impermanence
+          then [
+            {
+              path = "/persist/etc/ssh/ssh_host_ed25519_key";
+              type = "ed25519";
+            }
+          ]
+          else [
+            {
+              path = "/etc/ssh/ssh_host_ed25519_key";
+              type = "ed25519";
+            }
+          ];
       };
 
       # Declarative user management
