@@ -10,12 +10,16 @@
       hardware = {
         graphics = {
           enable = true;
-          enable32Bit = true; # also install 32-bit drivers for 32-bit applications
+          # also install 32-bit drivers for 32-bit applications
+          enable32Bit = true;
         };
         amdgpu = {
-          initrd.enable = true; # Can fix lower resolution in boot screen during initramfs phase
-          overdrive.enable = true; # Overclocking
-          opencl.enable = true; # OpenCL support using ROCM runtime library
+          # Can fix lower resolution in boot screen during initramfs phase
+          initrd.enable = true;
+          # Overclocking
+          overdrive.enable = true;
+          # OpenCL support using ROCM runtime library
+          opencl.enable = true;
         };
       };
 

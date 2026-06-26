@@ -10,8 +10,9 @@
     };
   };
 
+  # Default boot drive with impermanence-friendly layout
   # Parametric provider - takes device path and swap size as an argument
-  den.provides.disko-btrfs-main = device: swapSize: {
+  den.provides.disko-btrfs-impermanence-main = device: swapSize: {
     nixos = {
       host,
       lib,

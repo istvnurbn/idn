@@ -12,10 +12,11 @@
       den.aspects.networking
       # Takes the device id and swap size as an argument
       # In case you want to hibernate, check disko.nix file.
-      (den.provides.disko-btrfs-main "/dev/disk/by-id/nvme-CT1000T710SSD8_2536530B906D" "48G")
+      (den.provides.disko-btrfs-impermanence-main "/dev/disk/by-id/nvme-CT1000T710SSD8_2536530B906D" "48G")
       den.aspects.impermanence
       (den.provides.impermanence "/persist")
-      den.aspects.security
+      den.aspects.sudo
+      den.aspects.ssh
       den.aspects.locale
       den.aspects.nix-settings
       den.aspects.shell

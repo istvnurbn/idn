@@ -1,5 +1,5 @@
 {
-  den.aspects.shell = {
+  den.aspects.shell = {user, ...}: {
     os = {pkgs, ...}: {
       # Configure zsh as an interactive shell
       programs.zsh.enable = true;
@@ -27,8 +27,17 @@
         coreutils
         nano
         gnutar # macOS tar fails me sometimes
-        openssh
       ];
+    };
+
+    impermanence = {
+      users.${user.name} = {
+        directories = [
+          ".local/share/atuin"
+          ".local/share/zinit"
+          ".local/share/zoxide"
+        ];
+      };
     };
   };
 }

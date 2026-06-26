@@ -1,22 +1,6 @@
 {den, ...}: {
-  den.aspects.security = {host, ...}: {
+  den.aspects.ssh = {host, ...}: {
     nixos = {
-      # Extra rules for sudo
-      security.sudo.extraRules = [
-        {
-          users = ["steve"];
-          commands = [
-            {
-              command = "ALL";
-              options = [
-                "SETENV"
-                "NOPASSWD"
-              ];
-            }
-          ];
-        }
-      ];
-
       # Enable the OpenSSH daemon
       services.openssh = {
         enable = true;
@@ -38,17 +22,41 @@
               path = "/persist/etc/ssh/ssh_host_ed25519_key";
               type = "ed25519";
             }
+            {
+              bits = 4096;
+              openSSHFormat = true;
+              path = "/persist/etc/ssh/ssh_host_rsa_key";
+              type = "rsa";
+            }
           ]
           else [
             {
               path = "/etc/ssh/ssh_host_ed25519_key";
               type = "ed25519";
             }
+            {
+              bits = 4096;
+              openSSHFormat = true;
+              path = "/etc/ssh/ssh_host_rsa_key";
+              type = "rsa";
+            }
           ];
       };
 
       # Declarative user management
       users.mutableUsers = false;
+    };
+
+    darwin = {pkgs, ...}: {
+      environment.systemPackages = with pkgs; [
+        openssh
+      ];
+    };
+
+    impermanence = {
+      directories = [
+        "/etc/ssh"
+      ];
     };
   };
 }

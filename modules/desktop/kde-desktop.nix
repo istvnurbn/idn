@@ -1,6 +1,6 @@
 {
   den.aspects.kde-desktop = {
-    nixos = { pkgs, ... }: {
+    nixos = {pkgs, ...}: {
       # Enable Plasma
       services = {
         desktopManager.plasma6.enable = true;
@@ -19,6 +19,7 @@
       environment.plasma6.excludePackages = with pkgs.kdePackages; [
         elisa
         kate
+        konsole
         ktexteditor
         khelpcenter
         print-manager

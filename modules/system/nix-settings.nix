@@ -1,9 +1,9 @@
 {
   den.aspects.nix-settings = {
-    os = { pkgs, ... }: {
+    os = {pkgs, ...}: {
       nix = {
         settings = {
-          nix-path = [ "nixpkgs=${pkgs.path}" ];
+          nix-path = ["nixpkgs=${pkgs.path}"];
 
           # Users and groups that have additional rights when connecting to the Nix daemon
           trusted-users = [
@@ -78,35 +78,11 @@
     };
 
     nixos = {
-      # programs.nh.clean.enable is true, so this is redundant
-      # Do garbage collection to keep disk usage low
-      # nix.gc = {
-      #   automatic = true;
-      #   dates = "weekly";
-      #   options = "--delete-older-than 7d";
-      # };
-
       programs.nix-ld.enable = true;
       # programs.nix-ld.libraries = with pkgs; [
       # Add any missing dynamic libraries for unpackaged programs
       # here, NOT in environment.systemPackages
       #];
-    };
-
-    darwin = {
-      # programs.nh.clean.enable is true, so this is redundant
-      # Do garbage collection to keep disk usage low
-      # nix.gc = {
-      #   automatic = true;
-      #   interval = [
-      #     {
-      #       Hour = 3;
-      #       Minute = 15;
-      #       Weekday = 7;
-      #     }
-      #   ];
-      #   options = "--delete-older-than 7d";
-      # };
     };
   };
 }

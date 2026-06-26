@@ -26,5 +26,11 @@
         };
       };
     };
+
+    impermanence = {
+      directories = [
+        "/var/lib/bluetooth"
+      ];
+    };
   };
 }
