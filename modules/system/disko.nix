@@ -100,4 +100,38 @@
         };
     };
   };
+
+  # Data disk with whole drive btrfs
+  # Parametric provider - takes device path an argument
+  den.provides.disko-btrfs-data = device: {
+    nixos = {
+      imports = [inputs.disko.nixosModules.disko];
+
+      disko.devices.disk.data = {
+        inherit device;
+        type = "disk";
+        content = {
+          type = "gpt";
+          partitions = {
+            data = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = [
+                  "-L"
+                  "data"
+                  "-f"
+                ];
+                mountpoint = "/mnt/data";
+                mountOptions = [
+                  "compress=zstd"
+                  "noatime"
+                ];
+              };
+            };
+          };
+        };
+      };
+    };
+  };
 }

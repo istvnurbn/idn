@@ -13,6 +13,7 @@
       # Takes the device id and swap size as an argument
       # In case you want to hibernate, check disko.nix file.
       (den.provides.disko-btrfs-impermanence-main "/dev/disk/by-id/nvme-CT1000T710SSD8_2536530B906D" "48G")
+      (den.provides.disko-btrfs-data "/dev/disk/by-id/nvme-CT2000T710SSD8_2532525EB150")
       den.aspects.impermanence
       (den.provides.impermanence "/persist")
       den.aspects.sudo
