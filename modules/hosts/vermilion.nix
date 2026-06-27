@@ -28,6 +28,8 @@
       den.aspects.styling
       den.aspects.gui-base
       den.aspects.browsers
+      den.aspects.gaming-base
+      den.aspects.gaming-steam
     ];
 
     nixos = {

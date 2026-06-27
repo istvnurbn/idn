@@ -16,6 +16,7 @@
       home.file.".config/ghostty".source = dotsLink "config/ghostty";
       home.file.".config/lazygit".source = dotsLink "config/lazygit";
       home.file.".config/mc/ini".source = dotsLink "config/mc/ini";
+      home.file.".config/scopebuddy".source = dotsLink "config/scopebuddy";
       home.file.".config/zed".source = dotsLink "config/zed";
 
       # Files/folders in the .local directory
