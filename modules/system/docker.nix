@@ -8,6 +8,7 @@
       # Enable Docker
       virtualisation.docker = {
         enable = true;
+        storageDriver = "btrfs";
         autoPrune = {
           enable = true;
           dates = "weekly";
@@ -19,6 +20,12 @@
 
       # dtop to monitor docker
       environment.systemPackages = with inputs.dtop.packages.${pkgs.stdenv.hostPlatform.system}; [default];
+    };
+
+    impermanence = {
+      directories = [
+        "/var/lib/docker"
+      ];
     };
   };
 }

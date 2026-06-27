@@ -21,5 +21,11 @@
         '';
       };
     };
+
+    impermanence = {
+      directories = [
+        "/var/lib/flatpak"
+      ];
+    };
   };
 }

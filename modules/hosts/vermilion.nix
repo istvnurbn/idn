@@ -10,6 +10,8 @@
       den.aspects.audio
       den.aspects.bluetooth
       den.aspects.networking
+      den.aspects.openrgb
+      den.aspects.coolercontrol
       # Takes the device id and swap size as an argument
       # In case you want to hibernate, check disko.nix file.
       (den.provides.disko-btrfs-impermanence-main "/dev/disk/by-id/nvme-CT1000T710SSD8_2536530B906D" "48G")
@@ -26,7 +28,8 @@
       den.aspects.tui-utils
       den.aspects.kde-desktop
       den.aspects.styling
-      den.aspects.gui-base
+      den.aspects.flatpak
+      den.aspects.gui-core
       den.aspects.browsers
       den.aspects.gaming-base
       den.aspects.gaming-steam
