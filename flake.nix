@@ -34,6 +34,7 @@
     };
     import-tree.url = "github:denful/import-tree";
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-lib.follows = "nixpkgs";
     proton-cachyos.url = "github:powerofthe69/proton-cachyos-nix";

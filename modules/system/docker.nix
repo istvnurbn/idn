@@ -1,6 +1,6 @@
 {inputs, ...}: {
-  flake-file.inputs = {
-    dtop.url = "github:amir20/dtop";
+  flake-file.inputs.dtop = {
+    url = "github:amir20/dtop";
   };
 
   den.aspects.docker = {
