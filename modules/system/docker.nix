@@ -6,6 +6,7 @@
   den.aspects.docker = {
     nixos = {pkgs, ...}: {
       # Enable Docker
+      # # Add your user to the docker group
       virtualisation.docker = {
         enable = true;
         storageDriver = "btrfs";
@@ -14,9 +15,6 @@
           dates = "weekly";
         };
       };
-
-      # Adding my user to the Docker group
-      users.extraGroups.docker.members = ["steve"];
 
       # dtop to monitor docker
       environment.systemPackages = with inputs.dtop.packages.${pkgs.stdenv.hostPlatform.system}; [default];

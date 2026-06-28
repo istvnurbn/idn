@@ -33,6 +33,7 @@
         directories = [
           ".config/net.imput.helium"
           ".config/mozilla"
+          ".cache/tor project"
         ];
       };
     };

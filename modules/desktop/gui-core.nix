@@ -21,6 +21,8 @@
       users.${user.name} = {
         directories = [
           ".local/share/zed"
+          ".var/app/com.jeffser.Nocturne"
+          ".config/vlc"
         ];
       };
     };

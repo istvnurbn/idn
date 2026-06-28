@@ -17,14 +17,18 @@
         ];
       };
 
-      # Enable udev rules for Steam hardware
-      hardware.steam-hardware.enable = true;
+      # Enable udev rules for Steam hardware and uinput for Steam Input
+      hardware = {
+        steam-hardware.enable = true;
+        uinput.enable = true;
+      };
     };
 
     impermanence = {
       users.${user.name} = {
         directories = [
           ".local/share/Steam"
+          ".cache/protontricks"
         ];
       };
     };

@@ -10,14 +10,29 @@
         inputs.proton-cachyos.overlays.default
       ];
 
+      # Add your user to the gamemode group
+      programs.gamemode = {
+        enable = true;
+        enableRenice = true;
+        settings = {
+          general = {
+            softrealtime = "auto";
+            renice = 10;
+          };
+          gpu = {
+            apply_gpu_optimisations = "accept-responsibility";
+            gpu_device = 1;
+            amd_performance_level = "high";
+          };
+        };
+      };
+
       environment.systemPackages = with pkgs; [
-        gamemode
         mangohud
         gamescope
         inputs.scopebuddy.packages.${pkgs.stdenv.hostPlatform.system}.default
         wineWow64Packages.wayland
         protonup-qt
-        protontricks
       ];
 
       environment.sessionVariables = {
