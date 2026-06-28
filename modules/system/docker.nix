@@ -1,6 +1,8 @@
 {inputs, ...}: {
   flake-file.inputs.dtop = {
     url = "github:amir20/dtop";
+    inputs.nixpkgs.follows = "nixpkgs-unstable";
+    inputs.flake-utils.follows = "flake-utils";
   };
 
   den.aspects.docker = {

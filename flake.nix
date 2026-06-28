@@ -11,15 +11,28 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dtop.url = "github:amir20/dtop";
+    dtop = {
+      url = "github:amir20/dtop";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs-unstable";
+      };
+    };
     flake-file.url = "github:denful/flake-file";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
     };
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
+    };
     helium = {
       url = "github:schembriaiden/helium-browser-nix-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        utils.follows = "flake-utils";
+      };
     };
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
@@ -33,11 +46,22 @@
       };
     };
     import-tree.url = "github:denful/import-tree";
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel/release";
+      inputs.flake-parts.follows = "flake-parts";
+    };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-lib.follows = "nixpkgs";
-    proton-cachyos.url = "github:powerofthe69/proton-cachyos-nix";
-    scopebuddy.url = "github:OpenGamingCollective/ScopeBuddy";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    proton-cachyos = {
+      url = "github:powerofthe69/proton-cachyos-nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    scopebuddy = {
+      url = "github:OpenGamingCollective/ScopeBuddy";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    systems.url = "github:nix-systems/default";
   };
 }

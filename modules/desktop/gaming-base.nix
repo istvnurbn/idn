@@ -1,7 +1,13 @@
 {inputs, ...}: {
   flake-file.inputs = {
-    proton-cachyos.url = "github:powerofthe69/proton-cachyos-nix";
-    scopebuddy.url = "github:OpenGamingCollective/ScopeBuddy";
+    proton-cachyos = {
+      url = "github:powerofthe69/proton-cachyos-nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    scopebuddy = {
+      url = "github:OpenGamingCollective/ScopeBuddy";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   den.aspects.gaming-base = {
