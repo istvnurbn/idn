@@ -1,5 +1,5 @@
 # DO-NOT-EDIT. This file was auto-generated using github:denful/flake-file.
-# Use `just write` to regenerate it.
+# Run `nix run .#write-flake` or `just write` to regenerate it.
 {
   description = "IDN - istvnurbn's dendritic nixconfig";
 
@@ -54,6 +54,13 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-lib.follows = "nixpkgs";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs = {
+        home-manager.follows = "home-manager";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     proton-cachyos = {
       url = "github:powerofthe69/proton-cachyos-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";

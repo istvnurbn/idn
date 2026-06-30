@@ -25,7 +25,7 @@
           # Should complete before any file systems are mounted
           before = ["sysroot.mount"];
 
-          # Wait for the disk to appear (parlabel comes from disko: disk-<disk>-<part>)
+          # Wait for the disk to appear (partlabel comes from disko: disk-<disk>-<part>)
           requires = ["${utils.escapeSystemdPath "/dev/disk/by-partlabel/disk-main-root"}.device"];
           after = [
             "${utils.escapeSystemdPath "/dev/disk/by-partlabel/disk-main-root"}.device"

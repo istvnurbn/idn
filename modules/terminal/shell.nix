@@ -18,6 +18,7 @@
         msedit # just for the fun of it
         pv
         mmv
+        wl-clipboard
         xdg-utils
       ];
     };

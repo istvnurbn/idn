@@ -33,6 +33,7 @@
       den.aspects.browsers
       den.aspects.gaming-base
       den.aspects.gaming-steam
+      den.aspects.gaming-heroic
     ];
 
     nixos = {

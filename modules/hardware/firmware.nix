@@ -5,7 +5,7 @@
       hardware.enableRedistributableFirmware = true;
       # Enable all firmware, including unfree packages that must be explictly allowed.
       hardware.enableAllFirmware = true;
-      # Enable fwupd, a DBus service that allows applications to update firmware
+      # Enable fwupd, a DBus service that allows applications to update firmware.
       services.fwupd.enable = false;
     };
   };

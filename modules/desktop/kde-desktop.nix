@@ -1,5 +1,5 @@
 {
-  den.aspects.kde-desktop = {
+  den.aspects.kde-desktop = {user, ...}: {
     nixos = {pkgs, ...}: {
       # Enable Plasma
       services = {
@@ -9,10 +9,31 @@
         displayManager.plasma-login-manager.enable = true;
       };
 
+      programs = {
+        kdeconnect.enable = true;
+        partition-manager.enable = true;
+      };
+
+      # Ports for KDE Connect
+      networking.firewall = rec {
+        allowedTCPPortRanges = [
+          {
+            from = 1714;
+            to = 1764;
+          }
+        ];
+        allowedUDPPortRanges = allowedTCPPortRanges;
+      };
+
+      xdg.portal = {
+        enable = true;
+        config.common.default = "kde";
+      };
+
       environment.systemPackages = with pkgs; [
+        kdePackages.isoimagewriter
         kdePackages.kcalc
         kdePackages.kquickimageedit
-        kdePackages.partitionmanager
         exfatprogs
       ];
 
@@ -26,6 +47,14 @@
         print-manager
         qrca
       ];
+    };
+
+    impermanence = {
+      users.${user.name} = {
+        directories = [
+          ".config/kdeconnect"
+        ];
+      };
     };
   };
 }

@@ -8,7 +8,7 @@
   den.aspects.docker = {
     nixos = {pkgs, ...}: {
       # Enable Docker
-      # # Add your user to the docker group
+      # Add your user to the docker group
       virtualisation.docker = {
         enable = true;
         storageDriver = "btrfs";
