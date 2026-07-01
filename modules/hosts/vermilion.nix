@@ -21,9 +21,8 @@
       den.aspects.sudo
       den.aspects.ssh
       den.aspects.locale
-      den.aspects.nix-settings
+      den.aspects.nix
       den.aspects.shell
-      den.aspects.nix-tools
       den.aspects.dev-tools
       den.aspects.tui-utils
       den.aspects.kde-desktop
