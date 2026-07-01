@@ -1,5 +1,5 @@
 {den, ...}: {
-  den.aspects.ssh = {host, ...}: {
+  den.aspects.openssh = {host, ...}: {
     nixos = {
       # Enable the OpenSSH daemon
       services.openssh = {

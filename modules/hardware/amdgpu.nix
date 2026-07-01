@@ -2,9 +2,15 @@
   den.aspects.amdgpu = {
     nixos = {
       # Kernel modules for amdgpu
-      boot.kernelModules = [
-        "amdgpu"
-      ];
+      boot = {
+        kernelModules = [
+          "amdgpu"
+        ];
+        kernelParams = [
+          # Allow GPU soft-reset on ring timeout instead of full hang
+          "amdgpu.gpu_recovery=1"
+        ];
+      };
 
       # Enable hardware accelerated graphics drivers
       hardware = {

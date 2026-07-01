@@ -1,5 +1,5 @@
 {
-  den.aspects.gaming-heroic = {user, ...}: {
+  den.aspects.heroic = {user, ...}: {
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         heroic

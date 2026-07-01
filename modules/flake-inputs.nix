@@ -18,7 +18,6 @@
       import-tree.url = "github:denful/import-tree";
       nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
       nixpkgs-lib.follows = "nixpkgs";
-      nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
       systems.url = "github:nix-systems/default";
     };
     description = "IDN - istvnurbn's dendritic nixconfig";

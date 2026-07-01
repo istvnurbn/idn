@@ -1,5 +1,5 @@
 {
-  den.aspects.kde-desktop = {user, ...}: {
+  den.aspects.kde = {user, ...}: {
     nixos = {pkgs, ...}: {
       # Enable Plasma
       services = {

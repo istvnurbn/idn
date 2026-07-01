@@ -1,38 +1,35 @@
 {den, ...}: {
   den.aspects.vermilion = {
     includes = [
-      den.aspects.boot
-      den.aspects.plymouth
-      den.aspects.cachyos-kernel
-      den.aspects.firmware
+      # Hardware
       den.aspects.amdcpu
       den.aspects.amdgpu
       den.aspects.audio
       den.aspects.bluetooth
-      den.aspects.networking
-      den.aspects.openrgb
       den.aspects.coolercontrol
+      den.aspects.firmware
+      den.aspects.openrgb
       # Takes the device id and swap size as an argument
       # In case you want to hibernate, check disko.nix file.
       (den.provides.disko-btrfs-impermanence-main "/dev/disk/by-id/nvme-CT1000T710SSD8_2536530B906D" "48G")
       (den.provides.disko-btrfs-data "/dev/disk/by-id/nvme-CT2000T710SSD8_2532525EB150")
+
+      # System
+      den.aspects.boot
+      den.aspects.cachyos-kernel
       den.aspects.impermanence
       (den.provides.impermanence "/persist")
-      den.aspects.sudo
-      den.aspects.ssh
-      den.aspects.locale
-      den.aspects.nix
-      den.aspects.shell
-      den.aspects.dev-tools
-      den.aspects.tui-utils
-      den.aspects.kde-desktop
-      den.aspects.styling
+
+      # Software
+      den.aspects.base
+      den.aspects.devel
+      den.aspects.media
+      den.aspects.desktop
       den.aspects.flatpak
-      den.aspects.gui-core
-      den.aspects.browsers
-      den.aspects.gaming-base
-      den.aspects.gaming-steam
-      den.aspects.gaming-heroic
+      den.aspects.gui-media
+      den.aspects.gaming
+      den.aspects.helium
+      den.aspects.tor
     ];
 
     nixos = {

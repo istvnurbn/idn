@@ -6,28 +6,30 @@
 
       environment.systemPackages = with pkgs; [
         atuin
-        fzf
-        zoxide
         bat
-        tree
-        mc
-        just
-        wget
+        btop
         curl
-        rsync
+        fastfetch
+        fzf
+        just
+        mc
+        mmv
         msedit # just for the fun of it
         pv
-        mmv
-        wl-clipboard
+        ripgrep
+        rsync
+        tree
+        wget
         xdg-utils
+        zoxide
       ];
     };
 
     darwin = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         coreutils
-        nano
         gnutar # macOS tar fails me sometimes
+        nano
       ];
     };
 
@@ -37,6 +39,9 @@
           ".local/share/atuin"
           ".local/share/zinit"
           ".local/share/zoxide"
+        ];
+        files = [
+          ".config/btop/btop.conf"
         ];
       };
     };

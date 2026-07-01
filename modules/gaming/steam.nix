@@ -1,5 +1,5 @@
 {
-  den.aspects.gaming-steam = {user, ...}: {
+  den.aspects.steam = {user, ...}: {
     nixos = {pkgs, ...}: let
       # Single source of truth for compat tools. Stable names decouple the symlink path from package churn.
       # Using pkg.steamcompattool.name would rename symlinks on every update, orphaning per-game Proton selection.

@@ -43,9 +43,14 @@
 
       environment.sessionVariables = {
         # Proton settings
-        PROTON_ENABLE_WAYLAND = "1";
         PROTON_ENABLE_HDR = "1";
+        PROTON_ENABLE_WAYLAND = "1";
         PROTON_FSR4_UPGRADE = "1";
+        PROTON_USE_NTSYNC = "1";
+        # Disable mesh shaders — common cause of VKD3D ring timeouts on RDNA4
+        RADV_DEBUG = "nomeshshader";
+        # Disable upload heap host-visible VRAM — improves stability with VKD3D DX12 titles
+        VKD3D_CONFIG = "no_upload_hvv";
       };
     };
   };

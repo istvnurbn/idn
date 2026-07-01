@@ -1,10 +1,8 @@
-{
+{inputs, ...}: {
   den.aspects.nix = {
     os = {pkgs, ...}: {
       nix = {
         settings = {
-          nix-path = ["nixpkgs=${pkgs.path}"];
-
           # Users and groups that have additional rights when connecting to the Nix daemon
           trusted-users = [
             "root"
@@ -39,6 +37,8 @@
             "nixpkgs-unfree.cachix.org-1:hqvoInulhbV4nJ9yJOEr+4wxhDV4xq2d1DK7S6Nj6rs="
           ];
         };
+
+        nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 
         # From https://jackson.dev/post/nix-reasonable-defaults/
         optimise.automatic = true;

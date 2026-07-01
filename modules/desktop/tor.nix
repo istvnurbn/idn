@@ -1,16 +1,15 @@
 {
-  den.aspects.tui-utils = {user, ...}: {
-    os = {pkgs, ...}: {
+  den.aspects.tor = {user, ...}: {
+    nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
-        btop
-        fastfetch
+        tor-browser
       ];
     };
 
     impermanence = {
       users.${user.name} = {
-        files = [
-          ".config/btop/btop.conf"
+        directories = [
+          ".cache/tor project"
         ];
       };
     };

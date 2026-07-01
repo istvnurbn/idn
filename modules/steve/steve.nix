@@ -19,6 +19,7 @@
           "cdrom"
           "docker"
           "gamemode"
+          "input"
         ];
       };
     };

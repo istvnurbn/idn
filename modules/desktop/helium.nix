@@ -7,20 +7,12 @@
     };
   };
 
-  den.aspects.browsers = {user, ...}: {
+  den.aspects.helium = {user, ...}: {
     os = {pkgs, ...}: {
       nixpkgs.overlays = [inputs.helium.overlays.default];
 
       environment.systemPackages = with pkgs; [
         helium
-      ];
-    };
-
-    nixos = {pkgs, ...}: {
-      programs.firefox.enable = true;
-
-      environment.systemPackages = with pkgs; [
-        tor-browser
       ];
 
       environment.sessionVariables = {
@@ -33,8 +25,6 @@
       users.${user.name} = {
         directories = [
           ".config/net.imput.helium"
-          ".config/mozilla"
-          ".cache/tor project"
         ];
       };
     };

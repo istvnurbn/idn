@@ -1,5 +1,5 @@
 {
-  den.aspects.styling = {
+  den.aspects.fonts = {
     os = {pkgs, ...}: {
       fonts.packages = with pkgs; [
         nerd-fonts.zed-mono
