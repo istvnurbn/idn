@@ -8,13 +8,13 @@
       nixpkgs.config.permittedInsecurePackages = [
         "pnpm-10.29.2"
       ];
+    };
 
-      impermanence = {
-        users.${user.name} = {
-          directories = [
-            ".config/heroic"
-          ];
-        };
+    impermanence = {
+      users.${user.name} = {
+        directories = [
+          ".config/heroic"
+        ];
       };
     };
   };
