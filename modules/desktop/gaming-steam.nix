@@ -1,7 +1,7 @@
 {
   den.aspects.gaming-steam = {user, ...}: {
     nixos = {pkgs, ...}: let
-      # Single source of truth for compat tools. Stable names decouple the symlink path from package chrumn.
+      # Single source of truth for compat tools. Stable names decouple the symlink path from package churn.
       # Using pkg.steamcompattool.name would rename symlinks on every update, orphaning per-game Proton selection.
       compatTools = with pkgs; [
         {
@@ -39,12 +39,12 @@
       # Discussion: https://discourse.nixos.org/t/using-proton-ge-bin-package-outside-of-steam/
       systemd.user.tmpfiles = let
         steamInstallDir = "%h/.local/share/Steam";
-        compatToolDir = "${steamInstallDir}/compatibilitytools.d/";
+        compatToolDir = "${steamInstallDir}/compatibilitytools.d";
         steamDir = "%h/.steam";
         mkCompatLink = {
           pkg,
           name,
-        }: "L+ ${compatToolDir}/${name} - - - -${pkg.steamcompattool}";
+        }: "L+ ${compatToolDir}/${name} - - - - ${pkg.steamcompattool}";
       in {
         enable = true;
         rules =
