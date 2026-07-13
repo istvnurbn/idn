@@ -1,0 +1,20 @@
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+Thumbs.db
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Result of the nixos-rebuild/darwin-rebuild build command
+result*

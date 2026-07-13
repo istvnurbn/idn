@@ -1,0 +1,13 @@
+font-family = "Maple Mono NF"
+font-feature = calt,cv01,cv02,-cv04,cv08,cv11,cv32,cv33,cv34,cv35,cv36,cv39,cv41,cv66,ss06,ss09,ss10,ss11
+font-size = 14
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+cursor-style = block
+cursor-style-blink = true
+macos-titlebar-proxy-icon = hidden
+shell-integration = zsh
+shell-integration-features = no-cursor,sudo,title,ssh-env
+quick-terminal-position = center
+clipboard-trim-trailing-spaces = true
+window-height = 35
+window-width = 120

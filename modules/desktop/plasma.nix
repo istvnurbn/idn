@@ -1,0 +1,286 @@
+{inputs, ...}: {
+  flake-file.inputs.plasma-manager = {
+    url = "github:nix-community/plasma-manager";
+    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.home-manager.follows = "home-manager";
+  };
+
+  den.aspects.plasma = {user, ...}: {
+    nixos = {pkgs, ...}: {
+      services = {
+        displayManager.plasma-login-manager.enable = true;
+        desktopManager.plasma6.enable = true;
+      };
+
+      programs = {
+        kdeconnect.enable = true;
+        partition-manager.enable = true;
+      };
+
+      # Ports for KDE Connect
+      networking.firewall = rec {
+        allowedTCPPortRanges = [
+          {
+            from = 1714;
+            to = 1764;
+          }
+        ];
+        allowedUDPPortRanges = allowedTCPPortRanges;
+      };
+
+      xdg.portal = {
+        enable = true;
+        config.common.default = "kde";
+        extraPortals = with pkgs; [
+          kdePackages.xdg-desktop-portal-kde
+        ];
+      };
+
+      environment.systemPackages = with pkgs; [
+        kdePackages.isoimagewriter
+        kdePackages.kcalc
+        kdePackages.kquickimageedit
+        exfatprogs
+      ];
+
+      services.orca.enable = false;
+
+      environment.plasma6.excludePackages = with pkgs.kdePackages; [
+        elisa
+        kate
+        konsole
+        ktexteditor
+        khelpcenter
+        kwin-x11
+        print-manager
+        qrca
+      ];
+
+      # Temporary fix for slow KDE Plasma due to excessively long environment variables# https://old.reddit.com/r/NixOS/comments/1pdtc3v/kde_plasma_is_slow_compared_to_any_other_distro/
+      # Original fix:
+      # https://github.com/NixOS/nixpkgs/issues/126590#issuecomment-3194531220
+      # Improved fix:
+      # https://github.com/NixOS/nixpkgs/issues/126590#issuecomment-3694376547
+      nixpkgs.overlays = [
+        (final: prev: {
+          kdePackages = prev.kdePackages.overrideScope (
+            kdeFinal: kdePrev: {
+              plasma-workspace = let
+                # the package we want to override
+                basePkg = kdePrev.plasma-workspace;
+                # a helper package that merges all the XDG_DATA_DIRS into a single directory
+                xdgdataPkg = final.stdenv.mkDerivation {
+                  name = "${basePkg.name}-xdgdata";
+                  buildInputs = [basePkg];
+                  dontUnpack = true;
+                  dontFixup = true;
+                  dontWrapQtApps = true;
+                  installPhase = ''
+                    mkdir -p $out/share
+                    ( IFS=:
+                      for DIR in $XDG_DATA_DIRS; do
+                        if [[ -d "$DIR" ]]; then
+                          cp -r $DIR/. $out/share/
+                          chmod -R u+w $out/share
+                        fi
+                      done
+                    )
+                  '';
+                };
+                # undo the XDG_DATA_DIRS injection that is usually done in the qt wrapper
+                # script and instead inject the path of the above helper package
+                derivedPkg = basePkg.overrideAttrs {
+                  preFixup = ''
+                    for index in "''${!qtWrapperArgs[@]}"; do
+                      if [[ ''${qtWrapperArgs[$((index+0))]} == "--prefix" ]] && [[ ''${qtWrapperArgs[$((index+1))]} == "XDG_DATA_DIRS" ]]; then
+                        unset -v "qtWrapperArgs[$((index+0))]"
+                        unset -v "qtWrapperArgs[$((index+1))]"
+                        unset -v "qtWrapperArgs[$((index+2))]"
+                        unset -v "qtWrapperArgs[$((index+3))]"
+                      fi
+                    done
+                    qtWrapperArgs=("''${qtWrapperArgs[@]}")
+                    qtWrapperArgs+=(--prefix XDG_DATA_DIRS : "${xdgdataPkg}/share")
+                    qtWrapperArgs+=(--prefix XDG_DATA_DIRS : "$out/share")
+                  '';
+                };
+              in
+                derivedPkg;
+            }
+          );
+        })
+      ];
+    };
+
+    impermanence = {
+      users.${user.name} = {
+        directories = [
+          ".config/kdeconnect"
+        ];
+      };
+    };
+
+    provides.to-users.homeManager = {pkgs, ...}: {
+      imports = [inputs.plasma-manager.homeModules.plasma-manager];
+
+      programs.plasma = {
+        enable = true;
+
+        fonts = {
+          fixedWidth = {
+            family = "Maple Mono NF";
+            pointSize = 10;
+          };
+          general = {
+            family = "Inter";
+            pointSize = 10;
+          };
+          menu = {
+            family = "Inter";
+            pointSize = 10;
+          };
+          small = {
+            family = "Inter";
+            pointSize = 8;
+          };
+          toolbar = {
+            family = "Inter";
+            pointSize = 10;
+          };
+          windowTitle = {
+            family = "Inter";
+            pointSize = 10;
+          };
+        };
+
+        panels = [
+          {
+            location = "bottom";
+            alignment = "center";
+            lengthMode = "fill";
+            hiding = "dodgewindows";
+            opacity = "translucent";
+            floating = true;
+            height = 46;
+
+            widgets = [
+              {
+                name = "org.kde.plasma.kickoff";
+                config = {
+                  General = {
+                    icon = "nix-snowflake";
+                    alphaSort = true;
+                    highlightNewlyInstalledApps = false;
+                    showActionButtonCaptions = false;
+                  };
+                };
+              }
+              {
+                name = "org.kde.plasma.icontasks";
+                config = {
+                  General = {
+                    launchers = [
+                      "applications:firefox.desktop"
+                      "applications:org.kde.dolphin.desktop"
+                      "applications:com.mitchellh.ghostty.desktop"
+                    ];
+                  };
+                };
+              }
+              "org.kde.plasma.marginsseparator"
+              {
+                systemTray.items = {
+                  shown = [
+                    "org.kde.plasma.volume"
+                    "org.kde.plasma.brightness"
+                    "org.kde.plasma.bluetooth"
+                    "org.kde.plasma.networkmanagement"
+                  ];
+                };
+              }
+              "org.kde.plasma.digitalclock"
+              "org.kde.plasma.showdesktop"
+            ];
+          }
+        ];
+
+        workspace = {
+          clickItemTo = "select";
+          colorScheme = "BreezeLight";
+          cursor = {
+            animationTime = 5;
+            cursorFeedback = "Bouncing";
+            size = 24;
+            taskManagerFeedback = true;
+            theme = "breeze_cursors";
+          };
+          lookAndFeel = "org.kde.breeze.desktop";
+          wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Coast/contents/images/5120x2880.png";
+        };
+
+        kwin.effects.zoom.enable = false;
+
+        input.mice = [
+          {
+            name = "Logitech PRO X 2 DEX";
+            enable = true;
+            acceleration = null;
+            accelerationProfile = "none";
+            leftHanded = false;
+            middleButtonEmulation = false;
+            naturalScroll = false;
+            scrollSpeed = 1;
+            productId = "40b8";
+            vendorId = "046d";
+          }
+        ];
+
+        powerdevil.AC = {
+          powerButtonAction = "showLogoutScreen";
+          powerProfile = "performance";
+          whenSleepingEnter = "standbyThenHibernate";
+          autoSuspend = {
+            action = "sleep";
+            idleTimeout = 900;
+          };
+          dimDisplay = {
+            enable = true;
+            idleTimeout = 300;
+          };
+          turnOffDisplay = {
+            idleTimeout = 600;
+            idleTimeoutWhenLocked = 60;
+          };
+        };
+
+        configFile = {
+          dolphinrc = {
+            ContentDisplay.UseShortRelativeDates = false;
+            ContextMenu.ShowViewMode = false;
+            General = {
+              AutoExpandFolders = true;
+              BrowseThroughArchives = true;
+              EditableUrl = true;
+              ShowFullPath = true;
+            };
+            MainWindow.MenuBar = "Disabled";
+          };
+
+          kwalletrc = {
+            Wallet = {
+              Enabled = false;
+              "First Use" = false;
+              "Close When Idle" = false;
+              "Close on Screensaver" = false;
+              "Leave Open" = false;
+              "Prompt on Open" = false;
+            };
+            "org.freedesktop.secrets"."apiEnabled" = true;
+          };
+
+          klipperrc.General.KeepClipboardContents = false;
+        };
+      };
+    };
+  };
+}
