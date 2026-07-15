@@ -15,6 +15,7 @@
       home.file.".config/btop/themes/catppuccin_mocha.theme".source = dotsLink "config/btop/themes/catppuccin_mocha.theme";
       home.file.".config/dtop".source = dotsLink "config/dtop";
       home.file.".config/ghostty".source = dotsLink "config/ghostty";
+      home.file.".config/helix".source = dotsLink "config/helix";
       home.file.".config/lazygit".source = dotsLink "config/lazygit";
       home.file.".config/mc/ini".source = dotsLink "config/mc/ini";
       home.file.".config/scopebuddy".source = dotsLink "config/scopebuddy";

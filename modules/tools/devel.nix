@@ -7,6 +7,7 @@
         jq
         just-lsp
         gawk
+        helix
       ];
     };
   };
