@@ -17,6 +17,7 @@
         knownHosts = {
           vermilion = {
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfJ4iMClvTaqIYrMZNdro5oGSLk8LYG8awsuZyez7O5";
+            extraHostNames = ["vermilion.local"];
           };
         };
 

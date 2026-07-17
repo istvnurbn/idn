@@ -25,6 +25,7 @@
       den.aspects.nix
       den.aspects.overlays
       den.aspects.networking
+      den.aspects.avahi
       den.aspects.locale
       den.aspects.sudo
       den.aspects.openssh
