@@ -54,7 +54,6 @@
       den.aspects.steam
       den.aspects.heroic
       den.aspects.sunshine
-      den.aspects.headless-sway
     ];
 
     nixos = {
