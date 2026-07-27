@@ -14,6 +14,7 @@
       users.${user.name} = {
         directories = [
           ".config/heroic"
+          ".local/share/umu"
         ];
       };
     };
