@@ -21,6 +21,7 @@
           "gamemode"
           "i2c"
           "input"
+          "moonshine"
           "uinput"
         ];
       };

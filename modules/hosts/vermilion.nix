@@ -53,7 +53,8 @@
       den.aspects.gaming-udev
       den.aspects.steam
       den.aspects.heroic
-      den.aspects.sunshine
+      # den.aspects.sunshine
+      den.aspects.moonshine
     ];
 
     nixos = {

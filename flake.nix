@@ -63,6 +63,10 @@
       };
     };
     import-tree.url = "github:denful/import-tree";
+    moonshine = {
+      url = "github:hgaiser/moonshine";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel/release";
       inputs = {
