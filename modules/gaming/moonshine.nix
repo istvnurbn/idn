@@ -8,6 +8,66 @@
 
   den.aspects.moonshine = {user, ...}: {
     nixos = {
+      pkgs,
+      lib,
+      ...
+    }: let
+      steamExe = "/run/current-system/sw/bin/steam";
+
+      steamLaunchExe = lib.getExe' steamLaunch "moonshine-steam-launch";
+
+      steamLaunch = pkgs.writeShellApplication {
+        name = "moonshine-steam-launch";
+        text = ''
+          ${lib.getExe' steamShutdown "moonshine-steam-shutdown"}
+          exec ${steamExe} "$@"
+        '';
+      };
+
+      steamShutdown = pkgs.writeShellApplication {
+        name = "moonshine-steam-shutdown";
+        runtimeInputs = [pkgs.procps pkgs.coreutils];
+        text = ''
+          pgrep -x steam >/dev/null || exit 0
+
+          ${steamExe} -shutdown >/dev/null 2>&1 || true
+
+          for _ in {1..30}; do
+            pgrep -x steam >/dev/null || exit 0
+            sleep 1
+          done
+
+          echo "steam still up after 30s, sending SIGTERM" >&2
+          pkill -x steam || true
+        '';
+      };
+
+      heroicExe = "/run/current-system/sw/bin/heroic";
+
+      heroicLaunch = pkgs.writeShellApplication {
+        name = "moonshine-heroic-launch";
+        text = ''
+          ${lib.getExe' heroicShutdown "moonshine-heroic-shutdown"}
+          exec ${heroicExe} "$@"
+        '';
+      };
+
+      heroicShutdown = pkgs.writeShellApplication {
+        name = "moonshine-heroic-shutdown";
+        runtimeInputs = [pkgs.procps pkgs.coreutils];
+        text = ''
+          pat='^/nix/store/[^ ]*electron .*/opt/heroic/resources/app.asar'
+          pgrep -f "$pat" >/dev/null || exit 0
+          pkill -f "$pat" || true
+          for _ in {1..30}; do
+            pgrep -f "$pat" >/dev/null || exit 0
+            sleep 1
+          done
+          echo "heroic still up after 30s, sending SIGKILL" >&2
+          pkill -9 -f "$pat" || true
+        '';
+      };
+    in {
       imports = [inputs.moonshine.nixosModules.default];
 
       services.moonshine = {
@@ -30,7 +90,7 @@
             {
               title = "Steam Big Picture";
               command = [
-                "/run/current-system/sw/bin/steam"
+                steamLaunchExe
                 "steam://open/bigpicture"
               ];
             }
@@ -40,15 +100,14 @@
               type = "steam";
               library = "$HOME/.local/share/Steam";
               command = [
-                "/run/current-system/sw/bin/steam"
-                "-bigpicture"
+                steamLaunchExe
                 "steam://rungameid/{game_id}"
               ];
             }
             {
               type = "heroic";
               command = [
-                "/run/current-system/sw/bin/heroic"
+                (lib.getExe' heroicLaunch "moonshine-heroic-launch")
                 "--no-gui"
                 "heroic://launch?appName={app_name}&runner={runner}"
               ];
@@ -61,7 +120,8 @@
     impermanence = {
       users.${user.name} = {
         directories = [
-          ".local/share/moonshine"
+          ".config/moonshine" # certs
+          ".local/share/moonshine" # paired clients
         ];
       };
     };
