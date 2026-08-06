@@ -6,7 +6,16 @@
         autoStart = true;
         capSysAdmin = false;
         openFirewall = true;
-        settings.capture = "kwin";
+        settings = {
+          sunshine_name = "Sunshine";
+          locale = "en";
+          origin_web_ui_allowed = "lan";
+          lan_encryption_mode = 0;
+          capture = "kwin";
+          min_threads = 6;
+          encoder = "vulkan";
+          vk_tune = 2;
+        };
       };
     };
 
