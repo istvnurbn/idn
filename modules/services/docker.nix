@@ -27,6 +27,11 @@
       ];
     };
 
+    # NOTE: docker group is root-equivalent; revisit if a host ever gains a second user
+    provides.to-users = {user, ...}: {
+      nixos.users.users.${user.name}.extraGroups = ["docker"];
+    };
+
     impermanence = {
       directories = [
         "/var/lib/docker"

@@ -27,12 +27,6 @@
         ];
       };
 
-      # Enable udev rules for Steam hardware and uinput for Steam Input
-      hardware = {
-        steam-hardware.enable = true;
-        uinput.enable = true;
-      };
-
       # Link the Proton-GE and Proton CachyOS nix store path to the user directory.
       # This is needed for using these compat tools with Heroic and others.
       #

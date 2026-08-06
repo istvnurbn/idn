@@ -117,6 +117,10 @@
       };
     };
 
+    provides.to-users = {user, ...}: {
+      nixos.users.users.${user.name}.extraGroups = ["moonshine"];
+    };
+
     impermanence = {
       users.${user.name} = {
         directories = [

@@ -24,12 +24,7 @@
           "audio"
           "cdrom"
           "dialout"
-          "docker"
-          "gamemode"
-          "i2c"
           "input"
-          "moonshine"
-          "uinput"
         ];
       };
 

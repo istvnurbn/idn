@@ -34,6 +34,12 @@
         };
       };
 
+      # Enable udev rules for Steam hardware and uinput for Steam Input
+      hardware = {
+        steam-hardware.enable = true;
+        uinput.enable = true;
+      };
+
       environment.systemPackages = with pkgs; [
         mangohud
         gamescope
@@ -48,6 +54,10 @@
         # Disable upload heap host-visible VRAM — improves stability with VKD3D DX12 titles
         VKD3D_CONFIG = "no_upload_hvv";
       };
+    };
+
+    provides.to-users = {user, ...}: {
+      nixos.users.users.${user.name}.extraGroups = ["gamemode" "uinput"];
     };
   };
 }
