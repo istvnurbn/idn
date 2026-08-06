@@ -50,7 +50,6 @@
 
       # Gaming
       den.aspects.gaming-base
-      den.aspects.gaming-udev
       den.aspects.steam
       den.aspects.heroic
       # den.aspects.sunshine

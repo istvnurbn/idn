@@ -40,6 +40,11 @@
         uinput.enable = true;
       };
 
+      services.udev.packages = with pkgs; [
+        game-devices-udev-rules
+        steam-devices-udev-rules
+      ];
+
       environment.systemPackages = with pkgs; [
         mangohud
         gamescope
