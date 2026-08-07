@@ -6,23 +6,18 @@
     };
   };
 
-  den.aspects.moonshine = {user, ...}: {
+  den.aspects.moonshine = {
+    user,
+    host,
+    ...
+  }: {
     nixos = {
       pkgs,
       lib,
       ...
     }: let
       steamExe = "/run/current-system/sw/bin/steam";
-
-      steamLaunchExe = lib.getExe' steamLaunch "moonshine-steam-launch";
-
-      steamLaunch = pkgs.writeShellApplication {
-        name = "moonshine-steam-launch";
-        text = ''
-          ${lib.getExe' steamShutdown "moonshine-steam-shutdown"}
-          exec ${steamExe} "$@"
-        '';
-      };
+      heroicExe = "/run/current-system/sw/bin/heroic";
 
       steamShutdown = pkgs.writeShellApplication {
         name = "moonshine-steam-shutdown";
@@ -42,15 +37,7 @@
         '';
       };
 
-      heroicExe = "/run/current-system/sw/bin/heroic";
-
-      heroicLaunch = pkgs.writeShellApplication {
-        name = "moonshine-heroic-launch";
-        text = ''
-          ${lib.getExe' heroicShutdown "moonshine-heroic-shutdown"}
-          exec ${heroicExe} "$@"
-        '';
-      };
+      steamShutdownExe = lib.getExe' steamShutdown "moonshine-steam-shutdown";
 
       heroicShutdown = pkgs.writeShellApplication {
         name = "moonshine-heroic-shutdown";
@@ -67,6 +54,28 @@
           pkill -9 -f "$pat" || true
         '';
       };
+
+      heroicShutdownExe = lib.getExe' heroicShutdown "moonshine-heroic-shutdown";
+
+      steamLaunch = pkgs.writeShellApplication {
+        name = "moonshine-steam-launch";
+        text = ''
+          ${steamShutdownExe}
+          exec ${steamExe} "$@"
+        '';
+      };
+
+      steamLaunchExe = lib.getExe' steamLaunch "moonshine-steam-launch";
+
+      heroicLaunch = pkgs.writeShellApplication {
+        name = "moonshine-heroic-launch";
+        text = ''
+          ${heroicShutdownExe}
+          exec ${heroicExe} "$@"
+        '';
+      };
+
+      heroicLaunchExe = lib.getExe' heroicLaunch "moonshine-heroic-launch";
     in {
       imports = [inputs.moonshine.nixosModules.default];
 
@@ -83,9 +92,23 @@
         # firewall. See Security in the main README.
         openFirewall = true;
 
+        # An idle Moonlight client polls the HTTPS port every 5s, logging a
+        # WARN for every dropped TLS probe.
+        logFilter = "moonshine=info,moonshine_core::tls=error";
+
         # Everything from the Configuration section of the main README goes
         # here, written as nix instead of TOML.
         settings = {
+          name = host.name;
+
+          compositor = {
+            gpu = "0000:03:00.0";
+            keyboard = {
+              layout = "hu";
+              model = "pc105";
+            };
+          };
+
           application = [
             {
               title = "Steam Big Picture";
@@ -95,6 +118,7 @@
               ];
             }
           ];
+
           application_scanner = [
             {
               type = "steam";
@@ -107,7 +131,7 @@
             {
               type = "heroic";
               command = [
-                (lib.getExe' heroicLaunch "moonshine-heroic-launch")
+                heroicLaunchExe
                 "--no-gui"
                 "heroic://launch?appName={app_name}&runner={runner}"
               ];
