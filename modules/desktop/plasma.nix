@@ -65,8 +65,28 @@
       };
     };
 
-    provides.to-users.homeManager = {pkgs, ...}: {
+    provides.to-users.homeManager = {
       imports = [inputs.plasma-manager.homeModules.plasma-manager];
+
+      xdg.mimeApps = {
+        enable = true;
+        defaultApplications = let
+          browser = ["firefox.desktop"];
+        in {
+          "application/x-extension-htm" = browser;
+          "application/x-extension-html" = browser;
+          "application/x-extension-shtml" = browser;
+          "application/x-extension-xht" = browser;
+          "application/x-extension-xhtml" = browser;
+          "application/xhtml+xml" = browser;
+          "text/html" = browser;
+          "x-scheme-handler/about" = browser;
+          "x-scheme-handler/chrome" = browser;
+          "x-scheme-handler/http" = browser;
+          "x-scheme-handler/https" = browser;
+          "x-scheme-handler/unknown" = browser;
+        };
+      };
 
       programs.plasma = {
         enable = true;
@@ -151,7 +171,6 @@
 
         workspace = {
           clickItemTo = "select";
-          colorScheme = "BreezeLight";
           cursor = {
             animationTime = 5;
             cursorFeedback = "Bouncing";
@@ -159,8 +178,6 @@
             taskManagerFeedback = true;
             theme = "breeze_cursors";
           };
-          lookAndFeel = "org.kde.breeze.desktop";
-          wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Coast/contents/images/5120x2880.png";
         };
 
         kwin.effects.zoom.enable = false;
@@ -209,6 +226,15 @@
               ShowFullPath = true;
             };
             MainWindow.MenuBar = "Disabled";
+          };
+
+          kdeglobals = {
+            KDE.AutomaticLookAndFeel = true;
+            General = {
+              BrowserApplication = "firefox.desktop";
+              TerminalApplication = "com.mitchellh.ghostty.desktop";
+              TerminalService = "com.mitchellh.ghostty.desktop";
+            };
           };
 
           kwalletrc = {
