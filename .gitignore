@@ -2,6 +2,8 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+.env
+*.mdb
 
 # Thumbnails
 Thumbs.db
@@ -16,5 +18,19 @@ Thumbs.db
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Result of the nixos-rebuild/darwin-rebuild build command
-result*
+# Ignore build outputs from performing a nix-build or `nix build` command
+result
+result-*
+
+# Ignore automatically generated direnv output
+.direnv
+
+# Ignore NixOS interactive test driver history
+**/.nixos-test-history
+
+# Claude Code local/session state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# Zed project-local overrides
+.zed/
