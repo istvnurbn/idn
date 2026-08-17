@@ -153,10 +153,30 @@
         StandardHideWidgets = true;
       };
 
+      # Security
+      loginwindow = {
+        # Disable the ability to access the console by typing “>console” for a username at the login window
+        DisableConsoleAccess = true;
+
+        # Disable guest access
+        GuestEnabled = false;
+      };
+
+      screensaver = {
+        # Ask for password when the screen saver unlocked or stopped
+        askForPassword = true;
+
+        # Grace period before the password is required to unlock or stop the screen saver
+        askForPasswordDelay = 0;
+      };
+
       CustomSystemPreferences = {
-        # Close windows when quitting an app
         NSGlobalDomain = {
+          # Close windows when quitting an app
           NSQuitAlwaysKeepsWindows = false;
+
+          # Privacy: disable online spell correction
+          WebAutomaticSpellingCorrectionEnabled = false;
         };
 
         # Do not write AppleDouble files on USB drives and network shares
@@ -208,6 +228,30 @@
         "com.apple.TimeMachine" = {
           DoNotOfferNewDisksForBackup = true;
         };
+
+        # Security: software update
+        "com.apple.SoftwareUpdate" = {
+          # Check for automatic updates daily
+          AutomaticCheckEnabled = true;
+          ScheduleFrequency = 1;
+
+          # Disable automatic installation of macOS updates
+          AutomaticallyInstallMacOSUpdates = false;
+
+          # Disable automatic app updates from the App Store
+          AutomaticallyInstallAppUpdates = false;
+        };
+
+        # Privacy
+        # Disable personalized advertisements and identifier tracking.
+        "com.apple.AdLib" = {
+          "allowIdentifierForAdvertising" = false;
+          "allowApplePersonalizedAdvertising" = false;
+          "forceLimitAdTracking" = true;
+        };
+
+        # Privacy: disable Microsoft Office telemetry
+        "com.microsoft.office" = {"DiagnosticDataTypePreference" = "ZeroDiagnosticData";};
       };
     };
   };

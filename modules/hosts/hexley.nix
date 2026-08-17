@@ -4,9 +4,7 @@
       # For macOS only
       nix-darwin
       nix-homebrew
-      darwin-security
       darwin-defaults
-      darwin-privacy
 
       # Base
       nix
