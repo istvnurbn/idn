@@ -102,7 +102,10 @@
           name = host.name;
 
           compositor = {
-            gpu = "0000:03:00.0";
+            # gpu (the capture GPU's PCI bus address) is specific to the
+            # host's hardware layout; set
+            # services.moonshine.settings.compositor.gpu per-host, e.g. in
+            # hosts/vermilion.nix.
             keyboard = {
               layout = "hu";
               model = "pc105";
