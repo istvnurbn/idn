@@ -1,28 +1,47 @@
 {
   den.aspects.dotfiles = {
-    homeManager = {config, ...}: let
+    homeManager = {
+      config,
+      lib,
+      ...
+    }: let
       dotsLink = path:
         config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/idn/modules/steve/dotfiles/${path}";
+
+      # $HOME-relative target paths; each is linked to the identical path
+      # (minus the leading dot) under modules/steve/dotfiles/.
+      linkedPaths = [
+        # Files/folders in the root of the $HOME directory
+        ".abcde.conf"
+        ".face"
+        ".gitconfig"
+
+        # Files/folders in the .config directory
+        ".config/atuin"
+        ".config/btop/themes/catppuccin_mocha.theme"
+        ".config/dtop"
+        ".config/ghostty"
+        ".config/helix"
+        ".config/lazygit"
+        ".config/mc/ini"
+        ".config/scopebuddy"
+        ".config/zed"
+
+        # Files/folders in the .local directory
+        ".local/share/mc/skins/catppuccin.ini"
+      ];
     in {
-      # Files/folders in the root of the $HOME directory
-      home.file."./.abcde.conf".source = dotsLink "abcde.conf";
-      home.file."./.face".source = dotsLink "face";
-      home.file."./.gitconfig".source = dotsLink "gitconfig";
-      home.file."./.zshrc".source = dotsLink "zshrc";
-
-      # Files/folders in the .config directory
-      home.file.".config/atuin".source = dotsLink "config/atuin";
-      home.file.".config/btop/themes/catppuccin_mocha.theme".source = dotsLink "config/btop/themes/catppuccin_mocha.theme";
-      home.file.".config/dtop".source = dotsLink "config/dtop";
-      home.file.".config/ghostty".source = dotsLink "config/ghostty";
-      home.file.".config/helix".source = dotsLink "config/helix";
-      home.file.".config/lazygit".source = dotsLink "config/lazygit";
-      home.file.".config/mc/ini".source = dotsLink "config/mc/ini";
-      home.file.".config/scopebuddy".source = dotsLink "config/scopebuddy";
-      home.file.".config/zed".source = dotsLink "config/zed";
-
-      # Files/folders in the .local directory
-      home.file.".local/share/mc/skins/catppuccin.ini".source = dotsLink "local/share/mc/skins/catppuccin.ini";
+      home.file =
+        lib.genAttrs linkedPaths (path: {
+          source = dotsLink (lib.removePrefix "." path);
+        })
+        // {
+          # Keep this key as "./.zshrc", not ".zshrc": home-manager's own
+          # zsh integration (enabled via user-shell "zsh") writes to that
+          # same key. Matching it exactly lets our file win instead of the
+          # two silently fighting over the same file on disk.
+          "./.zshrc".source = dotsLink "zshrc";
+        };
     };
   };
 }
