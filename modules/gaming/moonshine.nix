@@ -1,7 +1,7 @@
 {inputs, ...}: {
   flake-file.inputs = {
     moonshine = {
-      url = "github:hgaiser/moonshine";
+      url = "github:scottjab/moonshine/3eee41145022e217366e02413f7e1f9d4a8494f3";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
