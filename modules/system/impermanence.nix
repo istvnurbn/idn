@@ -34,16 +34,22 @@
           ];
 
           script = ''
+            set -euo pipefail
+
             mkdir /btrfs_tmp
             mount /dev/disk/by-partlabel/disk-main-root /btrfs_tmp
+            mkdir -p /btrfs_tmp/old_roots
+
             if [[ -e /btrfs_tmp/root ]]; then
-                mkdir -p /btrfs_tmp/old_roots
                 timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
-                mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
+                mv -T /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
             fi
 
+            # Pruning old snapshots is best-effort: a single failed deletion
+            # must not block the new root from being created and boot from
+            # succeeding.
             for i in $(find /btrfs_tmp/old_roots/ -mindepth 1 -maxdepth 1 -mtime +30); do
-                btrfs subvolume delete --recursive "$i"
+                btrfs subvolume delete --recursive "$i" || echo "warning: failed to delete $i" >&2
             done
 
             btrfs subvolume create /btrfs_tmp/root
