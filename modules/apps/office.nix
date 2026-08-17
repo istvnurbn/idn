@@ -1,5 +1,5 @@
 {
-  den.aspects.office = {
+  den.aspects.office = {user, ...}: {
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         libreoffice-qt
@@ -11,6 +11,14 @@
         hyphenDicts.en_US
         hyphenDicts.hu_HU
       ];
+    };
+
+    impermanence = {
+      users.${user.name} = {
+        directories = [
+          ".config/libreoffice"
+        ];
+      };
     };
   };
 }

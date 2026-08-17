@@ -41,7 +41,6 @@
     impermanence = {
       users.${user.name} = {
         directories = [
-          ".config/libreoffice"
           ".config/Proton Pass"
           ".local/share/org.localsend.localsend_app"
           ".local/share/zed"
