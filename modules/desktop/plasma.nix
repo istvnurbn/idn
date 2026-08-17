@@ -5,28 +5,14 @@
     inputs.home-manager.follows = "home-manager";
   };
 
-  den.aspects.plasma = {user, ...}: {
+  den.aspects.plasma = {
     nixos = {pkgs, ...}: {
       services = {
         displayManager.plasma-login-manager.enable = true;
         desktopManager.plasma6.enable = true;
       };
 
-      programs = {
-        kdeconnect.enable = true;
-        partition-manager.enable = true;
-      };
-
-      # Ports for KDE Connect
-      networking.firewall = rec {
-        allowedTCPPortRanges = [
-          {
-            from = 1714;
-            to = 1764;
-          }
-        ];
-        allowedUDPPortRanges = allowedTCPPortRanges;
-      };
+      programs.partition-manager.enable = true;
 
       xdg.portal = {
         enable = true;
@@ -55,14 +41,6 @@
         print-manager
         qrca
       ];
-    };
-
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/kdeconnect"
-        ];
-      };
     };
 
     provides.to-users.homeManager = {
