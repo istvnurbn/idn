@@ -61,8 +61,8 @@ in {
         # Packages installed outside of nix-darwin will be zapped
         cleanup = "zap";
 
-        # Enable Homebrew to upgrade outdated formulae and Mac App Store apps during nix-darwin system activation
-        upgrade = true;
+        # Disable Homebrew to upgrade outdated formulae and Mac App Store apps during nix-darwin system activation
+        upgrade = false;
       };
     };
 
