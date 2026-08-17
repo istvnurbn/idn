@@ -1,59 +1,59 @@
 {den, ...}: {
   den.aspects.vermilion = {
-    includes = [
+    includes = with den.aspects; [
       # Hardware
-      den.aspects.firmware
-      den.aspects.amdcpu
-      den.aspects.amdgpu
-      den.aspects.audio
-      den.aspects.bluetooth
-      den.aspects.coolercontrol
-      den.aspects.openrgb
-      den.aspects.lact
+      firmware
+      amdcpu
+      amdgpu
+      audio
+      bluetooth
+      coolercontrol
+      openrgb
+      lact
       # Takes the device id and swap size as an argument
       # In case you want to hibernate, check the disko.nix file.
       (den.provides.disko-btrfs-impermanence-main "/dev/disk/by-id/nvme-CT1000T710SSD8_2536530B906D" "48G")
       (den.provides.disko-btrfs-data "/dev/disk/by-id/nvme-CT2000T710SSD8_2532525EB150")
 
       # System
-      den.aspects.boot
-      den.aspects.cachyos-kernel
-      den.aspects.impermanence
+      boot
+      cachyos-kernel
+      impermanence
       (den.provides.impermanence "/persist")
 
       # Base
-      den.aspects.nix
-      den.aspects.overlays
-      den.aspects.networking
-      den.aspects.avahi
-      den.aspects.locale
-      den.aspects.sudo
-      den.aspects.openssh
-      den.aspects.shell
-      den.aspects.tailscale
+      nix
+      overlays
+      networking
+      avahi
+      locale
+      sudo
+      openssh
+      shell
+      tailscale
 
       # Misc. shell
-      den.aspects.devel
-      den.aspects.media-cli
+      devel
+      media-cli
 
       # Desktop
-      den.aspects.plymouth
-      den.aspects.plasma
-      den.aspects.fonts
-      den.aspects.desktop-base
-      den.aspects.firefox
-      den.aspects.helium
-      den.aspects.tor
-      den.aspects.office
-      den.aspects.flatpak
-      den.aspects.media
+      plymouth
+      plasma
+      fonts
+      desktop-base
+      firefox
+      helium
+      tor
+      office
+      flatpak
+      media
 
       # Gaming
-      den.aspects.gaming-base
-      den.aspects.steam
-      den.aspects.heroic
-      # den.aspects.sunshine
-      den.aspects.moonshine
+      gaming-base
+      steam
+      heroic
+      # sunshine
+      moonshine
     ];
 
     nixos = {
