@@ -91,10 +91,32 @@
       };
     };
 
-    darwin = {pkgs, ...}: {
+    darwin = {
+      config,
+      pkgs,
+      ...
+    }: {
       environment.systemPackages = with pkgs; [
         nh
       ];
+
+      # nix-darwin has no programs.nh module, so replicate what
+      # programs.nh.clean gives NixOS: a weekly `nh clean all` run,
+      # scheduled the same way nix-darwin's own nix.gc.interval default is.
+      launchd.daemons.nh-clean = {
+        command = "${pkgs.nh}/bin/nh clean all --keep-since 7d --keep 3";
+        path = [config.nix.package];
+        serviceConfig = {
+          RunAtLoad = false;
+          StartCalendarInterval = [
+            {
+              Weekday = 7;
+              Hour = 3;
+              Minute = 15;
+            }
+          ];
+        };
+      };
     };
   };
 }
