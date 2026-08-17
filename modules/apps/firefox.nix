@@ -10,7 +10,52 @@
     };
   };
 
-  den.aspects.firefox = {user, ...}: {
+  den.aspects.firefox = {user, ...}: let
+    # Shared with the home-manager profile below (provides.to-users.homeManager)
+    # so the same policies apply on nixos and darwin alike. The nixos facet
+    # layers a KDE-specific extension setting on top via `//` further down.
+    policies = {
+      EnterprisePoliciesEnabled = true;
+
+      # Updates & Background Services
+      AppAutoUpdate = false;
+      BackgroundAppUpdate = false;
+      ManualAppUpdateOnly = true;
+
+      # Features
+      DisableDeveloperTools = false;
+      DisableFeedbackCommands = true;
+      EncryptedMediaExtensions = true;
+      DisableFirefoxStudies = true;
+      DisableFirefoxScreenshots = true;
+      DisableFormHistory = true;
+      DisableSetDesktopBackground = true;
+      DisablePocket = true;
+      DisableTelemetry = true;
+
+      # UI and Behavior
+      DontCheckDefaultBrowser = true;
+      FirefoxHome = {
+        SponsoredStories = false;
+        SponsoredTopSites = false;
+        Stories = false;
+      };
+      GenerativeAI = {
+        Enabled = false;
+      };
+      NoDefaultBookmarks = true;
+
+      # Additional search engines
+      SearchEngines = {
+        PreventInstalls = false;
+        Remove = [
+          "Amazon.com"
+          "eBay"
+          "Perplexity"
+        ];
+      };
+    };
+  in {
     nixos = {pkgs, ...}: {
       programs.firefox = {
         enable = true;
@@ -19,54 +64,13 @@
           kdePackages.plasma-browser-integration
         ];
 
-        # Policies
-        policies = {
-          EnterprisePoliciesEnabled = true;
-
-          # Updates & Background Services
-          AppAutoUpdate = false;
-          BackgroundAppUpdate = false;
-          ManualAppUpdateOnly = true;
-
-          # Features
-          DisableDeveloperTools = false;
-          DisableFeedbackCommands = true;
-          EncryptedMediaExtensions = true;
-          DisableFirefoxStudies = true;
-          DisableFirefoxScreenshots = true;
-          DisableFormHistory = true;
-          DisableSetDesktopBackground = true;
-          DisablePocket = true;
-          DisableTelemetry = true;
-
-          # UI and Behavior
-          DontCheckDefaultBrowser = true;
-          FirefoxHome = {
-            SponsoredStories = false;
-            SponsoredTopSites = false;
-            Stories = false;
-          };
-          GenerativeAI = {
-            Enabled = false;
-          };
-          NoDefaultBookmarks = true;
-
-          # Extensions
+        # Shared policies, plus the KDE integration extension (nixos-only).
+        policies = policies // {
           ExtensionSettings = {
             "plasma-browser-integration@kde.org" = {
               installation_mode = "normal_installed";
               install_url = "https://addons.mozilla.org/firefox/downloads/latest/plasma-integration/latest.xpi";
             };
-          };
-
-          # Additional search engines
-          SearchEngines = {
-            PreventInstalls = false;
-            Remove = [
-              "Amazon.com"
-              "eBay"
-              "Perplexity"
-            ];
           };
         };
 
@@ -93,6 +97,18 @@
     provides.to-users.homeManager = {pkgs, ...}: {
       programs.firefox = {
         enable = true;
+
+        # The actual browser is already installed system-wide (nixos facet)
+        # or via the Homebrew cask (darwin facet); this block only manages
+        # the profile (settings/extensions/search), so skip installing a
+        # second, redundant nixpkgs Firefox into the user profile.
+        package = null;
+
+        # Same enterprise policies as the nixos facet. On darwin these are
+        # written to ~/Library/Preferences/org.mozilla.firefox.plist, which
+        # the Homebrew-installed Firefox reads regardless of `package`.
+        inherit policies;
+
         profiles.personal = {
           id = 0;
           isDefault = true;
