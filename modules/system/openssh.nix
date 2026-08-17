@@ -1,5 +1,9 @@
 {den, ...}: {
-  den.aspects.openssh = {host, ...}: {
+  den.aspects.openssh = {
+    host,
+    user,
+    ...
+  }: {
     nixos = {
       # Enable the OpenSSH daemon
       services.openssh = {
@@ -9,7 +13,7 @@
           PasswordAuthentication = false;
           KbdInteractiveAuthentication = false;
           PermitRootLogin = "no";
-          AllowUsers = ["steve"];
+          AllowUsers = [user.name];
           MaxAuthTries = 3;
           PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
         };
@@ -50,7 +54,7 @@
           ];
       };
 
-      users.users.steve.openssh.authorizedKeys.keys = [
+      users.users.${user.name}.openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDFAQW9uPhDsi+CiCxfwon12iT0Earea6CznTniv1Ta steve@vermilion"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG9mUymT0rLNsntCzJp7Na4Rwj9fAMgfh1oSYmXuRvRK steve@hexley"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO+ge++JIgIQHrr14P1u0K+rF/NzfaTiBz+TRMmUfMHO steve@loophole"

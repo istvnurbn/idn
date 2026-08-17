@@ -1,10 +1,10 @@
 {
-  den.aspects.sudo = {
+  den.aspects.sudo = {user, ...}: {
     nixos = {
       # Extra rules for sudo
       security.sudo.extraRules = [
         {
-          users = ["steve"];
+          users = [user.name];
           commands = [
             {
               command = "ALL";

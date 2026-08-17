@@ -7,17 +7,19 @@
     };
   };
 
-  den.aspects.wsl.nixos = {
-    imports = [inputs.nixos-wsl.nixosModules.default];
+  den.aspects.wsl = {user, ...}: {
+    nixos = {
+      imports = [inputs.nixos-wsl.nixosModules.default];
 
-    wsl = {
-      enable = true;
-      defaultUser = "steve";
-      wslConf = {
-        automount.root = "/mnt";
-        # Do not include the Windows PATH in the PATH variable
-        interop.appendWindowsPath = false;
-        network.generateHosts = false;
+      wsl = {
+        enable = true;
+        defaultUser = user.name;
+        wslConf = {
+          automount.root = "/mnt";
+          # Do not include the Windows PATH in the PATH variable
+          interop.appendWindowsPath = false;
+          network.generateHosts = false;
+        };
       };
     };
   };
