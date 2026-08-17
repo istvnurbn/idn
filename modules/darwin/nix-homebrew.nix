@@ -1,9 +1,15 @@
 # nix-homebrew manages Homebrew installation on macOS using nix-darwin
-{
-  den,
-  inputs,
-  ...
-}: {
+{inputs, ...}: let
+  # Declared once and shared: nix-homebrew uses `taps` for Nix-store-based
+  # tap management, and nix-darwin's homebrew module reads the tap names
+  # from it to keep its Brewfile in sync. Reading it back via
+  # `den.aspects...` instead leaks den's internal bookkeeping keys
+  # (`_`, `__provider`) into the list.
+  taps = {
+    "homebrew/homebrew-core" = inputs.homebrew-core;
+    "homebrew/homebrew-cask" = inputs.homebrew-cask;
+  };
+in {
   flake-file.inputs = {
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
@@ -32,10 +38,7 @@
       user = "steve";
 
       # Enable fully-declarative tap management
-      taps = {
-        "homebrew/homebrew-core" = inputs.homebrew-core;
-        "homebrew/homebrew-cask" = inputs.homebrew-cask;
-      };
+      inherit taps;
 
       # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
       mutableTaps = false;
@@ -46,7 +49,7 @@
       enable = true;
 
       # Align homebrew taps config with nix-homebrew
-      taps = builtins.attrNames den.aspects.nix-homebrew.darwin.nix-homebrew.taps;
+      taps = builtins.attrNames taps;
 
       # Disable Homebrew to auto-update itself and all formulae
       global.autoUpdate = false;
