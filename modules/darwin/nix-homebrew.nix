@@ -73,6 +73,9 @@ in {
 
         # Forbid redirects from secure HTTPS to insecure HTTP
         HOMEBREW_NO_INSECURE_REDIRECT = "1";
+
+        # Homebrew will not attempt to upgrade casks with `auto_updates true`.
+        HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS = "1";
       };
     };
   };
