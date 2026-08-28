@@ -1,5 +1,11 @@
 {
   den.aspects.desktop-base = {user, ...}: {
+    os = {pkgs, ...}: {
+      environment.systemPackages = with pkgs; [
+        unstable.mcp-nixos
+      ];
+    };
+
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         ghostty

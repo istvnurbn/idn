@@ -51,15 +51,6 @@
 
   "disable_ai": false,
 
-  "agent_servers": {
-    "claude-acp": {
-      "default_config_options": {
-        "effort": "max",
-        "model": "claude-fable-5"
-      },
-      "type": "registry",
-    },
-  },
   "agent": {
     "dock": "right",
     "favorite_models": [],
@@ -158,6 +149,24 @@
           "suppress": ["sema-extra-with"],
         },
       },
+    },
+  },
+
+  "agent_servers": {
+    "claude-acp": {
+      "default_config_options": {
+        "effort": "max",
+        "model": "claude-fable-5",
+      },
+      "type": "registry",
+    },
+  },
+
+  "context_servers": {
+    "nixos": {
+      "command": "mcp-nixos",
+      "args": [],
+      "env": {},
     },
   },
 
