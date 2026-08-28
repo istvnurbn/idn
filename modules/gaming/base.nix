@@ -54,13 +54,6 @@
         wineWow64Packages.waylandFull
         protonup-qt
       ];
-
-      environment.sessionVariables = {
-        # Disable mesh shaders — common cause of VKD3D ring timeouts on RDNA4
-        RADV_DEBUG = "nomeshshader";
-        # Disable upload heap host-visible VRAM — improves stability with VKD3D DX12 titles
-        VKD3D_CONFIG = "no_upload_hvv";
-      };
     };
 
     provides.to-users = {user, ...}: {
