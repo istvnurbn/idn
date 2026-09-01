@@ -37,7 +37,7 @@
         '';
       };
 
-      steamShutdownExe = lib.getExe' steamShutdown "moonshine-steam-shutdown";
+      steamShutdownExe = lib.getExe steamShutdown;
 
       heroicShutdown = pkgs.writeShellApplication {
         name = "moonshine-heroic-shutdown";
@@ -55,7 +55,7 @@
         '';
       };
 
-      heroicShutdownExe = lib.getExe' heroicShutdown "moonshine-heroic-shutdown";
+      heroicShutdownExe = lib.getExe heroicShutdown;
 
       steamLaunch = pkgs.writeShellApplication {
         name = "moonshine-steam-launch";
@@ -65,7 +65,7 @@
         '';
       };
 
-      steamLaunchExe = lib.getExe' steamLaunch "moonshine-steam-launch";
+      steamLaunchExe = lib.getExe steamLaunch;
 
       heroicLaunch = pkgs.writeShellApplication {
         name = "moonshine-heroic-launch";
@@ -75,7 +75,7 @@
         '';
       };
 
-      heroicLaunchExe = lib.getExe' heroicLaunch "moonshine-heroic-launch";
+      heroicLaunchExe = lib.getExe heroicLaunch;
     in {
       imports = [inputs.moonshine.nixosModules.default];
 
