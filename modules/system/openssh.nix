@@ -25,33 +25,25 @@
           };
         };
 
-        # Default host keys (overridden by impermanence aspect)
-        hostKeys =
-          if host.hasAspect den.aspects.impermanence
-          then [
-            {
-              path = "/persist/etc/ssh/ssh_host_ed25519_key";
-              type = "ed25519";
-            }
-            {
-              bits = 4096;
-              openSSHFormat = true;
-              path = "/persist/etc/ssh/ssh_host_rsa_key";
-              type = "rsa";
-            }
-          ]
-          else [
-            {
-              path = "/etc/ssh/ssh_host_ed25519_key";
-              type = "ed25519";
-            }
-            {
-              bits = 4096;
-              openSSHFormat = true;
-              path = "/etc/ssh/ssh_host_rsa_key";
-              type = "rsa";
-            }
-          ];
+        # Default host keys, rooted under /persist when the impermanence
+        # aspect is present so they survive the root wipe.
+        hostKeys = let
+          dir =
+            if host.hasAspect den.aspects.impermanence
+            then "/persist/etc/ssh"
+            else "/etc/ssh";
+        in [
+          {
+            path = "${dir}/ssh_host_ed25519_key";
+            type = "ed25519";
+          }
+          {
+            bits = 4096;
+            openSSHFormat = true;
+            path = "${dir}/ssh_host_rsa_key";
+            type = "rsa";
+          }
+        ];
       };
 
       users.users.${user.name}.openssh.authorizedKeys.keys = [
