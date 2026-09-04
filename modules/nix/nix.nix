@@ -2,12 +2,19 @@
   den.aspects.nix = {
     os = {pkgs, ...}: {
       nix = {
+        # Flakes-only; don't leave channel state/commands lying around
+        channel.enable = false;
+
         settings = {
           # Users and groups that have additional rights when connecting to the Nix daemon
           trusted-users = [
             "root"
             "@wheel"
           ];
+
+          # Avoid re-transferring already-substitutable paths over SSH when
+          # using a remote builder
+          builders-use-substitutes = true;
 
           # Enable the Flakes feature and the accompanying new nix command-line tool
           experimental-features = [
