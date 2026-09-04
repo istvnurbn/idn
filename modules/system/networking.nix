@@ -1,6 +1,6 @@
 {
   den.aspects.networking = {host, ...}: {
-    nixos = {
+    nixos = {lib, ...}: {
       networking = {
         # Configure network connections interactively with nmcli or nmtui.
         networkmanager.enable = true;
@@ -8,6 +8,9 @@
         # Enable the firewall
         firewall.enable = true;
       };
+
+      # Legacy multicast name resolution, vulnerable to spoofing
+      services.resolved.settings.Resolve.LLMNR = lib.mkDefault "false";
     };
 
     darwin = {
