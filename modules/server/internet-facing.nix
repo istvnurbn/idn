@@ -1,14 +1,4 @@
-# Extra hardening for servers reachable from the open internet, on top of
-# server-base.nix. Not from srvos — srvos doesn't ship most of this; this is
-# the "other hardening" layer.
-#
-# Deliberately not applied here, left as follow-ups instead: fail2ban
-# (openssh.nix's existing PerSourcePenalties/MaxAuthTries already covers SSH
-# specifically; only worth adding once another exposed service needs it) and
-# outbound firewall restriction (real damage-limitation value if this host
-# is ever compromised, but needs careful per-service allow-listing to avoid
-# breaking things — too invasive to default on before knowing what runs
-# here).
+# Extra hardening for servers reachable from the open internet, on top of server-base.nix.
 {
   den.aspects.server-internet-facing.nixos = {lib, ...}: {
     boot.kernel.sysctl = {

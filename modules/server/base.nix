@@ -1,29 +1,11 @@
-# Baseline for headless NixOS servers (homelab, VPS). Include on every such
-# host; internet-facing ones additionally get server-internet-facing.nix.
-#
-# Deliberately not included here, unlike the desktop-oriented aspects of the
-# same name: `networking` (NetworkManager + darwin computerName, not a fit
-# for a headless box) and `locale` (bundles hu_HU/Hungarian keyboard layout,
-# meaningless for an SSH-only machine). This aspect provides its own minimal
-# equivalents below instead. Same reasoning for `boot`: its memtest86/
-# netbootxyz boot-menu entries are useless without physical/console access,
-# so this aspect owns its own minimal systemd-boot setup rather than
-# combining with it.
-#
-# Deliberately not adopted from nix-community/srvos, which this is inspired
-# by: `services.userborn` (its own upstream code guards against enabling it
-# together with impermanence, which these hosts use) and anything
-# ZFS-related (not this config's established pattern — these hosts are
-# btrfs, matching vermilion).
+# Baseline for headless NixOS servers
 {
   den.aspects.server-base.nixos = {
     lib,
     pkgs,
     ...
   }: {
-    # Headless: no GUI aspects will be included on these hosts, but disable
-    # explicitly anyway (documentation/fonts/xdg all cost store space and
-    # build time for nothing on a box with no desktop session).
+    # No GUI aspects will be included on these hosts, but disable explicitly anyway
     fonts.fontconfig.enable = lib.mkDefault false;
     documentation.nixos.enable = lib.mkDefault false;
     documentation.doc.enable = lib.mkDefault false;
@@ -35,8 +17,7 @@
     xdg.mime.enable = lib.mkDefault false;
     xdg.sounds.enable = lib.mkDefault false;
 
-    # UTC everywhere on servers: avoids DST-transition ambiguity in logs and
-    # makes correlating logs across machines trivial.
+    # UTC everywhere on servers
     time.timeZone = lib.mkDefault "UTC";
 
     networking = {
@@ -56,8 +37,7 @@
       enableEmergencyMode = false;
 
       settings.Manager = {
-        # Forcefully reboot if the system hangs without progress. No-ops
-        # harmlessly if the host has no hardware/virtual watchdog device.
+        # Forcefully reboot if the system hangs without progress.
         RuntimeWatchdogSec = lib.mkDefault "15s";
         RebootWatchdogSec = lib.mkDefault "30s";
         KExecWatchdogSec = lib.mkDefault "1m";
@@ -68,8 +48,7 @@
       loader = {
         systemd-boot = {
           enable = true;
-          # Small cloud-image ESPs fill up after months of updates; servers
-          # don't need many generations kept around anyway.
+          # Servers don't need many generations kept around.
           configurationLimit = lib.mkDefault 5;
         };
         efi.canTouchEfiVariables = true;
