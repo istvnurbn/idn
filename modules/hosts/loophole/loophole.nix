@@ -11,6 +11,7 @@
       openssh
       shell
       devel
+      deploy-safety
     ];
 
     nixos.security.pki.certificateFiles = [
