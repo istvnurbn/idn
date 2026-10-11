@@ -19,7 +19,6 @@
         "gimp"
         "iina"
         "imageoptim"
-        "musicbrainz-picard"
         "spotify"
       ];
     };
