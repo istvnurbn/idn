@@ -76,6 +76,10 @@
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    nix-plist-manager = {
+      url = "github:sushydev/nix-plist-manager";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/release-26.05";
       inputs = {
