@@ -70,7 +70,7 @@
       ];
     };
 
-    impermanence = {
+    persist = {
       directories = [
         "/etc/ssh"
       ];

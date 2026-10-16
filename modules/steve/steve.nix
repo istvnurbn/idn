@@ -1,6 +1,8 @@
 {den, ...}: {
   den.aspects.steve = {user, ...}: {
     includes = [
+      # Host aspects' homeManager and persistHome reach steve only through this
+      den.batteries.host-aspects
       den.aspects.dotfiles
       den.aspects.xdg-folders
     ];
@@ -34,13 +36,10 @@
       ];
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          "idn"
-        ];
-        files = [];
-      };
+    persistHome = {
+      directories = [
+        "idn"
+      ];
     };
   };
 }

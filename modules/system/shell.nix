@@ -1,5 +1,5 @@
 {
-  den.aspects.shell = {user, ...}: {
+  den.aspects.shell = {
     os = {pkgs, ...}: {
       # Configure zsh as an interactive shell
       programs.zsh.enable = true;
@@ -33,17 +33,15 @@
       ];
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".local/share/atuin"
-          ".local/share/zinit"
-          ".local/share/zoxide"
-        ];
-        files = [
-          ".config/btop/btop.conf"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".local/share/atuin"
+        ".local/share/zinit"
+        ".local/share/zoxide"
+      ];
+      files = [
+        ".config/btop/btop.conf"
+      ];
     };
   };
 }

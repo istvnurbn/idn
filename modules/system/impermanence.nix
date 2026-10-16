@@ -4,17 +4,41 @@
 {
   den,
   inputs,
+  lib,
   ...
-}: {
+}: let
+  # A quirk's value is a list with one entry per aspect that set it
+  merge = entries: {
+    hideMounts = true;
+    directories = lib.unique (lib.concatMap (e: e.directories or []) entries);
+    files = lib.unique (lib.concatMap (e: e.files or []) entries);
+  };
+in {
   flake-file.inputs.impermanence = {
     url = "github:nix-community/impermanence";
     inputs.nixpkgs.follows = "";
     inputs.home-manager.follows = "";
   };
 
-  den.aspects.impermanence = {user, ...}: {
-    # Without this forward the root would be wiped and nothing persisted.
-    includes = [(den.provides.impermanence "/persist")];
+  # Aspects list what they keep: `persist` for system paths, `persistHome`
+  # for paths relative to the user's home. Hosts without impermanence
+  # have no collector, so the lists are simply unused there.
+  den.quirks.persist.description = "System paths kept on /persist";
+  den.quirks.persistHome.description = "Home paths kept on /persist";
+
+  # Hands every aspect's lists to the impermanence module
+  den.aspects.impermanence.collect = {
+    nixos = {persist, ...}: {
+      environment.persistence."/persist" = merge persist;
+    };
+    homeManager = {persistHome, ...}: {
+      home.persistence."/persist" = merge persistHome;
+    };
+  };
+
+  den.aspects.impermanence = {
+    # Without the collector the root would be wiped and nothing persisted
+    includes = [den.aspects.impermanence.collect];
 
     nixos = {
       config,
@@ -83,9 +107,8 @@
       };
     };
 
-    # Default stuff that we want to persist on host/user basis
-    impermanence = {
-      hideMounts = true;
+    # Default stuff that we want to persist on every impermanent host
+    persist = {
       directories = [
         "/var/lib/nixos"
         "/var/lib/systemd/coredump"
@@ -95,18 +118,18 @@
       files = [
         "/etc/machine-id"
       ];
-      # XDG user folders are persisted by the aspect that creates them
-      # (see steve/xdg-folders.nix); only account-baseline entries live here.
-      users.${user.name} = {
-        directories = [
-          "Projects"
-          {
-            directory = ".ssh";
-            mode = "0700";
-          }
-        ];
-        files = [];
-      };
+    };
+
+    # XDG user folders are persisted by the aspect that creates them
+    # (see steve/xdg-folders.nix); only account-baseline entries live here.
+    persistHome = {
+      directories = [
+        "Projects"
+        {
+          directory = ".ssh";
+          mode = "0700";
+        }
+      ];
     };
   };
 }

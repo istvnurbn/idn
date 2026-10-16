@@ -32,7 +32,7 @@
       nixos.users.users.${user.name}.extraGroups = ["docker"];
     };
 
-    impermanence = {
+    persist = {
       directories = [
         "/var/lib/docker"
       ];

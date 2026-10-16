@@ -1,5 +1,5 @@
 {
-  den.aspects.heroic = {user, ...}: {
+  den.aspects.heroic = {
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         heroic
@@ -10,13 +10,11 @@
       ];
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/heroic"
-          ".local/share/umu"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/heroic"
+        ".local/share/umu"
+      ];
     };
   };
 }

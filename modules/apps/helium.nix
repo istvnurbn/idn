@@ -7,7 +7,7 @@
     };
   };
 
-  den.aspects.helium = {user, ...}: {
+  den.aspects.helium = {
     os = {pkgs, ...}: {
       nixpkgs.overlays = [inputs.helium.overlays.default];
 
@@ -23,12 +23,10 @@
       };
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/net.imput.helium"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/net.imput.helium"
+      ];
     };
   };
 }

@@ -148,13 +148,11 @@
       nixos.users.users.${user.name}.extraGroups = ["moonshine"];
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/moonshine" # certs
-          ".local/share/moonshine" # paired clients
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/moonshine" # certs
+        ".local/share/moonshine" # paired clients
+      ];
     };
   };
 }

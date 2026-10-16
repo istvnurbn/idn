@@ -27,7 +27,7 @@
       ];
     };
 
-    impermanence = {
+    persist = {
       directories = [
         "/var/lib/tailscale"
       ];

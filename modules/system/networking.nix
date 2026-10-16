@@ -22,7 +22,7 @@
       };
     };
 
-    impermanence = {
+    persist = {
       directories = [
         "/etc/NetworkManager/system-connections"
       ];

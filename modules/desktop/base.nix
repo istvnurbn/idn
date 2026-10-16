@@ -1,5 +1,5 @@
 {
-  den.aspects.desktop-base = {user, ...}: {
+  den.aspects.desktop-base = {
     os = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         unstable.mcp-nixos
@@ -44,14 +44,12 @@
       };
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/Proton Pass"
-          ".local/share/org.localsend.localsend_app"
-          ".local/share/zed"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/Proton Pass"
+        ".local/share/org.localsend.localsend_app"
+        ".local/share/zed"
+      ];
     };
   };
 }
