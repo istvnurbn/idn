@@ -17,6 +17,9 @@
   # den specific setup
   den = {
     schema.user.classes = ["homeManager"];
+    # Host aspects' homeManager and persistHome reach every user.
+    # Without it impermanence keeps none of a user's home paths.
+    schema.user.includes = [den.batteries.host-aspects];
 
     default = {
       darwin.system.stateVersion = 6;
