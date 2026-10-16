@@ -1,5 +1,5 @@
 {
-  den.aspects.tor = {user, ...}: {
+  den.aspects.tor = {
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         tor-browser
@@ -12,12 +12,10 @@
       ];
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".cache/tor project"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".cache/tor project"
+      ];
     };
   };
 }

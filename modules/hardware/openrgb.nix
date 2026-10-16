@@ -1,5 +1,5 @@
 {
-  den.aspects.openrgb = {user, ...}: {
+  den.aspects.openrgb = {
     nixos = {pkgs, ...}: {
       services.hardware.openrgb = {
         enable = true;
@@ -7,12 +7,10 @@
       };
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/OpenRGB"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/OpenRGB"
+      ];
     };
   };
 }

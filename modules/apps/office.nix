@@ -1,5 +1,5 @@
 {
-  den.aspects.office = {user, ...}: {
+  den.aspects.office = {
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         libreoffice-qt
@@ -13,12 +13,10 @@
       ];
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/libreoffice"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/libreoffice"
+      ];
     };
   };
 }

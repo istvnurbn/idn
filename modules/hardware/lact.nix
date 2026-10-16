@@ -5,7 +5,7 @@
       services.lact.enable = true;
     };
 
-    impermanence = {
+    persist = {
       directories = [
         "/etc/lact"
       ];

@@ -26,7 +26,7 @@
       };
     };
 
-    impermanence = {
+    persist = {
       directories = [
         "/var/lib/flatpak"
       ];

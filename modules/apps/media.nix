@@ -1,5 +1,5 @@
 {
-  den.aspects.media = {user, ...}: {
+  den.aspects.media = {
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         gimp
@@ -23,15 +23,13 @@
       ];
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/GIMP"
-          ".config/MusicBrainz"
-          ".config/vlc"
-          ".var/app/com.jeffser.Nocturne"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/GIMP"
+        ".config/MusicBrainz"
+        ".config/vlc"
+        ".var/app/com.jeffser.Nocturne"
+      ];
     };
   };
 }

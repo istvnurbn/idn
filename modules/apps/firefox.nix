@@ -10,7 +10,7 @@
     };
   };
 
-  den.aspects.firefox = {user, ...}: let
+  den.aspects.firefox = let
     # Shared with the home-manager profile below (provides.to-users.homeManager)
     # so the same policies apply on nixos and darwin alike. The nixos facet
     # layers a KDE-specific extension setting on top via `//` further down.
@@ -86,12 +86,10 @@
       ];
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/mozilla"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/mozilla"
+      ];
     };
 
     provides.to-users.homeManager = {pkgs, ...}: {

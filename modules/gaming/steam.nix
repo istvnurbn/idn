@@ -1,5 +1,5 @@
 {
-  den.aspects.steam = {user, ...}: {
+  den.aspects.steam = {
     nixos = {pkgs, ...}: let
       # Single source of truth for compat tools. Stable names decouple the symlink path from package churn.
       # Using pkg.steamcompattool.name would rename symlinks on every update, orphaning per-game Proton selection.
@@ -54,13 +54,11 @@
       };
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".local/share/Steam"
-          ".cache/protontricks"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".local/share/Steam"
+        ".cache/protontricks"
+      ];
     };
   };
 }

@@ -1,5 +1,5 @@
 {
-  den.aspects.xdg-folders = {user, ...}: {
+  den.aspects.xdg-folders = {
     homeManager = {
       xdg.userDirs = {
         enable = true;
@@ -13,7 +13,7 @@
     };
 
     # The folders created above must survive the root wipe
-    impermanence.users.${user.name} = {
+    persistHome = {
       directories = [
         "Desktop"
         "Documents"

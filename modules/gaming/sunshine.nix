@@ -1,5 +1,5 @@
 {
-  den.aspects.sunshine = {user, ...}: {
+  den.aspects.sunshine = {
     nixos = {
       services.sunshine = {
         enable = true;
@@ -19,12 +19,10 @@
       };
     };
 
-    impermanence = {
-      users.${user.name} = {
-        directories = [
-          ".config/sunshine"
-        ];
-      };
+    persistHome = {
+      directories = [
+        ".config/sunshine"
+      ];
     };
   };
 }
