@@ -7,6 +7,14 @@
   lib,
   ...
 }: let
+  # One aspect's `persist` or `persistHome` value: an attribute set with only
+  # `directories` and `files` lists, so a misspelled name or a plain list
+  # stops evaluation. Not a submodule, which reads "/etc/lact" as a module path.
+  entry =
+    lib.types.addCheck (lib.types.attrsOf (lib.types.listOf lib.types.anything))
+    (e: lib.subtractLists ["directories" "files"] (lib.attrNames e) == [])
+    // {description = "attribute set of `directories` and `files` lists";};
+
   # A quirk's value is a list with one entry per aspect that set it
   merge = entries: {
     hideMounts = true;
@@ -26,13 +34,36 @@ in {
   den.quirks.persist.description = "System paths kept on /persist";
   den.quirks.persistHome.description = "Home paths kept on /persist";
 
-  # Hands every aspect's lists to the impermanence module
+  # Hands every aspect's lists to the impermanence module. The values pass
+  # through a typed option first, so the module system checks each entry.
   den.aspects.impermanence.collect = {
-    nixos = {persist, ...}: {
-      environment.persistence."/persist" = merge persist;
+    nixos = {
+      config,
+      persist,
+      ...
+    }: {
+      options.impermanence.persist = lib.mkOption {
+        type = lib.types.listOf entry;
+        internal = true;
+      };
+      config = {
+        impermanence.persist = persist;
+        environment.persistence."/persist" = merge config.impermanence.persist;
+      };
     };
-    homeManager = {persistHome, ...}: {
-      home.persistence."/persist" = merge persistHome;
+    homeManager = {
+      config,
+      persistHome,
+      ...
+    }: {
+      options.impermanence.persistHome = lib.mkOption {
+        type = lib.types.listOf entry;
+        internal = true;
+      };
+      config = {
+        impermanence.persistHome = persistHome;
+        home.persistence."/persist" = merge config.impermanence.persistHome;
+      };
     };
   };
 
