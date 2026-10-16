@@ -46,6 +46,10 @@ just rollback   # go back a generation
 
 Run `just` to see the full list.
 
+## AI Notice
+
+The idea and the initial design of the work presented here are my own. However, I was assisted by Claude in catching mistakes (numerous and sometimes blatantly obvious) and working through the trickier parts as I'm learning this.
+
 ## License
 
 [MIT](LICENSE)
