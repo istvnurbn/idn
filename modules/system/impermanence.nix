@@ -85,7 +85,8 @@ in {
             set -euo pipefail
 
             mkdir /btrfs_tmp
-            mount ${lib.escapeShellArg root.device} /btrfs_tmp
+            # subvolid=5 is the top level, even if the default subvolume was changed
+            mount -o subvolid=5 ${lib.escapeShellArg root.device} /btrfs_tmp
             mkdir -p /btrfs_tmp/old_roots
 
             if [[ -e /btrfs_tmp/root ]]; then
