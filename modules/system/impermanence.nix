@@ -16,8 +16,25 @@
     # Without this forward the root would be wiped and nothing persisted.
     includes = [(den.provides.impermanence "/persist")];
 
-    nixos = {utils, ...}: {
+    nixos = {
+      config,
+      lib,
+      utils,
+      ...
+    }: let
+      root = config.fileSystems."/";
+      rootDevice = "${utils.escapeSystemdPath root.device}.device";
+      onRootSubvol = lib.elem "subvol=root" root.options || lib.elem "subvol=/root" root.options;
+    in {
       imports = [inputs.impermanence.nixosModules.impermanence];
+
+      # The wipe below recreates the `root` btrfs subvolume, so / has to be it
+      assertions = [
+        {
+          assertion = root.fsType == "btrfs" && onRootSubvol;
+          message = "impermanence: / must be the `root` subvolume of a btrfs disk (see den.provides.disko-btrfs-impermanence-main)";
+        }
+      ];
 
       # Wipe root subvolume on boot, keeping old snapshots for 30 days
       boot.initrd.systemd = {
@@ -32,10 +49,10 @@
           # Should complete before any file systems are mounted
           before = ["sysroot.mount"];
 
-          # Wait for the disk to appear (partlabel comes from disko: disk-<disk>-<part>)
-          requires = ["${utils.escapeSystemdPath "/dev/disk/by-partlabel/disk-main-root"}.device"];
+          # Wait for the disk / lives on to appear
+          requires = [rootDevice];
           after = [
-            "${utils.escapeSystemdPath "/dev/disk/by-partlabel/disk-main-root"}.device"
+            rootDevice
             # Allow hibernation to resume before trying to alter any data
             "local-fs-pre.target"
           ];
@@ -44,7 +61,7 @@
             set -euo pipefail
 
             mkdir /btrfs_tmp
-            mount /dev/disk/by-partlabel/disk-main-root /btrfs_tmp
+            mount ${lib.escapeShellArg root.device} /btrfs_tmp
             mkdir -p /btrfs_tmp/old_roots
 
             if [[ -e /btrfs_tmp/root ]]; then
