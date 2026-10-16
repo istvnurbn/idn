@@ -19,7 +19,6 @@
       boot
       cachyos-kernel
       impermanence
-      (den.provides.impermanence "/persist")
       deploy-safety
 
       # Base
