@@ -4,12 +4,9 @@
   lib,
   inputs,
   ...
-}:
-{
-
+}: {
   flake.packages = lib.genAttrs lib.systems.flakeExposed (
     system:
-
-    den.lib.nh.denPackages { fromFlake = true; } inputs.nixpkgs.legacyPackages.${system}
+      den.lib.nh.denPackages {fromFlake = true;} inputs.nixpkgs.legacyPackages.${system}
   );
 }

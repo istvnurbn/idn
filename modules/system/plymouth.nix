@@ -1,6 +1,6 @@
 {
   den.aspects.plymouth = {
-    nixos = { pkgs, ... }: {
+    nixos = {pkgs, ...}: {
       boot = {
         plymouth = {
           enable = true;
