@@ -1,5 +1,8 @@
-{
+{den, ...}: {
   den.aspects.media = {
+    # services.flatpak.packages below comes from the nix-flatpak module
+    includes = [den.aspects.flatpak];
+
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         gimp
