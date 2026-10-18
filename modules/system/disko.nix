@@ -125,7 +125,6 @@
   };
 
   # Data disk with whole drive btrfs
-  # Parametric provider - takes device path as an argument
   den.aspects.disko-btrfs-data = {
     settings.device = lib.mkOption {
       type = lib.types.str;
