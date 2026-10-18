@@ -17,7 +17,7 @@
 
   # den specific setup
   den = {
-    schema.user.classes = ["homeManager"];
+    schema.user.classes = lib.mkDefault ["homeManager"];
     # Host aspects' homeManager and persistHome reach every user.
     # Without it impermanence keeps none of a user's home paths.
     schema.user.includes = [den.batteries.host-aspects];
