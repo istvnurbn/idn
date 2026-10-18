@@ -5,7 +5,7 @@
   inputs,
   ...
 }: {
-  flake.packages = lib.genAttrs lib.systems.flakeExposed (
+  flake.packages = lib.genAttrs den.systems (
     system:
       den.lib.nh.denPackages {fromFlake = true;} inputs.nixpkgs.legacyPackages.${system}
   );
