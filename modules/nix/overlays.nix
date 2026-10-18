@@ -2,12 +2,12 @@
   flake-file.inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   den.aspects.overlays = {
-    os = {host, ...}: {
+    os = {
       nixpkgs.overlays = [
         (final: prev: {
           unstable = import inputs.nixpkgs-unstable {
-            system = host.system;
-            config.allowUnfree = true;
+            inherit (final.stdenv.hostPlatform) system;
+            inherit (final) config;
           };
         })
       ];
