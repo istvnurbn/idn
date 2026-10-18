@@ -10,7 +10,7 @@
       createHome = true;
     };
 
-    nixos = {pkgs, ...}: let
+    provides.to-hosts.nixos = {pkgs, ...}: let
       avatar = ./dotfiles/face;
 
       accountsServiceUser = pkgs.writeText "accountsservice-${user.name}" ''
