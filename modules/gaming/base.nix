@@ -17,7 +17,7 @@
       ];
 
       # programs.gamemode creates the 'gamemode' group;
-      # the user needs to be a member (see steve.nix).
+      # the user needs to be a member (see provides.to-users below).
       programs.gamemode = {
         enable = true;
         enableRenice = true;
