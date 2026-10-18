@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{
   flake-file.inputs.dtop = {
     url = "github:amir20/dtop";
     inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -6,7 +6,7 @@
   };
 
   den.aspects.docker = {
-    nixos = {pkgs, ...}: {
+    nixos = {inputs', ...}: {
       virtualisation.docker = {
         enable = true;
         storageDriver = "btrfs";
@@ -17,7 +17,7 @@
       };
 
       # dtop to monitor docker
-      environment.systemPackages = with inputs.dtop.packages.${pkgs.stdenv.hostPlatform.system}; [default];
+      environment.systemPackages = [inputs'.dtop.packages.default];
     };
 
     darwin = {pkgs, ...}: {

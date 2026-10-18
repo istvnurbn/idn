@@ -11,7 +11,11 @@
   };
 
   den.aspects.gaming-base = {
-    nixos = {pkgs, ...}: {
+    nixos = {
+      pkgs,
+      inputs',
+      ...
+    }: {
       nixpkgs.overlays = [
         inputs.proton-cachyos.overlays.default
       ];
@@ -50,7 +54,7 @@
       environment.systemPackages = with pkgs; [
         mangohud
         gamescope
-        inputs.scopebuddy.packages.${pkgs.stdenv.hostPlatform.system}.default
+        inputs'.scopebuddy.packages.default
         wineWow64Packages.waylandFull
         protonup-qt
       ];
