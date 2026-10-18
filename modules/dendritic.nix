@@ -53,6 +53,8 @@
         (den.provides.user-shell "zsh")
         # Automatically sets networking.hostName from host name
         den.provides.hostname
+        # flake inputs with the system pre-selected
+        den.provides.inputs'
       ];
     };
   };

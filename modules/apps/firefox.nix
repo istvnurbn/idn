@@ -94,7 +94,7 @@
       ];
     };
 
-    provides.to-users.homeManager = {pkgs, ...}: {
+    provides.to-users.homeManager = {inputs', ...}: {
       programs.firefox = {
         enable = true;
 
@@ -154,7 +154,7 @@
             };
           };
           extensions = {
-            packages = with inputs.nur.legacyPackages.${pkgs.stdenv.hostPlatform.system}.repos.rycee.firefox-addons; [
+            packages = with inputs'.nur.legacyPackages.repos.rycee.firefox-addons; [
               proton-pass
               raindropio
               ublock-origin
