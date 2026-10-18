@@ -56,8 +56,6 @@
       ];
     };
 
-    provides.to-users = {user, ...}: {
-      nixos.users.users.${user.name}.extraGroups = ["gamemode" "uinput"];
-    };
+    provides.to-users.user.extraGroups = ["gamemode" "uinput"];
   };
 }
