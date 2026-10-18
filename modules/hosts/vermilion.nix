@@ -10,10 +10,9 @@
       coolercontrol
       openrgb
       lact
-      # Takes the device id and swap size as an argument
-      # In case you want to hibernate, check the disko.nix file.
-      (den.provides.disko-btrfs-impermanence-main "/dev/disk/by-id/nvme-CT1000T710SSD8_2536530B906D" "48G")
-      (den.provides.disko-btrfs-data "/dev/disk/by-id/nvme-CT2000T710SSD8_2532525EB150")
+      # Disk ids, swap size and resume offset are settings in hosts.nix
+      disko-btrfs-impermanence-main
+      disko-btrfs-data
 
       # System
       boot
@@ -57,11 +56,6 @@
     ];
 
     nixos = {
-      # Enables hibernation from swap file on a btrfs subvol
-      # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
-      boot.resumeDevice = "/dev/disk/by-partlabel/disk-main-root";
-      boot.kernelParams = ["resume_offset=533760"];
-
       boot.initrd.availableKernelModules = [
         "nvme"
         "xhci_pci"
