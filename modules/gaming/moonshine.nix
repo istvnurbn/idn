@@ -144,9 +144,7 @@
       };
     };
 
-    provides.to-users = {user, ...}: {
-      nixos.users.users.${user.name}.extraGroups = ["moonshine"];
-    };
+    provides.to-users.user.extraGroups = ["moonshine"];
 
     persistHome = {
       directories = [
