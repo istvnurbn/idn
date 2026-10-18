@@ -1,6 +1,7 @@
 {
   den,
   inputs,
+  lib,
   ...
 }: {
   flake-file.inputs = {
@@ -10,18 +11,40 @@
     };
   };
 
-  # Default boot drive with impermanence-friendly layout
-  # Parametric provider - takes device path and swap size as an argument
-  den.provides.disko-btrfs-impermanence-main = device: swapSize: {
+  # Default boot drive with impermanence-friendly layout.
+  # Its values are aspect settings, set per host in hosts.nix.
+  den.aspects.disko-btrfs-impermanence-main = {
+    settings = {
+      device = lib.mkOption {
+        type = lib.types.str;
+        example = "/dev/disk/by-id/nvme-...";
+        description = "Boot disk, as a /dev/disk/by-id path";
+      };
+      swapSize = lib.mkOption {
+        type = lib.types.str;
+        example = "48G";
+        description = "Size of /swap/swapfile; at least the RAM size to hibernate";
+      };
+      resumeOffset = lib.mkOption {
+        type = lib.types.nullOr lib.types.ints.unsigned;
+        default = null;
+        description = ''
+          resume_offset of /swap/swapfile, which enables hibernation. Read it
+          after install: sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
+        '';
+      };
+    };
     nixos = {
       host,
       lib,
       ...
-    }: {
+    }: let
+      cfg = host.settings.disko-btrfs-impermanence-main;
+    in {
       imports = [inputs.disko.nixosModules.disko];
 
       disko.devices.disk.main = {
-        inherit device;
+        inherit (cfg) device;
         type = "disk";
         content = {
           type = "gpt";
@@ -75,16 +98,10 @@
                       "noatime"
                     ];
                   };
-                  # If you hibernate, add two bits manually after install:
-                  #
-                  # boot.resumeDevice = "/dev/disk/by-partlabel/disk-main-root";
-                  # boot.kernelParams = [ "resume_offset=<N>" ];
-                  #
-                  # <N> comes from
-                  # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
+                  # To hibernate, set the resumeOffset setting after install
                   "/swap" = {
                     mountpoint = "/swap";
-                    swap.swapfile.size = swapSize; # >= RAM if you hibernate
+                    swap.swapfile.size = cfg.swapSize;
                   };
                 };
               };
@@ -98,17 +115,29 @@
         {
           neededForBoot = true;
         };
+
+      # Hibernate into the swapfile once its offset is known
+      boot = lib.mkIf (cfg.resumeOffset != null) {
+        resumeDevice = "/dev/disk/by-partlabel/disk-main-root";
+        kernelParams = ["resume_offset=${toString cfg.resumeOffset}"];
+      };
     };
   };
 
   # Data disk with whole drive btrfs
   # Parametric provider - takes device path as an argument
-  den.provides.disko-btrfs-data = device: {
-    nixos = {
+  den.aspects.disko-btrfs-data = {
+    settings.device = lib.mkOption {
+      type = lib.types.str;
+      example = "/dev/disk/by-id/nvme-...";
+      description = "Data disk, as a /dev/disk/by-id path";
+    };
+
+    nixos = {host, ...}: {
       imports = [inputs.disko.nixosModules.disko];
 
       disko.devices.disk.data = {
-        inherit device;
+        inherit (host.settings.disko-btrfs-data) device;
         type = "disk";
         content = {
           type = "gpt";

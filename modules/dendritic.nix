@@ -1,6 +1,7 @@
 {
   den,
   inputs,
+  lib,
   ...
 }: {
   # Setup for den
@@ -20,6 +21,19 @@
     # Host aspects' homeManager and persistHome reach every user.
     # Without it impermanence keeps none of a user's home paths.
     schema.user.includes = [den.batteries.host-aspects];
+
+    # Aspects declare typed `settings`; hosts set them in hosts.nix.
+    # See guides/aspect-settings in den's docs.
+    reservedKeys = ["settings"];
+    schema.host.imports = [
+      {
+        options.settings = lib.mkOption {
+          type = import ./_settings-type.nix {inherit den lib;};
+          default = {};
+          description = "Per-aspect typed settings";
+        };
+      }
+    ];
 
     default = {
       darwin.system.stateVersion = 6;
