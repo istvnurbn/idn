@@ -94,12 +94,23 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    openlogi = {
+      url = "github:AprilNEA/OpenLogi";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        rust-overlay.follows = "rust-overlay";
+      };
+    };
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
       inputs = {
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     scopebuddy = {
       url = "github:OpenGamingCollective/ScopeBuddy";

@@ -495,6 +495,29 @@
         "type": "github"
       }
     },
+    "openlogi": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ],
+        "rust-overlay": [
+          "rust-overlay"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792330976,
+        "narHash": "sha256-DQphZm4cEVE2qxdlFaHJwQ7BuiRnkoYy7nJHIqDc+PY=",
+        "owner": "AprilNEA",
+        "repo": "OpenLogi",
+        "rev": "abc815acf9ebb4df06ccc574016bad2c9b4152ee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AprilNEA",
+        "repo": "OpenLogi",
+        "type": "github"
+      }
+    },
     "plasma-manager": {
       "inputs": {
         "home-manager": [
@@ -550,9 +573,31 @@
           "nixpkgs"
         ],
         "nur": "nur",
+        "openlogi": "openlogi",
         "plasma-manager": "plasma-manager",
+        "rust-overlay": "rust-overlay",
         "scopebuddy": "scopebuddy",
         "systems": "systems"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792395246,
+        "narHash": "sha256-SfVFE7TKuByeQRwhVbaVrvTV/lI41AYK9CYSfB+pIis=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "550547cefc67e01a6fd11a09e4096a3c844ca840",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
       }
     },
     "scopebuddy": {
