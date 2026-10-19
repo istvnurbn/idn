@@ -1,8 +1,4 @@
 {inputs, ...}: {
-  flake-file.inputs = {
-    nixpkgs-unstable.follows = "chaotic/nixpkgs";
-  };
-
   den.aspects.overlays = {
     os = {
       nixpkgs.overlays = [
