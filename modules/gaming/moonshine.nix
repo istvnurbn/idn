@@ -1,11 +1,4 @@
 {inputs, ...}: {
-  flake-file.inputs = {
-    moonshine = {
-      url = "github:hgaiser/moonshine";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-  };
-
   den.aspects.moonshine = {
     user,
     host,
@@ -77,24 +70,27 @@
 
       heroicLaunchExe = lib.getExe heroicLaunch;
     in {
-      imports = [inputs.moonshine.nixosModules.default];
+      # Stable 26.05 has no services.moonshine; use the module from the
+      # nixpkgs that pkgs.unstable is built from.
+      imports = ["${inputs.nixpkgs-unstable}/nixos/modules/services/networking/moonshine.nix"];
 
       services.moonshine = {
         enable = true;
 
+        # The module defaults to pkgs.moonshine, which stable 26.05 lacks.
+        package = pkgs.unstable.moonshine;
+
         # The user whose applications you want to stream.
         user = user.name;
-        # Only needed when the user's uid is not declared in your
-        # configuration. Check with `id -u alice`.
-        uid = 1000;
 
-        # Opens the GameStream ports. Only do this on a LAN or VPN-facing
-        # firewall. See Security in the main README.
-        openFirewall = true;
+        # Opens the GameStream ports, plus 5353/udp for mDNS, on these
+        # interfaces only. Only list LAN or VPN-facing interfaces. See
+        # Security in the main README. tailscale0 is already trusted.
+        firewallInterfaces = ["eno1"];
 
         # An idle Moonlight client polls the HTTPS port every 5s, logging a
         # WARN for every dropped TLS probe.
-        logFilter = "moonshine=info,moonshine_core::tls=error";
+        environment.MOONSHINE_LOG = "moonshine=info,moonshine_core::tls=error";
 
         # Everything from the Configuration section of the main README goes
         # here, written as nix instead of TOML.

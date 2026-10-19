@@ -67,10 +67,6 @@
       };
     };
     import-tree.url = "github:denful/import-tree";
-    moonshine = {
-      url = "github:hgaiser/moonshine";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     nix-plist-manager = {
