@@ -27,6 +27,7 @@
     persistHome = {
       directories = [
         ".config/openlogi"
+        ".local/share/openlogi"
       ];
     };
   };
