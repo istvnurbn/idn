@@ -32,6 +32,27 @@
         "type": "github"
       }
     },
+    "chaotic": {
+      "inputs": {
+        "flake-schemas": "flake-schemas",
+        "home-manager": [],
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1792351560,
+        "narHash": "sha256-Sbrc+kSPMxoX3xpuPrWspCAOU5LdTTemjOatbZKpZOk=",
+        "owner": "chaotic-cx",
+        "repo": "nyx",
+        "rev": "3b93149d825d4a8b6cc775d281298b65883e784e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "chaotic-cx",
+        "ref": "nyxpkgs-unstable",
+        "repo": "nyx",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -162,6 +183,20 @@
         "owner": "hercules-ci",
         "repo": "flake-parts",
         "type": "github"
+      }
+    },
+    "flake-schemas": {
+      "locked": {
+        "lastModified": 1780327564,
+        "narHash": "sha256-HiRPtA0spK+Dkgbhz/1zW9glXxNVB+L4Rj2VYmdawb8=",
+        "rev": "6cc9bd98891b1fc6bb2b8cb3277df8bc72799ca6",
+        "revCount": 149,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/DeterminateSystems/flake-schemas/0.5.0/019e83cf-9af3-78b1-ac5b-70e68ad1efe1/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/DeterminateSystems/flake-schemas/%3D0.5.0.tar.gz"
       }
     },
     "flake-utils": {
@@ -315,31 +350,6 @@
         "type": "github"
       }
     },
-    "nix-cachyos-kernel": {
-      "inputs": {
-        "flake-compat": [
-          "flake-compat"
-        ],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1790564970,
-        "narHash": "sha256-ANcKKTLB5oitjAYPp+iWts5clpbowVbDPVvt03P7Hes=",
-        "owner": "xddxdd",
-        "repo": "nix-cachyos-kernel",
-        "rev": "b1332396df6e880d7e3b6b451c6a74132ce8cf66",
-        "type": "github"
-      },
-      "original": {
-        "owner": "xddxdd",
-        "ref": "release",
-        "repo": "nix-cachyos-kernel",
-        "type": "github"
-      }
-    },
     "nix-flatpak": {
       "locked": {
         "lastModified": 1791644268,
@@ -419,18 +429,15 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1790505892,
-        "narHash": "sha256-/pAz2XfqHS//WRn2xRjoqes7Z92qZ0Q1gufZZ3PtuwA=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "545c226a9af7f59fba5c3873f7c6a65e014c8f5f",
-        "type": "github"
+        "lastModified": 1792094642,
+        "narHash": "sha256-LPFRbrCWWyNsdQLO3SX1B/5UMkFK0hfe7bZR6lENvpc=",
+        "rev": "fe13242281a67641c0102cdb1087f0ebe586c7df",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1093333.fe13242281a6/nixexprs.tar.zst"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable-small",
-        "repo": "nixpkgs",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst"
       }
     },
     "nixpkgs-darwin": {
@@ -445,22 +452,6 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixpkgs-26.05-darwin",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-unstable": {
-      "locked": {
-        "lastModified": 1791594108,
-        "narHash": "sha256-XK4KceonkwD8LuMAt/vNrz982mXJM5jeHAxMwsUXXAQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "6510408d147d8c5e6d76043e899e9251756f6a75",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -527,29 +518,10 @@
         "type": "github"
       }
     },
-    "proton-cachyos": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791674147,
-        "narHash": "sha256-PbDnYMgwLGtulCV1MU4FQ6eNgRuJ6wWEfYTYKO6QoZs=",
-        "owner": "powerofthe69",
-        "repo": "proton-cachyos-nix",
-        "rev": "2a85cbf4c9d52a47973baa1a5fb26e4d0e86716f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "powerofthe69",
-        "repo": "proton-cachyos-nix",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "betterfox-userjs": "betterfox-userjs",
+        "chaotic": "chaotic",
         "darwin": "darwin",
         "den": "den",
         "disko": "disko",
@@ -565,7 +537,6 @@
         "impermanence": "impermanence",
         "import-tree": "import-tree",
         "moonshine": "moonshine",
-        "nix-cachyos-kernel": "nix-cachyos-kernel",
         "nix-flatpak": "nix-flatpak",
         "nix-homebrew": "nix-homebrew",
         "nix-plist-manager": "nix-plist-manager",
@@ -574,10 +545,12 @@
         "nixpkgs-lib": [
           "nixpkgs"
         ],
-        "nixpkgs-unstable": "nixpkgs-unstable",
+        "nixpkgs-unstable": [
+          "chaotic",
+          "nixpkgs"
+        ],
         "nur": "nur",
         "plasma-manager": "plasma-manager",
-        "proton-cachyos": "proton-cachyos",
         "scopebuddy": "scopebuddy",
         "systems": "systems"
       }

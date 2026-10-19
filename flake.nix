@@ -7,6 +7,10 @@
 
   inputs = {
     betterfox-userjs.url = "github:istvnurbn/betterfox-userjs-nix";
+    chaotic = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.home-manager.follows = "";
+    };
     darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -67,13 +71,6 @@
       url = "github:hgaiser/moonshine";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    nix-cachyos-kernel = {
-      url = "github:xddxdd/nix-cachyos-kernel/release";
-      inputs = {
-        flake-compat.follows = "flake-compat";
-        flake-parts.follows = "flake-parts";
-      };
-    };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     nix-plist-manager = {
@@ -89,7 +86,7 @@
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-lib.follows = "nixpkgs";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.follows = "chaotic/nixpkgs";
     nur = {
       url = "github:nix-community/NUR";
       inputs = {
@@ -103,10 +100,6 @@
         home-manager.follows = "home-manager";
         nixpkgs.follows = "nixpkgs";
       };
-    };
-    proton-cachyos = {
-      url = "github:powerofthe69/proton-cachyos-nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     scopebuddy = {
       url = "github:OpenGamingCollective/ScopeBuddy";

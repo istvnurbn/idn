@@ -1,15 +1,21 @@
-{
+{den, ...}: {
   den.aspects.steam = {
-    nixos = {pkgs, ...}: let
+    includes = [den.aspects.chaotic];
+
+    nixos = {
+      lib,
+      pkgs,
+      ...
+    }: let
       # Single source of truth for compat tools. Stable names decouple the symlink path from package churn.
       # Using pkg.steamcompattool.name would rename symlinks on every update, orphaning per-game Proton selection.
       compatTools = with pkgs; [
         {
-          pkg = proton-ge-bin;
+          pkg = unstable.proton-ge-bin;
           name = "GE-Proton";
         }
         {
-          pkg = proton-cachyos;
+          pkg = proton-cachyos_x86_64_v3;
           name = "Proton-CachyOS";
         }
       ];
@@ -38,7 +44,7 @@
         mkCompatLink = {
           pkg,
           name,
-        }: "L+ ${compatToolDir}/${name} - - - - ${pkg.steamcompattool}";
+        }: "L+ ${compatToolDir}/${name} - - - - ${lib.getOutput "steamcompattool" pkg}";
       in {
         enable = true;
         rules =
