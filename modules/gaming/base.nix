@@ -6,6 +6,7 @@
 
   den.aspects.gaming-base = {
     nixos = {
+      config,
       pkgs,
       inputs',
       ...
@@ -41,10 +42,13 @@
         steam-devices-udev-rules
       ];
 
+      # Hosts choose the package; vermilion sets Nyx's gamescope_git.
+      programs.gamescope.enable = true;
+
       environment.systemPackages = with pkgs; [
         mangohud
-        gamescope_git
-        inputs'.scopebuddy.packages.default
+        # scb prefixes its own gamescope onto PATH; hand it the host's choice instead.
+        (inputs'.scopebuddy.packages.default.override {gamescope = config.programs.gamescope.package;})
         wineWow64Packages.waylandFull
         protonup-qt
       ];

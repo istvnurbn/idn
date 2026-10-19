@@ -73,6 +73,9 @@
       # Disable printing
       services.printing.enable = false;
 
+      # Wire gamescope through the host
+      programs.gamescope.package = pkgs.gamescope_git;
+
       services.hardware.openrgb.motherboard = "amd";
 
       # GPU index/PCI address specific to this machine's hardware layout.
