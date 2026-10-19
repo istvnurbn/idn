@@ -13,13 +13,21 @@
     };
   };
 
-  den.aspects.openlogi.nixos = {
-    imports = [inputs.openlogi.nixosModules.default];
+  den.aspects.openlogi = {
+    nixos = {
+      imports = [inputs.openlogi.nixosModules.default];
 
-    programs.openlogi = {
-      enable = true;
-      # Starts openlogi-agent with graphical-session.target by default.
-      launchAtLogin = true;
+      programs.openlogi = {
+        enable = true;
+        # Starts openlogi-agent with graphical-session.target by default.
+        launchAtLogin = true;
+      };
+    };
+
+    persistHome = {
+      directories = [
+        ".config/openlogi"
+      ];
     };
   };
 }
