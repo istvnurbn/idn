@@ -7,5 +7,11 @@
         coolercontrol.coolercontrol-gui
       ];
     };
+
+    persist = {
+      directories = [
+        "/etc/coolercontrol"
+      ];
+    };
   };
 }
