@@ -25,6 +25,9 @@
           opencl.enable = true;
         };
       };
+
+      # radv 26.1 on RDNA4: non-conformance notice is expected, not a bug
+      environment.sessionVariables.MESA_VK_IGNORE_CONFORMANCE_WARNING = "1";
     };
   };
 }
