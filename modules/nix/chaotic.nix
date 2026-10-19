@@ -1,7 +1,11 @@
 {inputs, ...}: {
-  flake-file.inputs.chaotic = {
-    url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    inputs.home-manager.follows = "";
+  flake-file.inputs = {
+    chaotic = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.home-manager.follows = "";
+    };
+    # Follow Nyx's pin
+    nixpkgs-unstable.follows = "chaotic/nixpkgs";
   };
 
   # Include this wherever Nyx packages are used; Den dedupes it.
