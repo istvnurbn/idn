@@ -1,13 +1,7 @@
-{inputs, ...}: {
-  flake-file.inputs = {
-    proton-cachyos = {
-      url = "github:powerofthe69/proton-cachyos-nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    scopebuddy = {
-      url = "github:OpenGamingCollective/ScopeBuddy";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+{
+  flake-file.inputs.scopebuddy = {
+    url = "github:OpenGamingCollective/ScopeBuddy";
+    inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
   den.aspects.gaming-base = {
@@ -16,10 +10,6 @@
       inputs',
       ...
     }: {
-      nixpkgs.overlays = [
-        inputs.proton-cachyos.overlays.default
-      ];
-
       # programs.gamemode creates the 'gamemode' group;
       # the user needs to be a member (see provides.to-users below).
       programs.gamemode = {
@@ -53,7 +43,7 @@
 
       environment.systemPackages = with pkgs; [
         mangohud
-        gamescope
+        gamescope_git
         inputs'.scopebuddy.packages.default
         wineWow64Packages.waylandFull
         protonup-qt

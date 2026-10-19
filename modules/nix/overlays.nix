@@ -1,5 +1,7 @@
 {inputs, ...}: {
-  flake-file.inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+  flake-file.inputs = {
+    nixpkgs-unstable.follows = "chaotic/nixpkgs";
+  };
 
   den.aspects.overlays = {
     os = {

@@ -16,13 +16,13 @@
 
       # System
       boot
-      cachyos-kernel
       impermanence
       deploy-safety
 
       # Base
       nix
       overlays
+      chaotic
       networking
       avahi
       locale
@@ -55,15 +55,20 @@
       moonshine
     ];
 
-    nixos = {
-      boot.initrd.availableKernelModules = [
-        "nvme"
-        "xhci_pci"
-        "ahci"
-        "usb_storage"
-        "usbhid"
-        "sd_mod"
-      ];
+    nixos = {pkgs, ...}: {
+      boot = {
+        kernelPackages = pkgs.linuxPackages_cachyos-lto-znver4;
+        kernelModules = ["ntsync"];
+
+        initrd.availableKernelModules = [
+          "nvme"
+          "xhci_pci"
+          "ahci"
+          "usb_storage"
+          "usbhid"
+          "sd_mod"
+        ];
+      };
 
       # Disable printing
       services.printing.enable = false;
