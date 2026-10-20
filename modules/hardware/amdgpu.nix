@@ -28,6 +28,14 @@
 
       # radv 26.1 on RDNA4: non-conformance notice is expected, not a bug
       environment.sessionVariables.MESA_VK_IGNORE_CONFORMANCE_WARNING = "1";
+
+      # GameMode GPU tweaks for AMD cards; inert unless gaming-base enables
+      # gamemode. gpu_device (which GPU index to target) depends on the
+      # host's GPU layout, so hosts set it, e.g. hosts/vermilion.nix.
+      programs.gamemode.settings.gpu = {
+        apply_gpu_optimisations = "accept-responsibility";
+        amd_performance_level = "high";
+      };
     };
   };
 }

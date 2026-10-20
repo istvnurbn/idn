@@ -21,13 +21,6 @@
             softrealtime = "auto";
             renice = 10;
           };
-          gpu = {
-            apply_gpu_optimisations = "accept-responsibility";
-            amd_performance_level = "high";
-            # gpu_device (which GPU index to target) depends on the host's
-            # GPU layout; set programs.gamemode.settings.gpu.gpu_device
-            # per-host, e.g. in hosts/vermilion.nix.
-          };
         };
       };
 

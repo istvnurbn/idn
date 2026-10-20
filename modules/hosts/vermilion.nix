@@ -80,7 +80,7 @@
       services.hardware.openrgb.motherboard = "amd";
 
       # GPU index/PCI address specific to this machine's hardware layout.
-      # See gaming/base.nix and gaming/moonshine.nix.
+      # See hardware/amdgpu.nix and gaming/moonshine.nix.
       programs.gamemode.settings.gpu.gpu_device = 1;
       services.moonshine.settings.compositor.gpu = "0000:03:00.0";
     };
