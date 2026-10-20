@@ -3,6 +3,8 @@
     includes = [
       den.aspects.dotfiles
       den.aspects.xdg-folders
+      (den.lib.policy.when ({host, ...}: host.hasAspect den.aspects.firefox) den.aspects.steve._.firefox-settings)
+      (den.lib.policy.when ({host, ...}: host.hasAspect den.aspects.plasma) den.aspects.steve._.plasma-settings)
     ];
 
     user = {
