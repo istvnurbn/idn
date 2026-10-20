@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  inputs,
+  den,
+  ...
+}: {
   den.aspects.moonshine = {
     user,
     host,
@@ -73,6 +77,14 @@
       # Stable 26.05 has no services.moonshine; use the module from the
       # nixpkgs that pkgs.unstable is built from.
       imports = ["${inputs.nixpkgs-unstable}/nixos/modules/services/networking/moonshine.nix"];
+
+      # sunshine and moonshine would fight over the same ports
+      assertions = [
+        {
+          assertion = !(host.hasAspect den.aspects.sunshine);
+          message = "moonshine: the host also includes sunshine; keep only one";
+        }
+      ];
 
       services.moonshine = {
         enable = true;
