@@ -21,7 +21,8 @@
 
       # Reduce kernel info leakage to unprivileged processes.
       "kernel.dmesg_restrict" = lib.mkDefault 1;
-      "kernel.kptr_restrict" = lib.mkDefault 2;
+      # nixpkgs sets mkDefault 1 for this one, so a plain mkDefault would clash
+      "kernel.kptr_restrict" = lib.mkOverride 999 2;
     };
 
     security.protectKernelImage = true;

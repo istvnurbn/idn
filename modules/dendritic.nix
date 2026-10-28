@@ -39,7 +39,8 @@
       darwin.system.stateVersion = 6;
       homeManager.home.stateVersion = "26.05";
       nixos = {
-        system.stateVersion = "26.05";
+        # Hosts installed on a later release override this in their aspect
+        system.stateVersion = lib.mkDefault "26.05";
         # Declarative user management
         users.mutableUsers = false;
       };

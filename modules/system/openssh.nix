@@ -1,9 +1,5 @@
-{den, ...}: {
-  den.aspects.openssh = {
-    host,
-    user,
-    ...
-  }: {
+{
+  den.aspects.openssh = {user, ...}: {
     nixos = {lib, ...}: {
       # Enable the OpenSSH daemon
       services.openssh = {
@@ -35,26 +31,6 @@
           # Avoid a TOFU prompt on the first SSH-based git clone from a fresh host.
           "github.com".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
         };
-
-        # Default host keys, rooted under /persist when the impermanence
-        # aspect is present so they survive the root wipe.
-        hostKeys = let
-          dir =
-            if host.hasAspect den.aspects.impermanence
-            then "/persist/etc/ssh"
-            else "/etc/ssh";
-        in [
-          {
-            path = "${dir}/ssh_host_ed25519_key";
-            type = "ed25519";
-          }
-          {
-            bits = 4096;
-            openSSHFormat = true;
-            path = "${dir}/ssh_host_rsa_key";
-            type = "rsa";
-          }
-        ];
       };
 
       users.users.${user.name}.openssh.authorizedKeys.keys = [
@@ -70,9 +46,14 @@
       ];
     };
 
+    # Only the host keys: NixOS rewrites the rest of /etc/ssh on every boot,
+    # and a persisted copy would hide it.
     persist = {
-      directories = [
-        "/etc/ssh"
+      files = [
+        "/etc/ssh/ssh_host_ed25519_key"
+        "/etc/ssh/ssh_host_ed25519_key.pub"
+        "/etc/ssh/ssh_host_rsa_key"
+        "/etc/ssh/ssh_host_rsa_key.pub"
       ];
     };
   };
