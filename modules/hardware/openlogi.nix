@@ -5,7 +5,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     openlogi = {
-      url = "github:AprilNEA/OpenLogi";
+      url = "github:AprilNEA/OpenLogi?dir=packaging";
       inputs = {
         nixpkgs.follows = "nixpkgs-unstable";
         rust-overlay.follows = "rust-overlay";
