@@ -34,7 +34,7 @@ test *args:
 # Build the new configuration and make it the boot default
 [linux]
 boot *args:
-    nh os build {{ args }}
+    nh os boot {{ args }}
 
 # Build and activate the new configuration, and make it the boot default
 [linux]
