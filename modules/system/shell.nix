@@ -11,6 +11,7 @@
         curl
         fastfetch
         fzf
+        git
         just
         mc
         mmv
