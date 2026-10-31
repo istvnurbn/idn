@@ -41,10 +41,9 @@ setopt hist_find_no_dups
 zstyle :prompt:pure:git:stash show yes
 zstyle :prompt:pure:environment:nix-shell show yes
 
-# nix shell cue: `nix shell` sets no marker, but it puts /nix/store/*/bin on PATH
-if (( $path[(I)/nix/store/*/bin] )); then
-  prompt_pure_precustom() { psvar[22]='[nix shell]' }
-fi
+# nix shell cue: mark shells started via `nix shell`, show [nix shell] in Pure
+nix() { [[ $1 == shell ]] && local -x NIX_SHELL_CUE=1; command nix "$@" }
+[[ -n $NIX_SHELL_CUE ]] && prompt_pure_precustom() { psvar[22]='[nix shell]' }
 zstyle :prompt:pure:custom:prefix color cyan
 
 # Completion styling
