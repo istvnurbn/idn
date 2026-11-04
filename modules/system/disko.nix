@@ -40,6 +40,21 @@
       ...
     }: let
       cfg = host.settings.disko-btrfs-impermanence-main;
+
+      # With the `luks` aspect on the host, the btrfs root sits inside LUKS2.
+      # The partition keeps its name, so it stays /dev/disk/by-partlabel/disk-main-root.
+      encrypted = host.hasAspect den.aspects.luks;
+      maybeLuks = content:
+        if encrypted
+        then {
+          type = "luks";
+          # Opens as /dev/mapper/crypted
+          name = "crypted";
+          # Pass TRIM through to the SSD; only reveals which blocks are unused
+          settings.allowDiscards = true;
+          inherit content;
+        }
+        else content;
     in {
       imports = [inputs.disko.nixosModules.disko];
 
@@ -64,7 +79,7 @@
             root = {
               priority = 2;
               size = "100%";
-              content = {
+              content = maybeLuks {
                 type = "btrfs";
                 # force-overwrite any existing fs and setting nixos as label
                 extraArgs = [
@@ -118,7 +133,11 @@
 
       # Hibernate into the swapfile once its offset is known
       boot = lib.mkIf (cfg.resumeOffset != null) {
-        resumeDevice = "/dev/disk/by-partlabel/disk-main-root";
+        # The device btrfs is on: the opened LUKS volume when encrypted
+        resumeDevice =
+          if encrypted
+          then "/dev/mapper/crypted"
+          else "/dev/disk/by-partlabel/disk-main-root";
         kernelParams = ["resume_offset=${toString cfg.resumeOffset}"];
       };
     };
@@ -132,7 +151,30 @@
       description = "Data disk, as a /dev/disk/by-id path";
     };
 
-    nixos = {host, ...}: {
+    nixos = {
+      host,
+      lib,
+      ...
+    }: let
+      # With the `luks` aspect on the host, this disk is encrypted too. It opens
+      # in stage 2 with a keyfile on the encrypted root, so whatever unlocked
+      # root (TPM, console or SSH) unlocks it as well, without a second prompt.
+      encrypted = host.hasAspect den.aspects.luks;
+      keyFile =
+        if host.hasAspect den.aspects.impermanence
+        then "/persist/etc/secrets/data.key"
+        else "/etc/secrets/data.key";
+      maybeLuks = content:
+        if encrypted
+        then {
+          type = "luks";
+          # Opens as /dev/mapper/data, from /etc/crypttab below
+          name = "data";
+          initrdUnlock = false;
+          inherit content;
+        }
+        else content;
+    in {
       imports = [inputs.disko.nixosModules.disko];
 
       disko.devices.disk.data = {
@@ -143,7 +185,7 @@
           partitions = {
             data = {
               size = "100%";
-              content = {
+              content = maybeLuks {
                 type = "btrfs";
                 extraArgs = [
                   "-L"
@@ -151,14 +193,24 @@
                   "-f"
                 ];
                 mountpoint = "/mnt/data";
-                mountOptions = [
-                  "compress=zstd"
-                  "noatime"
-                ];
+                mountOptions =
+                  [
+                    "compress=zstd"
+                    "noatime"
+                  ]
+                  # A missing key or disk shouldn't stop the boot
+                  ++ lib.optional encrypted "nofail";
               };
             };
           };
         };
+      };
+
+      # The keyfile is made once, at install time (see the primer's README)
+      environment.etc.crypttab = lib.mkIf encrypted {
+        text = ''
+          data /dev/disk/by-partlabel/disk-data-data ${keyFile} luks,discard,nofail
+        '';
       };
     };
   };

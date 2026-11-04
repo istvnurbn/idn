@@ -20,8 +20,6 @@
       };
 
       services.xserver.xkb.layout = "hu";
-
-      console.keyMap = "hu";
     };
   };
 }

@@ -15,6 +15,17 @@
     };
   };
 
+  # Throwaway VM for rehearsing vermilion's install (see hosts/understudy.nix).
+  # Remove it, and that file, once vermilion runs encrypted.
+  den.hosts.x86_64-linux.understudy = {
+    users.steve = {};
+    settings.disko-btrfs-impermanence-main = {
+      device = "/dev/disk/by-id/virtio-understudy";
+      swapSize = "4G";
+    };
+    settings.disko-btrfs-data.device = "/dev/disk/by-id/virtio-understudy-data";
+  };
+
   # NixOS-WSL hosts
   den.hosts.x86_64-linux.loophole = {
     wsl.enable = true;

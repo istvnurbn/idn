@@ -43,6 +43,9 @@
         system.stateVersion = lib.mkDefault "26.05";
         # Declarative user management
         users.mutableUsers = false;
+        # Hungarian keyboard on every console, including the initrd's
+        # passphrase prompt and VM windows
+        console.keyMap = "hu";
       };
 
       includes = [

@@ -68,6 +68,8 @@
           "usb_storage"
           "usbhid"
           "sd_mod"
+          # Wired NIC, for the initrd's SSH fallback (luks-ssh-unlock)
+          "igc"
         ];
       };
 

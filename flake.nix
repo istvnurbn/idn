@@ -3,7 +3,7 @@
 {
   description = "iDN - istvnurbn's dendritic nixconfig";
 
-  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
+  outputs = inputs: inputs.flake-parts.lib.mkFlake {inherit inputs;} (inputs.import-tree ./modules);
 
   inputs = {
     betterfox-userjs.url = "github:istvnurbn/betterfox-userjs-nix";
@@ -67,6 +67,14 @@
       };
     };
     import-tree.url = "github:denful/import-tree";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.2.0";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        pre-commit.follows = "";
+        rust-overlay.follows = "rust-overlay";
+      };
+    };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     nix-plist-manager = {
