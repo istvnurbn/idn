@@ -30,5 +30,7 @@
       # Run `nix run .#write-flake` or `just write` to regenerate it.
     '';
     outputs = "dendritic";
+    # Format flake.nix like the rest of the repo (flake-file defaults to nixfmt)
+    formatter = pkgs: pkgs.alejandra;
   };
 }
