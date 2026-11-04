@@ -11,7 +11,9 @@
           PermitRootLogin = "no";
           AllowUsers = [user.name];
           MaxAuthTries = 3;
-          PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
+          # invaliduser covers names outside AllowUsers (root, admin, ...), which
+          # sshd doesn't count as authfail
+          PerSourcePenalties = "crash:3600s authfail:3600s invaliduser:3600s max:86400s";
           X11Forwarding = false;
           # Skip slow/unreliable reverse-DNS lookups on connect
           UseDns = false;
