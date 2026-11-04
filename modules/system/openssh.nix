@@ -14,6 +14,9 @@
           # invaliduser covers names outside AllowUsers (root, admin, ...), which
           # sshd doesn't count as authfail
           PerSourcePenalties = "crash:3600s authfail:3600s invaliduser:3600s max:86400s";
+          # Never lock out our own devices on the tailnet (Tailscale's IPv4 and
+          # IPv6 ranges)
+          PerSourcePenaltyExemptList = "100.64.0.0/10,fd7a:115c:a1e0::/48";
           X11Forwarding = false;
           # Skip slow/unreliable reverse-DNS lookups on connect
           UseDns = false;
