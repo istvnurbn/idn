@@ -4,6 +4,8 @@
     signingkey = ~/.ssh/id_ed25519.pub
 [init]
     defaultBranch = main
+[fetch]
+	prune = true
 [push]
 	followTags = true
 	autoSetupRemote = true
