@@ -52,6 +52,7 @@ zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
 zstyle ":completion:*" menu yes select
 zstyle ":fzf-tab:complete:cd:*" fzf-preview "ls --color $realpath"
 zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview "ls --color $realpath"
+zstyle ':fzf-tab:*' fzf-bindings 'tab:accept'
 
 # Aliases
 alias ls="ls -h --group-directories-first --color=auto"
