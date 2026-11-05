@@ -47,13 +47,6 @@
           "/System/Applications/Photos.app"
           "/Applications/Ghostty.app"
         ];
-        trackpad = {
-          # Enable tap to click
-          Clicking = true;
-
-          # Disable tap to drag
-          Dragging = false;
-        };
       };
     };
   };

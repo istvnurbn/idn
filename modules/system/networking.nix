@@ -18,7 +18,13 @@
         computerName = host.name;
         localHostName = host.name;
         # Enable application firewall
-        applicationFirewall.enable = true;
+        applicationFirewall = {
+          enable = true;
+          allowSigned = true;
+          allowSignedApp = true;
+          blockAllIncoming = false;
+          enableStealthMode = false;
+        };
       };
     };
 
