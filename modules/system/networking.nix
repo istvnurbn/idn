@@ -30,6 +30,9 @@
     persist = {
       directories = [
         "/etc/NetworkManager/system-connections"
+        # secret_key (the seed for stable MAC and IPv6 addresses), DHCP leases
+        # and timestamps; without it every boot looks like a new machine
+        "/var/lib/NetworkManager"
       ];
     };
   };
