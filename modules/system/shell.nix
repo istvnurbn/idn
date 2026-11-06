@@ -2,7 +2,11 @@
   den.aspects.shell = {
     os = {pkgs, ...}: {
       # Configure zsh as an interactive shell
-      programs.zsh.enable = true;
+      programs.zsh = {
+        enable = true;
+        enableGlobalCompInit = false; # ~/.zshrc runs compinit itself (deferred, via zinit)
+        promptInit = ""; # skip the default `prompt suse`; Pure replaces it
+      };
 
       environment.systemPackages = with pkgs; [
         atuin

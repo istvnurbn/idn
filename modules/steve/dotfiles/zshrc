@@ -1,65 +1,78 @@
-# Activating zinit
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-source "${ZINIT_HOME}/zinit.zsh"
+# zinit
+ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+if [[ ! -d $ZINIT_HOME/.git ]]; then
+  mkdir -p "${ZINIT_HOME:h}"
+  git clone --depth=1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+source "$ZINIT_HOME/zinit.zsh"
 
-# Add in zsh plugins
-zinit light Aloxaf/fzf-tab
+# Own dump file: /etc/zshrc (NixOS, nix-darwin, Ubuntu) may already have run
+# compinit with a shorter $fpath into ~/.zcompdump, hiding zinit's completions.
+ZINIT[ZCOMPDUMP_PATH]="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+[[ -d ${ZINIT[ZCOMPDUMP_PATH]:h} ]] || mkdir -p "${ZINIT[ZCOMPDUMP_PATH]:h}"
+# No -C: rescan so newly installed completions get picked up. -i: never stop
+# to ask about insecure dirs. compinit is deferred, so this costs no startup time.
+ZINIT[COMPINIT_OPTS]=-i
+
+# compinit runs deferred: queue compdef calls made before it (zoxide) for zicdreplay
+(( $+functions[zicompdef] )) && compdef() { zicompdef "$@"; }
+
+# plugins (turbo: loaded right after the first prompt)
+# Order: compinit -> fzf-tab -> widget wrappers (syntax highlighting, autosuggestions)
 zinit wait lucid for \
- atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-    zdharma-continuum/fast-syntax-highlighting \
- blockf \
+  atinit"zicompinit; zicdreplay" \
+    Aloxaf/fzf-tab \
+  zdharma-continuum/fast-syntax-highlighting \
+  blockf \
     zsh-users/zsh-completions \
- atload"!_zsh_autosuggest_start" \
+  atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
-# Keybindings
-bindkey "^[[C" forward-char
-bindkey "^E" forward-word
-bindkey "^[[D" backward-char
-bindkey "^A" backward-word
-
-# Load pure theme
-zinit ice pick"async.zsh" src"pure.zsh" # with zsh-async library that's bundled with it.
+# prompt: Pure
+zinit ice pick"async.zsh" src"pure.zsh"
 zinit light sindresorhus/pure
 
-# History options
-HISTSIZE=5000
+zstyle ':prompt:pure:git:stash' show yes
+zstyle ':prompt:pure:custom:prefix' color cyan
+
+# Pure shows nix-shell/nix develop natively (IN_NIX_SHELL); `nix shell` sets
+# nothing, so mark it and render [nix shell] through Pure's custom prefix.
+nix() {
+  [[ $1 == shell ]] && local -x NIX_SHELL_CUE=1
+  command nix "$@"
+}
+[[ -n $NIX_SHELL_CUE ]] && prompt_pure_precustom() { psvar[22]='[nix shell]'; }
+
+# keybindings
+bindkey -e                       # zsh picks vi mode if $EDITOR/$VISUAL contains "vi"
+bindkey '^A' backward-word       # your remap (default: beginning-of-line)
+bindkey '^E' forward-word        # also accepts an autosuggestion word by word
+bindkey '^[[1;5D' backward-word  # Ctrl+Left
+bindkey '^[[1;5C' forward-word   # Ctrl+Right
+
+# history: zsh's own fallback, not persisted; atuin keeps the real history
 HISTFILE=~/.zsh_history
+HISTSIZE=5000
 SAVEHIST=$HISTSIZE
-HISTDUP=erase
-setopt appendhistory
-setopt sharehistory
-setopt hist_ignore_space
-setopt hist_ignore_all_dups
-setopt hist_save_no_dups
-setopt hist_ignore_dups
-setopt hist_find_no_dups
+setopt share_history hist_ignore_space hist_ignore_all_dups hist_save_no_dups hist_find_no_dups
 
-# pure styling
-zstyle :prompt:pure:git:stash show yes
-zstyle :prompt:pure:environment:nix-shell show yes
-
-# nix shell cue: mark shells started via `nix shell`, show [nix shell] in Pure
-nix() { [[ $1 == shell ]] && local -x NIX_SHELL_CUE=1; command nix "$@" }
-[[ -n $NIX_SHELL_CUE ]] && prompt_pure_precustom() { psvar[22]='[nix shell]' }
-zstyle :prompt:pure:custom:prefix color cyan
-
-# Completion styling
-zstyle ":completion:*" matcher-list "m:{a-z}={A-Za-z}"
-zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
-zstyle ":completion:*" menu yes select
-zstyle ":fzf-tab:complete:cd:*" fzf-preview "ls --color $realpath"
-zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview "ls --color $realpath"
+# completion styling
+# smart-case prefix match first, then smart-case substring match as fallback
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'm:{a-z}={A-Za-z} l:|=* r:|=*'
+zstyle ':completion:*' menu no                     # fzf-tab draws the menu
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '[%d]'  # group headers in fzf-tab
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+# single quotes: $realpath must expand when fzf-tab runs, not now
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color=always -- "$realpath"'
 zstyle ':fzf-tab:*' fzf-bindings 'tab:accept'
 
-# Aliases
-alias ls="ls -h --group-directories-first --color=auto"
-alias mc="mc --nosubshell"
-alias cat="bat --paging=never"
+# aliases
+alias ls='ls -h --group-directories-first --color=auto'
+alias mc='mc --nosubshell'
+(( $+commands[bat] )) && alias cat='bat --paging=never'
 
-# Shell integrations
-eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
-eval "$(atuin init zsh)"
+# integrations (keep atuin after fzf: both bind Ctrl+R)
+(( $+commands[fzf] ))    && source <(fzf --zsh)
+(( $+commands[zoxide] )) && eval "$(zoxide init --cmd cd zsh)"
+(( $+commands[atuin] ))  && eval "$(atuin init zsh)"
