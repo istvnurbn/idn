@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{
   den.aspects.nix = {
     os = {pkgs, ...}: {
       nix = {
@@ -25,8 +25,11 @@
 
           commit-lock-file-summary = "chore: update flake.lock";
 
-          # Nix automatically detects files in the store that have identical contents, and replaces them with hard links
-          auto-optimise-store = !pkgs.stdenv.hostPlatform.isDarwin;
+          # From https://jackson.dev/post/nix-reasonable-defaults/
+          connect-timeout = 5;
+          min-free = 128000000;
+          max-free = 1000000000;
+          fallback = true;
 
           # List of binary cache URLs used to obtain pre-built binaries of Nix packages
           substituters = [
@@ -40,16 +43,10 @@
           ];
         };
 
-        nixPath = ["nixpkgs=${inputs.nixpkgs}"];
-
-        # From https://jackson.dev/post/nix-reasonable-defaults/
+        # Hard-links identical files in the store on a schedule. One optimiser
+        # for both OSes: nix-darwin refuses auto-optimise-store on Nix
+        # versions where it can corrupt the store.
         optimise.automatic = true;
-        extraOptions = ''
-          connect-timeout = 5
-          min-free = 128000000
-          max-free = 1000000000
-          fallback = true
-        '';
       };
 
       nixpkgs.config = {
