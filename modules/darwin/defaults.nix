@@ -93,9 +93,6 @@
 
           # Make icons of hidden applications tranclucent
           showhidden = true;
-
-          # Disable the bottom right hot corner (Quick Note by default)
-          wvous-br-corner = 1;
         };
 
         finder = {

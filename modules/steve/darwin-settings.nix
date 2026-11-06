@@ -110,40 +110,9 @@
               showSuggestedAndRecentAppsInDock = false;
               size = 64;
             };
-            hotCorners = {
-              bottomLeft = {
-                modifiers = {
-                  command = false;
-                  control = false;
-                  option = false;
-                  shift = false;
-                };
-              };
-              bottomRight = {
-                modifiers = {
-                  command = false;
-                  control = false;
-                  option = false;
-                  shift = false;
-                };
-              };
-              topLeft = {
-                modifiers = {
-                  command = false;
-                  control = false;
-                  option = false;
-                  shift = false;
-                };
-              };
-              topRight = {
-                modifiers = {
-                  command = false;
-                  control = false;
-                  option = false;
-                  shift = false;
-                };
-              };
-            };
+            # Disable the bottom right hot corner (Quick Note by default); the
+            # other corners are left to macOS
+            hotCorners.bottomRight.action = "-";
             missionControl = {
               automaticallyRearrangeSpacesBasedOnMostRecentUse = false;
               shortcuts = {
