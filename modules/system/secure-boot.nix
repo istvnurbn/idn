@@ -17,11 +17,7 @@
 #          --tpm2-pcrs=7+15:sha256=0000000000000000000000000000000000000000000000000000000000000000
 #   A dbx or firmware update changes PCR 7: type the passphrase once, then
 #   repeat step 3 with --wipe-slot=tpm2.
-{
-  den,
-  inputs,
-  ...
-}: {
+{inputs, ...}: {
   flake-file.inputs.lanzaboote = {
     url = "github:nix-community/lanzaboote/v1.2.0";
     inputs = {
@@ -34,7 +30,6 @@
 
   den.aspects.secure-boot = {
     nixos = {
-      host,
       lib,
       pkgs,
       ...
@@ -54,12 +49,8 @@
         autoEnrollKeys.enable = true;
       };
 
-      # Try the TPM first, then measure the volume key into PCR 15. Sealing
-      # to an empty PCR 15 stops a swapped-in look-alike partition from
-      # getting the real key out of the TPM. Name from disko.nix.
-      boot.initrd.luks.devices = lib.mkIf (host.hasAspect den.aspects.luks) {
-        crypted.crypttabExtraOpts = ["tpm2-device=auto" "tpm2-measure-pcr=yes"];
-      };
+      # luks.nix turns on TPM unlock for the encrypted root when this aspect
+      # is on the host
 
       environment.systemPackages = [pkgs.sbctl];
     };
