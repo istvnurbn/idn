@@ -7,6 +7,14 @@
       };
     };
 
+    # The SDK server runs as a system service (StateDirectory=OpenRGB), so its
+    # profiles and settings live here, not in the home directory
+    persist = {
+      directories = [
+        "/var/lib/OpenRGB"
+      ];
+    };
+
     persistHome = {
       directories = [
         ".config/OpenRGB"
