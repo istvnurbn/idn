@@ -1,4 +1,6 @@
-# Most flake inputs are declared here so flake-file can regenerate flake.nix.
+# Inputs shared by many aspects (nixpkgs, home-manager, flake plumbing) are
+# declared here; most others sit next to the aspect that uses them. flake-file
+# collects them all to regenerate flake.nix.
 # Run `nix run .#write-flake` or `just write` after adding or changing any input.
 {
   flake-file = {

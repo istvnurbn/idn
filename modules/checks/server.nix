@@ -70,7 +70,8 @@
       '';
     };
 
-  # What every server shares: loophole's base aspects plus server-base
+  # What every server shares: the planned server base, which is server-base
+  # plus the common aspects except devel. No real server host exists yet.
   shared = with den.aspects; [server-base nix overlays sudo openssh shell deploy-safety];
 in {
   den.hosts.x86_64-linux.vm-server = serverTest {lockedModules = false;};
