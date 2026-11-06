@@ -46,6 +46,11 @@ just rollback   # go back a generation
 
 Run `just` to see the full list.
 
+`just check` builds every host of the current platform and runs the VM tests in [`modules/checks`](modules/checks), each described at the top of its file. To run one alone, `nix build .#checks.x86_64-linux.<name> -L`:
+
+- `vm-server` and `vm-internet-facing`: the shared server aspects and their hardening, booted next to a client.
+- `vm-impermanence`: the impermanence aspect on a btrfs disk, rebooted once. A file on `/` is gone and its old root sits under `old_roots/`, while a persisted directory, a persisted single file and `/etc/machine-id` keep their content.
+
 ## AI Notice
 
 The idea and the initial design of the work presented here are my own. However, I was assisted by Claude in catching mistakes (numerous and sometimes blatantly obvious) and working through the trickier parts as I'm learning this.
