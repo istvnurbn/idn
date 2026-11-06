@@ -1,5 +1,8 @@
-{
+{den, ...}: {
   den.aspects.desktop-base = {
+    # pkgs.unstable comes from the overlays aspect
+    includes = [den.aspects.overlays];
+
     os = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         unstable.mcp-nixos

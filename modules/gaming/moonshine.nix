@@ -8,6 +8,9 @@
     host,
     ...
   }: {
+    # pkgs.unstable comes from the overlays aspect
+    includes = [den.aspects.overlays];
+
     nixos = {
       pkgs,
       lib,
