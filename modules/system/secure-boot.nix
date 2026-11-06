@@ -1,22 +1,15 @@
 # Secure Boot with lanzaboote: everything on the ESP is signed with this
 # host's own keys, so the unencrypted boot partition can't be tampered with.
-# With Secure Boot enforced, the TPM can then safely unlock LUKS by itself.
+# With Secure Boot enforced, the TPM can then safely unlock LUKS by itself
+# (luks.nix sets that up).
 #
 # Takes over from boot.nix's systemd-boot, so its memtest86+ and netboot.xyz
 # entries disappear (they're unsigned and wouldn't boot anyway).
 #
-# Setting up a host:
-#   1. Switch. The first boot creates the keys and stages them on the ESP.
-#   2. In the firmware: enable Secure Boot and reset it to Setup Mode (keep
-#      the dbx), then reboot. systemd-boot enrolls the keys and reboots;
-#      `bootctl status` then says "Secure Boot: enabled (user)".
-#   3. Seal the LUKS key to the Secure Boot state and to an empty PCR 15.
-#      Add --tpm2-with-pin=yes to also ask for a PIN at boot:
-#        sudo systemd-cryptenroll /dev/disk/by-partlabel/disk-main-root \
-#          --tpm2-device=auto \
-#          --tpm2-pcrs=7+15:sha256=0000000000000000000000000000000000000000000000000000000000000000
-#   A dbx or firmware update changes PCR 7: type the passphrase once, then
-#   repeat step 3 with --wipe-slot=tpm2.
+# Setting up a host (enrolling the keys, sealing the disk key to the TPM, a
+# PIN, a recovery key, and what to do when the TPM refuses) is written up once,
+# in idn-primer's README, "6. Encrypted: Secure Boot and the TPM":
+#   https://github.com/istvnurbn/idn-primer#6-encrypted-secure-boot-and-the-tpm
 {inputs, ...}: {
   flake-file.inputs.lanzaboote = {
     url = "github:nix-community/lanzaboote/v1.2.0";
