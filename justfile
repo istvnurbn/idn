@@ -71,7 +71,7 @@ switch *args:
 # List available generations from profile path
 [macos]
 info *args:
-    darwin-rebuild --list-generations {{ args }}
+    sudo darwin-rebuild --list-generations {{ args }}
 
 # Rollback to a previous generation
 [macos]
