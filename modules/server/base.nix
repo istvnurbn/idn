@@ -23,8 +23,6 @@
     networking = {
       useNetworkd = lib.mkDefault true;
       firewall = {
-        enable = true;
-        allowPing = true;
         # A publicly reachable box gets constant background scan noise;
         # logging every refused connection would flood the journal.
         logRefusedConnections = lib.mkDefault false;

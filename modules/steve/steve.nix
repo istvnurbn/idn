@@ -10,7 +10,6 @@
 
     user = {
       description = "István Urbán";
-      createHome = true;
     };
 
     provides.to-hosts.nixos = {pkgs, ...}: let

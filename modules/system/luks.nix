@@ -12,8 +12,8 @@
 # After install, add a recovery key and keep it off the machine:
 #   sudo systemd-cryptenroll --recovery-key /dev/disk/by-partlabel/disk-main-root
 {
-  den.aspects.luks.nixos = {
-    # systemd-cryptsetup in stage 1 is what reads TPM2 tokens
-    boot.initrd.systemd.enable = true; # Default in 26.05
-  };
+  # A marker: disko.nix and secure-boot.nix check for it with host.hasAspect.
+  # systemd-cryptsetup in stage 1 is what reads TPM2 tokens; systemd in the
+  # initrd is the default since 26.05, so nothing needs setting here.
+  den.aspects.luks = {};
 }
