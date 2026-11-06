@@ -19,10 +19,6 @@
 
   "cli_default_open_behavior": "new_window",
 
-  "session": {
-    "trust_all_worktrees": true,
-  },
-
   "title_bar": {
     "show_sign_in": false,
   },
