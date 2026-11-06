@@ -44,6 +44,7 @@
       url = "github:schembriaiden/helium-browser-nix-flake";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        nixpkgs-darwin.follows = "nixpkgs";
         utils.follows = "flake-utils";
       };
     };
