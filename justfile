@@ -63,16 +63,6 @@ repl *args:
 build *args:
     nh darwin build {{ args }}
 
-# Build and activate the new configuration
-[macos]
-test *args:
-    nh darwin test {{ args }}
-
-# Build the new configuration and make it the boot default
-[macos]
-boot *args:
-    nh darwin build {{ args }}
-
 # Build and activate the new configuration, and make it the boot default
 [macos]
 switch *args:
@@ -81,12 +71,12 @@ switch *args:
 # List available generations from profile path
 [macos]
 info *args:
-    nh darwin info {{ args }}
+    darwin-rebuild --list-generations {{ args }}
 
 # Rollback to a previous generation
 [macos]
 rollback *args:
-    nh darwin rollback {{ args }}
+    sudo darwin-rebuild --rollback {{ args }}
 
 # Load system in a repl
 [macos]
