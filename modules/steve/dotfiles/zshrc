@@ -19,7 +19,9 @@ ZINIT[COMPINIT_OPTS]=-i
 
 # plugins (turbo: loaded right after the first prompt)
 # Order: compinit -> fzf-tab -> widget wrappers (syntax highlighting, autosuggestions)
-zinit wait lucid for \
+# nocd: don't cd into plugin dirs for atinit/atload; a redraw meanwhile (e.g. the
+# terminal resizing at startup) would show that dir in the prompt
+zinit wait lucid nocd for \
   atinit"zicompinit; zicdreplay" \
     Aloxaf/fzf-tab \
   zdharma-continuum/fast-syntax-highlighting \
