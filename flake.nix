@@ -15,7 +15,7 @@
       url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    den.url = "github:denful/den/latest";
+    den.url = "github:denful/den/v0.19.0";
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,7 +31,7 @@
       url = "github:NixOS/flake-compat";
       flake = false;
     };
-    flake-file.url = "github:denful/flake-file/latest";
+    flake-file.url = "github:denful/flake-file/v0.7.0";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
