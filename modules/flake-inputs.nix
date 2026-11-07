@@ -35,10 +35,4 @@
     # Format flake.nix like the rest of the repo (flake-file defaults to nixfmt)
     formatter = pkgs: pkgs.alejandra;
   };
-
-  # `nix fmt` for the repo itself, with the same formatter. Den has no class
-  # for this output, so it goes through flake-parts directly.
-  perSystem = {pkgs, ...}: {
-    formatter = pkgs.alejandra;
-  };
 }
