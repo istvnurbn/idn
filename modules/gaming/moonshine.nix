@@ -1,21 +1,31 @@
 {
   inputs,
   den,
+  lib,
   ...
 }: {
   den.aspects.moonshine = {
-    user,
-    host,
-    ...
-  }: {
+    # Static aspect: Den only discovers `settings` outside a function.
+    # Set per host in hosts.nix, e.g. settings.moonshine.gpu.
+    settings.gpu = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "0000:03:00.0";
+      description = "PCI bus address of the capture GPU; null lets moonshine pick";
+    };
+
     # pkgs.unstable comes from the overlays aspect
     includes = [den.aspects.overlays];
 
     nixos = {
+      host,
+      user,
       pkgs,
       lib,
       ...
     }: let
+      cfg = host.settings.moonshine;
+
       steamExe = "/run/current-system/sw/bin/steam";
       heroicExe = "/run/current-system/sw/bin/heroic";
 
@@ -113,10 +123,7 @@
           name = host.name;
 
           compositor = {
-            # gpu (the capture GPU's PCI bus address) is specific to the
-            # host's hardware layout; set
-            # services.moonshine.settings.compositor.gpu per-host, e.g. in
-            # hosts/vermilion.nix.
+            gpu = lib.mkIf (cfg.gpu != null) cfg.gpu;
             keyboard = {
               layout = "hu";
               model = "pc105";

@@ -12,6 +12,7 @@
         resumeOffset = 533760;
       };
       disko-btrfs-data.device = "/dev/disk/by-id/nvme-CT2000T710SSD8_2532525EB150";
+      moonshine.gpu = "0000:03:00.0";
     };
   };
 
