@@ -8,6 +8,7 @@
         gimp
         picard
         vlc
+        unstable.audacious
       ];
 
       services.flatpak.packages = [
@@ -28,6 +29,7 @@
 
     persistHome = {
       directories = [
+        ".config/audacious"
         ".config/GIMP"
         ".config/MusicBrainz"
         ".config/vlc"
