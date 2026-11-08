@@ -51,6 +51,7 @@
       # Gaming
       gaming-base
       steam
+      faugus
       heroic
       # sunshine
       moonshine
