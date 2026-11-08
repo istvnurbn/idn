@@ -9,13 +9,20 @@
       ];
     };
 
-    nixos = {pkgs, ...}: {
-      environment.systemPackages = with pkgs; [
-        ghostty
-        wl-clipboard
-        unstable.zed-editor
-        proton-pass
-      ];
+    nixos = {
+      host,
+      lib,
+      pkgs,
+      ...
+    }: {
+      environment.systemPackages = with pkgs;
+        [
+          ghostty
+          wl-clipboard
+          unstable.zed-editor
+          proton-pass
+        ]
+        ++ lib.optional (host.hasAspect den.aspects.plasma) kdePackages.ghostwriter;
 
       programs.localsend = {
         enable = true;
@@ -39,6 +46,7 @@
           "proton-mail"
           "proton-pass"
           "zed"
+          "markedit"
         ];
         masApps = {
           "Amphetamine" = 937984704;
@@ -52,6 +60,10 @@
         ".config/Proton Pass"
         ".local/share/org.localsend.localsend_app"
         ".local/share/zed"
+        ".local/share/ghostwriter"
+      ];
+      files = [
+        ".config/kde.org/ghostwriter.conf"
       ];
     };
   };
