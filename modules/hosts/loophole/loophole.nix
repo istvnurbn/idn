@@ -11,6 +11,7 @@
       openssh
       shell
       devel
+      sops
       deploy-safety
     ];
 

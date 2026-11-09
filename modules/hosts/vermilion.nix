@@ -18,6 +18,7 @@
       # System
       boot
       impermanence
+      sops
       deploy-safety
 
       # Base

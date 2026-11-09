@@ -21,7 +21,6 @@
       '';
     in {
       users.users.${user.name} = {
-        hashedPassword = "$y$j9T$ae.Dmqz2N2YdPvY1xUvwu0$wdBYfrORJhqvPUPJpFP7oHsYrxBAwBec2hAKbc3KnM4";
         extraGroups = [
           "audio"
           "cdrom"
