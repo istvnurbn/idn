@@ -30,6 +30,9 @@
     # Every user's password hash comes from secrets/shared.yaml, under
     # <name>-password, decrypted before the users are created.
     includes = [
+      # Decrypts with the SSH host key that openssh generates and persists
+      den.aspects.openssh
+
       ({user, ...}: {
         nixos = {config, ...}: {
           sops.secrets."${user.userName}-password" = {

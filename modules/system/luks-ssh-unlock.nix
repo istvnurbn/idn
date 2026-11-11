@@ -14,6 +14,13 @@
 # Create it before the first switch/install (the boot loader copies it):
 #   sudo install -d -m 700 <dir> && sudo ssh-keygen -t ed25519 -N "" -f <dir>/ssh_host_ed25519_key
 {den, ...}: {
+  den.aspects.luks-ssh-unlock.includes = with den.aspects; [
+    # The prompt this forwards
+    luks
+    # userKeys below are the keys openssh.nix authorizes
+    openssh
+  ];
+
   den.aspects.luks-ssh-unlock.nixos = {
     config,
     host,

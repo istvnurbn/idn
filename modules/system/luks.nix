@@ -13,6 +13,9 @@
 # After install, add a recovery key and keep it off the machine:
 #   sudo systemd-cryptenroll --recovery-key /dev/disk/by-partlabel/disk-main-root
 {den, ...}: {
+  # Encrypts that aspect's root; on its own this aspect does nothing
+  den.aspects.luks.includes = [den.aspects.disko-btrfs-impermanence-main];
+
   # disko.nix also checks for this aspect with host.hasAspect to wrap the root
   # in LUKS. systemd-cryptsetup in stage 1 is what reads TPM2 tokens; systemd
   # in the initrd is the default since 26.05, so it needs no setting here.
