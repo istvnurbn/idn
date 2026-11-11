@@ -25,12 +25,27 @@
             return
           fi
 
-          # Escape hatch for automation
-          if [[ "''${EXPECTED_HOSTNAME:-}" = "$desired" ]]; then
+          # Escape hatch for intentional renames and automation. This runs
+          # inside switch-to-configuration under sudo (and systemd-run), which
+          # drop the caller's environment, so a file is the reliable way in:
+          #   echo <new-name> | sudo tee /run/expected-hostname
+          # EXPECTED_HOSTNAME still works when passed through, e.g. with
+          # sudo --preserve-env=EXPECTED_HOSTNAME.
+          local expected="''${EXPECTED_HOSTNAME:-}"
+          if [[ -z "$expected" && -r /run/expected-hostname ]]; then
+            expected="$(< /run/expected-hostname)"
+          fi
+          if [[ "$expected" = "$desired" ]]; then
             return
           fi
 
           echo "WARNING: machine hostname is '$actual', but this config is for '$desired'." >&2
+          if [[ ! -t 0 ]]; then
+            echo "No terminal to confirm on; aborting. If this is intended, run" >&2
+            echo "  echo $desired | sudo tee /run/expected-hostname" >&2
+            echo "on the target and deploy again." >&2
+            exit 1
+          fi
           echo "Are you deploying to the right host? Type YES to continue:" >&2
           read -r reply
           if [[ "$reply" != YES ]]; then
