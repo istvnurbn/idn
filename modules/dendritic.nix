@@ -20,7 +20,12 @@
     schema.user.classes = lib.mkDefault ["homeManager"];
     # Host aspects' homeManager and persistHome reach every user.
     # Without it impermanence keeps none of a user's home paths.
-    schema.user.includes = [den.batteries.host-aspects];
+    schema.user.includes = [
+      den.batteries.host-aspects
+      # Sets shell for user at OS and HM level. On the user only: in
+      # den.default it reaches the host twice on den v0.20.0
+      (den.batteries.user-shell "zsh")
+    ];
 
     # Aspects declare typed `settings`; hosts set them in hosts.nix.
     # See guides/aspect-settings in den's docs.
@@ -58,8 +63,6 @@
         den.provides.define-user
         # Makes user admin (wheel and networkmanager)
         den.provides.primary-user
-        # Sets shell for user at OS and HM level
-        (den.provides.user-shell "zsh")
         # Automatically sets networking.hostName from host name
         den.provides.hostname
         # flake inputs with the system pre-selected
