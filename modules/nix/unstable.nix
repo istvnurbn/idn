@@ -10,7 +10,8 @@
     };
   };
 in {
-  den.aspects.overlays.os = {
+  # Include this wherever pkgs.unstable is used; Den dedupes it.
+  den.aspects.unstable.os = {
     nixpkgs.overlays = [unstableOverlay];
     nix.registry.unstable.flake = inputs.nixpkgs-unstable;
     nix.registry.idn.flake = inputs.self;

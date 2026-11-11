@@ -8,7 +8,7 @@
 
       # Base
       nix
-      overlays
+      unstable
       networking
       sudo
       openssh

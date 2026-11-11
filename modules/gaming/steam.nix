@@ -1,9 +1,9 @@
 {den, ...}: {
   den.aspects.steam = {
-    # pkgs.unstable comes from the overlays aspect
+    # pkgs.unstable comes from the unstable aspect
     includes = [
       den.aspects.chaotic
-      den.aspects.overlays
+      den.aspects.unstable
     ];
 
     nixos = {

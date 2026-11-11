@@ -23,7 +23,7 @@
 
       # Base
       nix
-      overlays
+      unstable
       chaotic
       networking
       avahi

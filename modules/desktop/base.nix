@@ -1,7 +1,7 @@
 {den, ...}: {
   den.aspects.desktop-base = {
-    # pkgs.unstable comes from the overlays aspect
-    includes = [den.aspects.overlays];
+    # pkgs.unstable comes from the unstable aspect
+    includes = [den.aspects.unstable];
 
     os = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [

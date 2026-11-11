@@ -1,10 +1,10 @@
 {den, ...}: {
   den.aspects.media = {
     # services.flatpak.packages below comes from the nix-flatpak module;
-    # pkgs.unstable comes from the overlays aspect
+    # pkgs.unstable comes from the unstable aspect
     includes = [
       den.aspects.flatpak
-      den.aspects.overlays
+      den.aspects.unstable
     ];
 
     nixos = {pkgs, ...}: {

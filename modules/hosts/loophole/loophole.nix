@@ -6,7 +6,7 @@
 
       # Base
       nix
-      overlays
+      unstable
       sudo
       openssh
       shell
