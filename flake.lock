@@ -380,15 +380,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1794293114,
-        "narHash": "sha256-f2p6vlD67a1DmhT79qOoEL0itm8J5/s/UIMvWcDffQU=",
-        "owner": "hgaiser",
+        "lastModified": 1794393199,
+        "narHash": "sha256-/6+trZ+gzl5nDlb2vyD0ItGMV0dm4UAB+qGsaxDYuzs=",
+        "owner": "istvnurbn",
         "repo": "moonshine",
-        "rev": "2fc1a293f08b5946e5e188ced4653ee5209dd462",
+        "rev": "3c4790b5a06bfc3f028b1e9f89feccd3752a4476",
         "type": "github"
       },
       "original": {
-        "owner": "hgaiser",
+        "owner": "istvnurbn",
+        "ref": "faugus-scanner",
         "repo": "moonshine",
         "type": "github"
       }

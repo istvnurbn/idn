@@ -7,7 +7,7 @@
   # Upstream's flake tracks main, ahead of nixpkgs. Its own nixpkgs only
   # builds its packages/devShells; the NixOS module builds against host pkgs.
   flake-file.inputs.moonshine = {
-    url = "github:hgaiser/moonshine";
+    url = "github:istvnurbn/moonshine/faugus-scanner";
     inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
@@ -175,6 +175,16 @@
                 heroicLaunchExe
                 "--no-gui"
                 "heroic://launch?appName={app_name}&runner={runner}"
+              ];
+            }
+            {
+              # `--game` needs no shutdown wrapper: it runs Faugus' runner
+              # directly instead of forwarding to a running instance.
+              type = "faugus";
+              command = [
+                (lib.getExe pkgs.unstable.faugus-launcher)
+                "--game"
+                "{game_id}"
               ];
             }
           ];
