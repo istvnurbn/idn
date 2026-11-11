@@ -58,6 +58,12 @@
       moonshine
     ];
 
+    # Published to the fleet's SSH roster (see system/openssh.nix)
+    ssh-keys = {
+      host = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfJ4iMClvTaqIYrMZNdro5oGSLk8LYG8awsuZyez7O5";
+      users.steve = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDFAQW9uPhDsi+CiCxfwon12iT0Earea6CznTniv1Ta steve@vermilion";
+    };
+
     nixos = {pkgs, ...}: {
       boot = {
         kernelPackages = pkgs.linuxPackages_cachyos-lto-znver4;

@@ -31,6 +31,9 @@
       docker
     ];
 
+    # Published to the fleet's SSH roster (see system/openssh.nix)
+    ssh-keys.users.steve = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG9mUymT0rLNsntCzJp7Na4Rwj9fAMgfh1oSYmXuRvRK steve@hexley";
+
     darwin.system = {
       # Disable the startup chime
       startup.chime = false;
