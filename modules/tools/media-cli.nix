@@ -7,7 +7,6 @@
         exiftool
         ffmpeg-full
         flac
-        hugo
         id3v2
         imagemagick
         lame

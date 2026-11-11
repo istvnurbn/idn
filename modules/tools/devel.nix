@@ -5,6 +5,7 @@
         gawk
         gh
         helix
+        hugo
         just-lsp
         jq
         lazygit
