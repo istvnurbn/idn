@@ -11,6 +11,10 @@
       directories = [
         ".config/faugus-launcher"
         ".local/share/faugus-launcher"
+        # Recently played and running-games tracking
+        ".local/state/faugus-launcher"
+        # Steam Runtime that umu-run downloads (shared with heroic)
+        ".local/share/umu"
       ];
     };
   };
