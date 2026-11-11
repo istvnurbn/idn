@@ -2,11 +2,17 @@
   den.aspects.devel = {
     os = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
-        lazygit
-        jq
-        just-lsp
         gawk
+        gh
         helix
+        just-lsp
+        jq
+        lazygit
+      ];
+    };
+    persistHome = {
+      directories = [
+        ".config/gh"
       ];
     };
   };
