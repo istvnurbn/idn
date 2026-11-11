@@ -7,8 +7,8 @@
         ibm-plex
         fira-sans
         fira-code
-        source-serif-pro
-        source-sans-pro
+        source-serif
+        source-sans
         source-code-pro
         inter
         maple-mono.truetype
