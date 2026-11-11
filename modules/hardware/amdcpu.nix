@@ -10,10 +10,6 @@
 
       boot = {
         kernelModules = ["kvm-amd"];
-
-        # Enable AMD CPU scaling https://www.kernel.org/doc/html/latest/admin-guide/pm/amd-pstate.html
-        # On recent AMD CPUs this can be more energy efficient.
-        kernelParams = ["amd_pstate=active"];
       };
     };
   };
