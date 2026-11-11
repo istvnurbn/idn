@@ -34,8 +34,11 @@
     }: let
       cfg = host.settings.moonshine;
 
+      # Launchers are only offered for the ones the host has
+      hasSteam = host.hasAspect den.aspects.steam;
+      hasFaugus = host.hasAspect den.aspects.faugus;
+
       steamExe = "/run/current-system/sw/bin/steam";
-      heroicExe = "/run/current-system/sw/bin/heroic";
 
       steamShutdown = pkgs.writeShellApplication {
         name = "moonshine-steam-shutdown";
@@ -57,24 +60,6 @@
 
       steamShutdownExe = lib.getExe steamShutdown;
 
-      heroicShutdown = pkgs.writeShellApplication {
-        name = "moonshine-heroic-shutdown";
-        runtimeInputs = [pkgs.procps pkgs.coreutils];
-        text = ''
-          pat='^/nix/store/[^ ]*electron .*/opt/heroic/resources/app.asar'
-          pgrep -f "$pat" >/dev/null || exit 0
-          pkill -f "$pat" || true
-          for _ in {1..30}; do
-            pgrep -f "$pat" >/dev/null || exit 0
-            sleep 1
-          done
-          echo "heroic still up after 30s, sending SIGKILL" >&2
-          pkill -9 -f "$pat" || true
-        '';
-      };
-
-      heroicShutdownExe = lib.getExe heroicShutdown;
-
       steamLaunch = pkgs.writeShellApplication {
         name = "moonshine-steam-launch";
         text = ''
@@ -84,16 +69,6 @@
       };
 
       steamLaunchExe = lib.getExe steamLaunch;
-
-      heroicLaunch = pkgs.writeShellApplication {
-        name = "moonshine-heroic-launch";
-        text = ''
-          ${heroicShutdownExe}
-          exec ${heroicExe} "$@"
-        '';
-      };
-
-      heroicLaunchExe = lib.getExe heroicLaunch;
     in {
       # Upstream's module, not nixpkgs'. It builds moonshine against the
       # host's pkgs on purpose: mesa/Vulkan load from /run/opengl-driver and
@@ -153,18 +128,16 @@
             };
           };
 
-          application = [
-            {
-              title = "Steam Big Picture";
-              command = [
-                steamLaunchExe
-                "steam://open/bigpicture"
-              ];
-            }
-          ];
+          application = lib.optional hasSteam {
+            title = "Steam Big Picture";
+            command = [
+              steamLaunchExe
+              "steam://open/bigpicture"
+            ];
+          };
 
-          application_scanner = [
-            {
+          application_scanner =
+            lib.optional hasSteam {
               type = "steam";
               library = "$HOME/.local/share/Steam";
               command = [
@@ -172,15 +145,7 @@
                 "steam://rungameid/{game_id}"
               ];
             }
-            {
-              type = "heroic";
-              command = [
-                heroicLaunchExe
-                "--no-gui"
-                "heroic://launch?appName={app_name}&runner={runner}"
-              ];
-            }
-            {
+            ++ lib.optional hasFaugus {
               # `--game` needs no shutdown wrapper: it runs Faugus' runner
               # directly instead of forwarding to a running instance.
               type = "faugus";
@@ -189,8 +154,7 @@
                 "--game"
                 "{game_id}"
               ];
-            }
-          ];
+            };
         };
       };
     };
