@@ -4,6 +4,13 @@
   lib,
   ...
 }: {
+  # Upstream's flake tracks main, ahead of nixpkgs. Its own nixpkgs only
+  # builds its packages/devShells; the NixOS module builds against host pkgs.
+  flake-file.inputs.moonshine = {
+    url = "github:hgaiser/moonshine";
+    inputs.nixpkgs.follows = "nixpkgs-unstable";
+  };
+
   den.aspects.moonshine = {
     # Static aspect: Den only discovers `settings` outside a function.
     # Set per host in hosts.nix, e.g. settings.moonshine.gpu.
@@ -14,10 +21,8 @@
       description = "PCI bus address of the capture GPU; null lets moonshine pick";
     };
 
-    # pkgs.unstable comes from the overlays aspect
-    includes = [den.aspects.overlays];
-
     nixos = {
+      config,
       host,
       user,
       pkgs,
@@ -87,9 +92,10 @@
 
       heroicLaunchExe = lib.getExe heroicLaunch;
     in {
-      # Stable 26.05 has no services.moonshine; use the module from the
-      # nixpkgs that pkgs.unstable is built from.
-      imports = ["${inputs.nixpkgs-unstable}/nixos/modules/services/networking/moonshine.nix"];
+      # Upstream's module, not nixpkgs'. It builds moonshine against the
+      # host's pkgs on purpose: mesa/Vulkan load from /run/opengl-driver and
+      # break if moonshine links an older glibc than they do.
+      imports = [inputs.moonshine.nixosModules.default];
 
       # sunshine and moonshine would fight over the same ports
       assertions = [
@@ -99,23 +105,37 @@
         }
       ];
 
+      # Upstream only has a global openFirewall. Open the GameStream ports,
+      # plus 5353/udp for its mDNS responder, on LAN or VPN-facing interfaces
+      # only; see Security in the main README. tailscale0 is already trusted.
+      networking.firewall.interfaces.eno1 = let
+        s = config.services.moonshine.settings;
+      in {
+        allowedTCPPorts = [
+          (s.webserver.port_https or 47984)
+          (s.webserver.port or 47989)
+          (s.stream.port or 48010)
+        ];
+        allowedUDPPorts = [
+          5353
+          (s.stream.video.port or 47998)
+          (s.stream.control.port or 47999)
+          (s.stream.audio.port or 48000)
+        ];
+      };
+
       services.moonshine = {
         enable = true;
 
-        # The module defaults to pkgs.moonshine, which stable 26.05 lacks.
-        package = pkgs.unstable.moonshine;
-
         # The user whose applications you want to stream.
         user = user.name;
-
-        # Opens the GameStream ports, plus 5353/udp for mDNS, on these
-        # interfaces only. Only list LAN or VPN-facing interfaces. See
-        # Security in the main README. tailscale0 is already trusted.
-        firewallInterfaces = ["eno1"];
+        # Locates /run/user/<uid>. Upstream derives it from users.users.<user>.uid,
+        # which we leave allocated; first normal user gets 1000 (`id -u`).
+        uid = 1000;
 
         # An idle Moonlight client polls the HTTPS port every 5s, logging a
         # WARN for every dropped TLS probe.
-        environment.MOONSHINE_LOG = "moonshine=info,moonshine_core::tls=error";
+        logFilter = "moonshine=info,moonshine::tls=error";
 
         # Everything from the Configuration section of the main README goes
         # here, written as nix instead of TOML.
@@ -162,6 +182,8 @@
       };
     };
 
+    # Upstream's module, unlike nixpkgs', does not add `input` (virtual
+    # gamepads for streamed games); steve/steve.nix already does.
     provides.to-users.user.extraGroups = ["moonshine"];
 
     persistHome = {

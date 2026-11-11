@@ -373,6 +373,26 @@
         "type": "github"
       }
     },
+    "moonshine": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794293114,
+        "narHash": "sha256-f2p6vlD67a1DmhT79qOoEL0itm8J5/s/UIMvWcDffQU=",
+        "owner": "hgaiser",
+        "repo": "moonshine",
+        "rev": "2fc1a293f08b5946e5e188ced4653ee5209dd462",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hgaiser",
+        "repo": "moonshine",
+        "type": "github"
+      }
+    },
     "nix-flatpak": {
       "locked": {
         "lastModified": 1791644268,
@@ -569,6 +589,7 @@
         "impermanence": "impermanence",
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
+        "moonshine": "moonshine",
         "nix-flatpak": "nix-flatpak",
         "nix-homebrew": "nix-homebrew",
         "nix-plist-manager": "nix-plist-manager",
