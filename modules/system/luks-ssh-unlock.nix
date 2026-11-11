@@ -13,7 +13,9 @@
 # anyone with the disk: use a dedicated key, never the real host key.
 # Create it before the first switch/install (the boot loader copies it):
 #   sudo install -d -m 700 <dir> && sudo ssh-keygen -t ed25519 -N "" -f <dir>/ssh_host_ed25519_key
-{den, ...}: {
+{den, ...}: let
+  persistPath = import ./_persist-path.nix {inherit den;};
+in {
   den.aspects.luks-ssh-unlock.includes = with den.aspects; [
     # The prompt this forwards
     luks
@@ -27,10 +29,7 @@
     lib,
     ...
   }: let
-    keyDir =
-      if host.hasAspect den.aspects.impermanence
-      then "/persist/etc/secrets/initrd"
-      else "/etc/secrets/initrd";
+    keyDir = persistPath host "/etc/secrets/initrd";
     # The keys allowed to log in normally (see openssh.nix)
     userKeys = lib.concatMap (u: u.openssh.authorizedKeys.keys) (lib.attrValues config.users.users);
   in {

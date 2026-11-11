@@ -5,7 +5,9 @@
   den,
   inputs,
   ...
-}: {
+}: let
+  persistPath = import ./_persist-path.nix {inherit den;};
+in {
   flake-file.inputs.sops-nix = {
     url = "github:Mic92/sops-nix";
     inputs.nixpkgs.follows = "nixpkgs";
@@ -18,10 +20,7 @@
       sops = {
         # Impermanent hosts read the key from /persist: password secrets are
         # decrypted before impermanence binds it into /etc/ssh.
-        age.sshKeyFile =
-          if host.hasAspect den.aspects.impermanence
-          then "/persist/etc/ssh/ssh_host_ed25519_key"
-          else "/etc/ssh/ssh_host_ed25519_key";
+        age.sshKeyFile = persistPath host "/etc/ssh/ssh_host_ed25519_key";
         age.sshKeyPaths = [];
         gnupg.sshKeyPaths = [];
       };

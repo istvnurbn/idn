@@ -3,7 +3,9 @@
   inputs,
   lib,
   ...
-}: {
+}: let
+  persistPath = import ./_persist-path.nix {inherit den;};
+in {
   flake-file.inputs = {
     disko = {
       url = "github:nix-community/disko";
@@ -160,10 +162,7 @@
       # in stage 2 with a keyfile on the encrypted root, so whatever unlocked
       # root (TPM, console or SSH) unlocks it as well, without a second prompt.
       encrypted = host.hasAspect den.aspects.luks;
-      keyFile =
-        if host.hasAspect den.aspects.impermanence
-        then "/persist/etc/secrets/data.key"
-        else "/etc/secrets/data.key";
+      keyFile = persistPath host "/etc/secrets/data.key";
       maybeLuks = content:
         if encrypted
         then {
