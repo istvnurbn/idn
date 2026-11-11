@@ -7,7 +7,7 @@
   # Setup for den
   flake-file.inputs = {
     flake-file.url = "github:denful/flake-file/v0.7.0";
-    den.url = "github:denful/den/v0.19.0";
+    den.url = "github:denful/den/v0.20.0";
   };
 
   imports = [
@@ -30,15 +30,22 @@
     # Aspects declare typed `settings`; hosts set them in hosts.nix.
     # See guides/aspect-settings in den's docs.
     reservedKeys = ["settings"];
-    schema.host.imports = [
-      {
-        options.settings = lib.mkOption {
-          type = import ./_settings-type.nix {inherit den lib;};
-          default = {};
-          description = "Per-aspect typed settings";
-        };
-      }
-    ];
+    schema.host = {
+      imports = [
+        {
+          options.settings = lib.mkOption {
+            type = import ./_settings-type.nix {inherit den lib;};
+            default = {};
+            description = "Per-aspect typed settings";
+          };
+        }
+      ];
+
+      # Hosts take what their users hand them through provides.to-hosts
+      # (steve.nix). Explicit, because den stops doing it by default in the
+      # release planned for 2027-01-01 (den #694).
+      includes = [den.batteries.mutual-provider];
+    };
 
     default = {
       darwin = {
