@@ -24,6 +24,15 @@
       description = "PCI bus address of the capture GPU; null lets moonshine pick";
     };
 
+    # Each host names its own LAN interfaces; an empty list fails the build
+    # (see assertions) rather than silently opening nothing.
+    settings.interfaces = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      example = ["eno1"];
+      description = "LAN interfaces to open the GameStream and mDNS ports on";
+    };
+
     nixos = {
       config,
       host,
@@ -81,26 +90,31 @@
           assertion = !(host.hasAspect den.aspects.sunshine);
           message = "moonshine: the host also includes sunshine; keep only one";
         }
+        {
+          assertion = cfg.interfaces != [];
+          message = "moonshine: set settings.moonshine.interfaces for this host in hosts.nix, e.g. [\"eno1\"]";
+        }
       ];
 
       # Upstream only has a global openFirewall. Open the GameStream ports,
       # plus 5353/udp for its mDNS responder, on LAN or VPN-facing interfaces
       # only; see Security in the main README. tailscale0 is already trusted.
-      networking.firewall.interfaces.eno1 = let
+      networking.firewall.interfaces = let
         s = config.services.moonshine.settings;
-      in {
-        allowedTCPPorts = [
-          (s.webserver.port_https or 47984)
-          (s.webserver.port or 47989)
-          (s.stream.port or 48010)
-        ];
-        allowedUDPPorts = [
-          5353
-          (s.stream.video.port or 47998)
-          (s.stream.control.port or 47999)
-          (s.stream.audio.port or 48000)
-        ];
-      };
+      in
+        lib.genAttrs cfg.interfaces (_: {
+          allowedTCPPorts = [
+            (s.webserver.port_https or 47984)
+            (s.webserver.port or 47989)
+            (s.stream.port or 48010)
+          ];
+          allowedUDPPorts = [
+            5353
+            (s.stream.video.port or 47998)
+            (s.stream.control.port or 47999)
+            (s.stream.audio.port or 48000)
+          ];
+        });
 
       services.moonshine = {
         enable = true;
