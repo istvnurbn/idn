@@ -8,7 +8,7 @@
       audio
       bluetooth
       coolercontrol
-      openlogi
+      # openlogi
       openrgb
       lact
       # Disk ids, swap size and resume offset are settings in hosts.nix
