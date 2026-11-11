@@ -26,6 +26,7 @@
       helium
       tor
       media
+      claude
 
       # Services
       docker

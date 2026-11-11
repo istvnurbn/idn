@@ -48,6 +48,7 @@
       office
       flatpak
       media
+      claude
 
       # Gaming
       gaming-base
