@@ -64,6 +64,8 @@
         den.provides.hostname
         # flake inputs with the system pre-selected
         den.provides.inputs'
+        # Every macOS host: without it nix-darwin ignores homebrew.casks
+        den.aspects.nix-homebrew
       ];
     };
   };

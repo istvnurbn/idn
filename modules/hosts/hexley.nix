@@ -3,7 +3,6 @@
     includes = with den.aspects; [
       # For macOS only
       nix-darwin
-      nix-homebrew
       darwin-defaults
 
       # Base
