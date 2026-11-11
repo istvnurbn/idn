@@ -24,6 +24,15 @@
       import-tree.url = "github:denful/import-tree";
       nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
       nixpkgs-lib.follows = "nixpkgs";
+      # pkgs.unstable (nix/unstable.nix) and every input that follows
+      # nixpkgs-unstable use Nyx's pin, so Nyx's binary cache matches.
+      # Needs the chaotic input (nix/chaotic.nix).
+      nixpkgs-unstable.follows = "chaotic/nixpkgs";
+      # Followed by lanzaboote (secure-boot.nix) and openlogi (openlogi.nix)
+      rust-overlay = {
+        url = "github:oxalica/rust-overlay";
+        inputs.nixpkgs.follows = "nixpkgs-unstable";
+      };
       systems.url = "github:nix-systems/default";
     };
     description = "iDN - istvnurbn's dendritic nixconfig";

@@ -1,15 +1,10 @@
 {inputs, ...}: {
-  flake-file.inputs = {
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    openlogi = {
-      url = "github:AprilNEA/OpenLogi?dir=packaging";
-      inputs = {
-        nixpkgs.follows = "nixpkgs-unstable";
-        rust-overlay.follows = "rust-overlay";
-      };
+  # rust-overlay is shared with lanzaboote; see flake-inputs.nix
+  flake-file.inputs.openlogi = {
+    url = "github:AprilNEA/OpenLogi?dir=packaging";
+    inputs = {
+      nixpkgs.follows = "nixpkgs-unstable";
+      rust-overlay.follows = "rust-overlay";
     };
   };
 
