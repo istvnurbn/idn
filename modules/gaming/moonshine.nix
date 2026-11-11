@@ -12,6 +12,9 @@
   };
 
   den.aspects.moonshine = {
+    # pkgs.unstable comes from the overlays aspect
+    includes = [den.aspects.overlays];
+
     # Static aspect: Den only discovers `settings` outside a function.
     # Set per host in hosts.nix, e.g. settings.moonshine.gpu.
     settings.gpu = lib.mkOption {
