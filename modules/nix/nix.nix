@@ -47,14 +47,6 @@
         optimise.automatic = true;
       };
 
-      nixpkgs.config = {
-        # Allow non-free packages
-        allowUnfree = true;
-
-        # Many packages report they don't support aarch64-darwin, but they build and run fine here.
-        allowUnsupportedSystem = true;
-      };
-
       environment = {
         variables = {
           NH_FLAKE = "$HOME/idn";

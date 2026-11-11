@@ -36,9 +36,14 @@
     ];
 
     default = {
-      darwin.system.stateVersion = 6;
+      darwin = {
+        system.stateVersion = 6;
+        # Every host, with or without the nix aspect; pkgs.unstable copies it
+        nixpkgs.config = import ./nix/_nixpkgs-config.nix;
+      };
       homeManager.home.stateVersion = "26.05";
       nixos = {
+        nixpkgs.config = import ./nix/_nixpkgs-config.nix;
         # Hosts installed on a later release override this in their aspect
         system.stateVersion = lib.mkDefault "26.05";
         # Declarative user management

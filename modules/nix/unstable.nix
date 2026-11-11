@@ -6,6 +6,7 @@
   unstableOverlay = final: prev: {
     unstable = import inputs.nixpkgs-unstable {
       inherit (final.stdenv.hostPlatform) system;
+      # Same config as the host's pkgs (_nixpkgs-config.nix)
       inherit (final) config;
     };
   };
@@ -26,7 +27,7 @@ in {
   den.aspects.idn-pkgs.legacyPackages = {pkgs, ...}: {
     config = import inputs.nixpkgs {
       inherit (pkgs.stdenv.hostPlatform) system;
-      config.allowUnfree = true;
+      config = import ./_nixpkgs-config.nix;
       overlays = [unstableOverlay];
     };
   };
