@@ -121,7 +121,15 @@ in {
 
             if [[ -e /btrfs_tmp/root ]]; then
                 timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
-                mv -T /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
+                # The mtime can repeat across boots (e.g. a clock reset by a
+                # dead RTC battery), and mv -T fails on an existing name.
+                dest="/btrfs_tmp/old_roots/$timestamp"
+                n=1
+                while [[ -e "$dest" ]]; do
+                    dest="/btrfs_tmp/old_roots/$timestamp-$n"
+                    n=$((n + 1))
+                done
+                mv -T /btrfs_tmp/root "$dest"
             fi
 
             # Pruning old snapshots is best-effort: a single failed deletion
