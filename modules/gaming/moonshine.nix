@@ -38,37 +38,37 @@
       hasSteam = host.hasAspect den.aspects.steam;
       hasFaugus = host.hasAspect den.aspects.faugus;
 
-      steamExe = "/run/current-system/sw/bin/steam";
+      # The Steam the steam aspect installs (programs.steam), not whatever
+      # is on PATH. Only evaluated when hasSteam.
+      steam = lib.getExe config.programs.steam.package;
 
-      steamShutdown = pkgs.writeShellApplication {
-        name = "moonshine-steam-shutdown";
+      # Steam is single-instance per user: with a desktop Steam running, the
+      # stream's steam:// URL opens on the desktop instead and the session
+      # fails. Runs as the session's pre_command (ExecStartPre), so the
+      # stream's Steam starts only once the desktop one is gone. The stream's
+      # own Steam needs no stop: ending the session stops its unit.
+      steamStop = lib.getExe (pkgs.writeShellApplication {
+        name = "moonshine-steam-stop";
         runtimeInputs = [pkgs.procps pkgs.coreutils];
         text = ''
           pgrep -x steam >/dev/null || exit 0
 
-          ${steamExe} -shutdown >/dev/null 2>&1 || true
+          # Ask nicely, then escalate: SIGTERM, and SIGKILL 5s later
+          ${steam} -shutdown >/dev/null 2>&1 || true
+          timeout 30 pidwait -x steam || true
+          pgrep -x steam >/dev/null || exit 0
 
-          for _ in {1..30}; do
-            pgrep -x steam >/dev/null || exit 0
-            sleep 1
-          done
-
-          echo "steam still up after 30s, sending SIGTERM" >&2
+          echo "steam still up 30s after -shutdown, sending SIGTERM" >&2
           pkill -x steam || true
+          timeout 5 pidwait -x steam || true
+          pkill -KILL -x steam || true
         '';
+      });
+
+      # Shared by the Big Picture app and the Steam scanner
+      steamSession = {
+        pre_command = [[steamStop]];
       };
-
-      steamShutdownExe = lib.getExe steamShutdown;
-
-      steamLaunch = pkgs.writeShellApplication {
-        name = "moonshine-steam-launch";
-        text = ''
-          ${steamShutdownExe}
-          exec ${steamExe} "$@"
-        '';
-      };
-
-      steamLaunchExe = lib.getExe steamLaunch;
     in {
       # Upstream's module, not nixpkgs'. It builds moonshine against the
       # host's pkgs on purpose: mesa/Vulkan load from /run/opengl-driver and
@@ -128,25 +128,24 @@
             };
           };
 
-          application = lib.optional hasSteam {
-            title = "Steam Big Picture";
-            command = [
-              steamLaunchExe
-              "steam://open/bigpicture"
-            ];
-          };
+          application = lib.optional hasSteam (steamSession
+            // {
+              title = "Steam Big Picture";
+              command = [steam "steam://open/bigpicture"];
+              # gamescope's -e, so Steam's overlay and focus work. The Steam
+              # scanner always turns it on for its games.
+              steam_integration = true;
+            });
 
           application_scanner =
-            lib.optional hasSteam {
-              type = "steam";
-              library = "$HOME/.local/share/Steam";
-              command = [
-                steamLaunchExe
-                "steam://rungameid/{game_id}"
-              ];
-            }
+            lib.optional hasSteam (steamSession
+              // {
+                type = "steam";
+                library = "$HOME/.local/share/Steam";
+                command = [steam "steam://rungameid/{game_id}"];
+              })
             ++ lib.optional hasFaugus {
-              # `--game` needs no shutdown wrapper: it runs Faugus' runner
+              # `--game` needs no pre_command: it runs Faugus' runner
               # directly instead of forwarding to a running instance.
               type = "faugus";
               command = [
