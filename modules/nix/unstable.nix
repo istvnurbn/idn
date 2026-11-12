@@ -14,13 +14,11 @@ in {
   # Include this wherever pkgs.unstable is used; Den dedupes it.
   den.aspects.unstable.os = {
     nixpkgs.overlays = [unstableOverlay];
-    # `nix shell idn#<pkg>` / `idn#unstable.<pkg>`: stable and unstable with
-    # this repo's nixpkgs config. Plain `nixpkgs#` stays the stock flake.
-    nix.registry.idn.flake = inputs.self;
   };
 
   # Den's perSystem equivalent: becomes flake.legacyPackages.<system> for every
-  # system in den.systems, so the idn registry entry above has packages to serve.
+  # system in den.systems, so the idn registry entry (nix aspect) has packages
+  # to serve.
   den.schema.flake-system.includes = [den.aspects.idn-pkgs];
 
   # Class content is a module and pkgs has its own `config` attribute,

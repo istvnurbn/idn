@@ -1,4 +1,4 @@
-{
+{inputs, ...}: {
   den.aspects.nix = {
     os = {pkgs, ...}: {
       nix = {
@@ -45,6 +45,11 @@
         # for both OSes: nix-darwin refuses auto-optimise-store on Nix
         # versions where it can corrupt the store.
         optimise.automatic = true;
+
+        # `nix shell idn#<pkg>` / `idn#unstable.<pkg>`: stable and unstable with
+        # this repo's nixpkgs config, on every host, whether or not it uses
+        # pkgs.unstable. Plain `nixpkgs#` stays the stock flake.
+        registry.idn.flake = inputs.self;
       };
 
       environment = {

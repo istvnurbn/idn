@@ -27,7 +27,7 @@
         // {
           machine = {
             imports = modules ++ extraModules;
-            # The unstable aspect puts the repo itself in the registry, which
+            # The nix aspect puts the repo itself in the registry, which
             # would re-run every test on every commit
             nix.registry = lib.mkForce {};
           };
