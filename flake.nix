@@ -15,7 +15,7 @@
       url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    den.url = "github:denful/den/v0.20.0";
+    den.url = "github:denful/den/cbe76f223bd02a48e7611e157b33036f38425131";
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
