@@ -6,7 +6,6 @@
 
       # Base
       nix
-      unstable
       sudo
       openssh
       shell

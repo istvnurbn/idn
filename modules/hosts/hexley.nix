@@ -7,7 +7,6 @@
 
       # Base
       nix
-      unstable
       networking
       sudo
       openssh

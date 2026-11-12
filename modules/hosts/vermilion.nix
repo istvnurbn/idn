@@ -23,7 +23,6 @@
 
       # Base
       nix
-      unstable
       chaotic
       networking
       avahi
