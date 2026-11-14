@@ -5,11 +5,6 @@
     policies = {
       EnterprisePoliciesEnabled = true;
 
-      # Updates & Background Services
-      AppAutoUpdate = false;
-      BackgroundAppUpdate = false;
-      ManualAppUpdateOnly = true;
-
       # Features
       DisableDeveloperTools = false;
       DisableFeedbackCommands = true;
