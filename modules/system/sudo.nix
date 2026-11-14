@@ -1,22 +1,6 @@
 {
-  den.aspects.sudo = {user, ...}: {
-    nixos = {
-      # Extra rules for sudo
-      security.sudo.extraRules = [
-        {
-          users = [user.name];
-          commands = [
-            {
-              command = "ALL";
-              options = [
-                "SETENV"
-                "NOPASSWD"
-              ];
-            }
-          ];
-        }
-      ];
-    };
+  den.aspects.sudo = {
+    nixos.security.sudo.wheelNeedsPassword = false;
 
     darwin = {
       security.pam.services.sudo_local = {
