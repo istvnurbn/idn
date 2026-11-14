@@ -15,5 +15,7 @@
 
       security.rtkit.enable = true;
     };
+
+    persistHome.directories = [".local/state/wireplumber"];
   };
 }
