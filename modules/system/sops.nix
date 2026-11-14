@@ -1,6 +1,6 @@
 # Secrets with sops-nix. Encrypted files live in secrets/, their recipients in
-# secrets/.sops.yaml. Each host decrypts with its own SSH host key, used as it
-# is (no ssh-to-age), at activation.
+# the repo root's .sops.yaml. Each host decrypts with its own SSH host key,
+# used as it is (no ssh-to-age), at activation.
 {
   den,
   inputs,
