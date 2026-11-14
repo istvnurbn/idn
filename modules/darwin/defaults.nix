@@ -51,7 +51,7 @@
               automaticallyDownloadNewUpdatesWhenAvailable = true;
               automaticallyInstallApplicationUpdatesFromTheAppStore = true;
               automaticallyInstallMacOSUpdates = false;
-              automaticallyInstallSystemDataFilesAndSecurityUpdates = false;
+              automaticallyInstallSystemDataFilesAndSecurityUpdates = true;
             };
           };
           lockScreen = {
