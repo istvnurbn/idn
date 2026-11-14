@@ -14,7 +14,7 @@
 
     persistHome = {
       directories = [
-        ".cache/tor project"
+        ".tor project"
       ];
     };
   };
