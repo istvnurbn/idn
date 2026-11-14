@@ -130,6 +130,7 @@ in {
                     n=$((n + 1))
                 done
                 mv -T /btrfs_tmp/root "$dest"
+                touch "$dest"
             fi
 
             # Pruning old snapshots is best-effort: a single failed deletion
