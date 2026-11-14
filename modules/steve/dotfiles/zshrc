@@ -1,38 +1,14 @@
-# zinit
-ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
-if [[ ! -d $ZINIT_HOME/.git ]]; then
-  mkdir -p "${ZINIT_HOME:h}"
-  git clone --depth=1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
-source "$ZINIT_HOME/zinit.zsh"
-
-# Own dump file: /etc/zshrc (NixOS, nix-darwin, Ubuntu) may already have run
-# compinit with a shorter $fpath into ~/.zcompdump, hiding zinit's completions.
-ZINIT[ZCOMPDUMP_PATH]="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
-[[ -d ${ZINIT[ZCOMPDUMP_PATH]:h} ]] || mkdir -p "${ZINIT[ZCOMPDUMP_PATH]:h}"
-# No -C: rescan so newly installed completions get picked up. -i: never stop
-# to ask about insecure dirs. compinit is deferred, so this costs no startup time.
-ZINIT[COMPINIT_OPTS]=-i
-
-# compinit runs deferred: queue compdef calls made before it (zoxide) for zicdreplay
-(( $+functions[zicompdef] )) && compdef() { zicompdef "$@"; }
-
-# plugins (turbo: loaded right after the first prompt)
-# Order: compinit -> fzf-tab -> widget wrappers (syntax highlighting, autosuggestions)
-# nocd: don't cd into plugin dirs for atinit/atload; a redraw meanwhile (e.g. the
-# terminal resizing at startup) would show that dir in the prompt
-zinit wait lucid nocd for \
-  atinit"zicompinit; zicdreplay" \
-    Aloxaf/fzf-tab \
-  zdharma-continuum/fast-syntax-highlighting \
-  blockf \
-    zsh-users/zsh-completions \
-  atload"!_zsh_autosuggest_start" \
-    zsh-users/zsh-autosuggestions
+# completion: compinit first, so later compdef calls (zoxide's) register.
+# -C trusts the dump and skips the rescan and compaudit, about 70 ms a shell.
+# The dump is named after the running system (:A resolves the symlink), so
+# each switch starts a fresh one and picks up new completions.
+# -i: never stop to ask about insecure dirs while building it.
+ZCOMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${${:-/run/current-system}:A:t}
+[[ -e $ZCOMPDUMP ]] || { mkdir -p ${ZCOMPDUMP:h} && rm -f ${ZCOMPDUMP:h}/zcompdump*(N) }
+autoload -Uz compinit && compinit -C -i -d $ZCOMPDUMP
 
 # prompt: Pure
-zinit ice pick"async.zsh" src"pure.zsh"
-zinit light sindresorhus/pure
+autoload -Uz promptinit && promptinit && prompt pure
 
 zstyle ':prompt:pure:git:stash' show yes
 zstyle ':prompt:pure:custom:prefix' color cyan
@@ -78,3 +54,14 @@ alias mc='mc --nosubshell'
 (( $+commands[fzf] ))    && source <(fzf --zsh)
 (( $+commands[zoxide] )) && eval "$(zoxide init --cmd cd zsh)"
 (( $+commands[atuin] ))  && eval "$(atuin init zsh)"
+
+# plugins, from nixpkgs (modules/system/shell.nix). Last, as zinit's turbo
+# mode loaded them, so the widget wrappers see every widget above.
+# Order: fzf-tab -> syntax highlighting -> autosuggestions.
+# fast-syntax-highlighting downloads this theme from GitHub master when it is
+# missing. Only a theme that names a secondary theme reads it, and none is set.
+FAST_WORK_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/fsh
+[[ -e $FAST_WORK_DIR/secondary_theme.zsh ]] || { mkdir -p $FAST_WORK_DIR && : >$FAST_WORK_DIR/secondary_theme.zsh }
+source /run/current-system/sw/share/fzf-tab/fzf-tab.plugin.zsh
+source /run/current-system/sw/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+source /run/current-system/sw/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
