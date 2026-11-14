@@ -192,13 +192,8 @@ in {
                   "-f"
                 ];
                 mountpoint = "/mnt/data";
-                mountOptions =
-                  [
-                    "compress=zstd"
-                    "noatime"
-                  ]
-                  # A missing key or disk shouldn't stop the boot
-                  ++ lib.optional encrypted "nofail";
+                # A missing key or disk shouldn't stop the boot
+                mountOptions = ["compress=zstd" "noatime" "nofail"];
               };
             };
           };
