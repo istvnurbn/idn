@@ -58,12 +58,10 @@
     persistHome = {
       directories = [
         ".config/Proton Pass"
+        ".config/kde.org"
         ".local/share/org.localsend.localsend_app"
         ".local/share/zed"
         ".local/share/ghostwriter"
-      ];
-      files = [
-        ".config/kde.org/ghostwriter.conf"
       ];
     };
   };
