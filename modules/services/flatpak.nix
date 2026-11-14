@@ -9,7 +9,7 @@
 
       services.flatpak = {
         enable = true;
-        update.auto.enable = false;
+        update.auto.enable = true;
         uninstallUnmanaged = true;
       };
     };
