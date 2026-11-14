@@ -4,7 +4,11 @@
 #   - a file written to / is gone after the reboot, and the old root holding
 #     it sits under old_roots/ (the initrd wipe moved it),
 #   - a persisted directory and a persisted single file kept their content,
-#   - /etc/machine-id, which the aspect itself persists, is unchanged.
+#   - /etc/machine-id, which the aspect itself persists, is unchanged,
+#   - in steve's home (persistHome, through home-manager) a persisted
+#     directory, a persisted single file and ~/.ssh kept their content,
+#     ~/.ssh is still 0700, steve still owns them, and a file nothing
+#     persists is gone.
 #
 #   nix build .#checks.x86_64-linux.vm-impermanence -L
 #   nix run .#checks.x86_64-linux.vm-impermanence.driverInteractive
@@ -59,6 +63,8 @@
   };
 in {
   den.hosts.x86_64-linux.vm-impermanence = vmTest {
+    # A real user, so persistHome reaches home-manager the way it does on vermilion
+    users.steve = {};
     extraModules = [btrfsDisk];
 
     testScript = ''
@@ -71,6 +77,7 @@ in {
 
       machine.start()
       machine.wait_for_unit("multi-user.target")
+      machine.wait_for_unit("home-manager-steve.service")
 
       with subtest("/ is the btrfs root subvolume and /persist is mounted"):
           fstype, options = machine.succeed("findmnt -no FSTYPE,OPTIONS /").split()
@@ -83,9 +90,20 @@ in {
       machine.succeed("echo file > /etc/vm-impermanence-marker")
       machine_id = machine.succeed("cat /etc/machine-id")
 
+      # Written as steve, so ownership and modes are tested too. mkdir -p makes
+      # a broken persistHome fail in the subtests below instead of here.
+      home_files = {
+          "vm-impermanence/marker": "dir",  # persisted directory (aspect below)
+          ".vm-impermanence-marker": "file",  # persisted single file (aspect below)
+          ".ssh/marker": "ssh",  # persisted, mode 0700, by the impermanence aspect
+      }
+      for path, text in {**home_files, "not-persisted": "gone"}.items():
+          machine.succeed(f"runuser -u steve -- sh -c 'mkdir -p $(dirname /home/steve/{path}) && echo {text} > /home/steve/{path}'")
+
       machine.shutdown()
       machine.start()
       machine.wait_for_unit("multi-user.target")
+      machine.wait_for_unit("home-manager-steve.service")
 
       with subtest("a file on / is gone after the reboot"):
           machine.fail("test -e /marker-root")
@@ -103,16 +121,34 @@ in {
 
       with subtest("/etc/machine-id is unchanged"):
           assert machine.succeed("cat /etc/machine-id") == machine_id
+
+      with subtest("persistHome: home paths survive, ~/.ssh is still 0700"):
+          for path, text in home_files.items():
+              assert machine.succeed(f"cat /home/steve/{path}").strip() == text, path
+          assert machine.succeed("stat -c %a /home/steve/.ssh").strip() == "700"
+
+      with subtest("persistHome: steve still owns his home and the persisted paths"):
+          owners = machine.succeed(
+              "stat -c %U /home/steve /home/steve/.ssh /home/steve/vm-impermanence /home/steve/.vm-impermanence-marker"
+          ).split()
+          assert set(owners) == {"steve"}, owners
+
+      with subtest("persistHome: the rest of the home is gone"):
+          machine.fail("test -e /home/steve/not-persisted")
     '';
   };
 
   den.aspects.vm-impermanence = {
     includes = [den.aspects.impermanence];
 
-    # Check-only entries, through the same setting every aspect uses
+    # Check-only entries, through the same settings every aspect uses
     persist = {
       directories = ["/var/lib/vm-impermanence"];
       files = ["/etc/vm-impermanence-marker"];
+    };
+    persistHome = {
+      directories = ["vm-impermanence"];
+      files = [".vm-impermanence-marker"];
     };
   };
 }
