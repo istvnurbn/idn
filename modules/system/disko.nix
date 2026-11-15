@@ -94,7 +94,6 @@ in {
                   "/root" = {
                     mountpoint = "/";
                     mountOptions = [
-                      "subvol=root"
                       "compress=zstd"
                       "noatime"
                     ];
@@ -102,7 +101,6 @@ in {
                   "/nix" = {
                     mountpoint = "/nix";
                     mountOptions = [
-                      "subvol=nix"
                       "compress=zstd"
                       "noatime"
                     ];
@@ -110,7 +108,6 @@ in {
                   "/persist" = lib.mkIf (host.hasAspect den.aspects.impermanence) {
                     mountpoint = "/persist";
                     mountOptions = [
-                      "subvol=persist"
                       "compress=zstd"
                       "noatime"
                     ];
