@@ -185,7 +185,6 @@
           };
           menuBar = {
             clock = {
-              showAmPm = true;
               showTheDayOfTheWeek = true;
             };
           };
