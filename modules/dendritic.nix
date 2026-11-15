@@ -62,15 +62,15 @@
 
       includes = [
         # Automatically sets home.username, home.homeDirectory, users.users.<name>
-        den.provides.define-user
+        den.batteries.define-user
         # Makes user admin (wheel and networkmanager)
-        den.provides.primary-user
+        den.batteries.primary-user
         # Sets shell for user at OS and HM level
-        (den.provides.user-shell "zsh")
+        (den.batteries.user-shell "zsh")
         # Automatically sets networking.hostName from host name
-        den.provides.hostname
+        den.batteries.hostname
         # flake inputs with the system pre-selected
-        den.provides.inputs'
+        den.batteries.inputs'
         # Every macOS host: without it nix-darwin ignores homebrew.casks
         den.aspects.nix-homebrew
       ];
