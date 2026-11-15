@@ -1,9 +1,10 @@
 # completion: compinit first, so later compdef calls (zoxide's) register.
 # -C trusts the dump and skips the rescan and compaudit, about 70 ms a shell.
 # The dump is named after the running system (:A resolves the symlink), so
-# each switch starts a fresh one and picks up new completions.
+# each switch starts a fresh one and picks up new completions. Quoted, or
+# macOS's /bin/zsh 5.9 leaks the '-' as a pattern token (byte 0x9b) and :A fails.
 # -i: never stop to ask about insecure dirs while building it.
-ZCOMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${${:-/run/current-system}:A:t}
+ZCOMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${${:-"/run/current-system"}:A:t}
 [[ -e $ZCOMPDUMP ]] || { mkdir -p ${ZCOMPDUMP:h} && rm -f ${ZCOMPDUMP:h}/zcompdump*(N) }
 autoload -Uz compinit && compinit -C -i -d $ZCOMPDUMP
 
