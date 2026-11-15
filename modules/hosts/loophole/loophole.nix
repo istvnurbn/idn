@@ -13,8 +13,8 @@
       deploy-safety
     ];
 
-    # Published to the fleet's SSH roster (see system/openssh.nix)
-    ssh-keys.users.steve = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO+ge++JIgIQHrr14P1u0K+rF/NzfaTiBz+TRMmUfMHO steve@loophole";
+    # No ssh-keys here: a key on this company laptop mustn't log in to the
+    # fleet (system/openssh.nix), where sudo asks no password
 
     nixos.security.pki.certificateFiles = [
       ./certs/corporate.pem # Expires on 2035-09-03
