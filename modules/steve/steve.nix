@@ -3,9 +3,9 @@
     includes = [
       den.aspects.dotfiles
       den.aspects.xdg-folders
-      (den.lib.policy.when ({host, ...}: host.hasAspect den.aspects.firefox) den.aspects.steve._.firefox-settings)
-      (den.lib.policy.when ({host, ...}: host.hasAspect den.aspects.plasma) den.aspects.steve._.plasma-settings)
-      (den.lib.policy.when ({host, ...}: host.hasAspect den.aspects.darwin-defaults) den.aspects.steve._.darwin-settings)
+      (den.lib.policy.when ({host, ...}: host.hasAspect den.aspects.firefox) den.aspects.steve.provides.firefox-settings)
+      (den.lib.policy.when ({host, ...}: host.hasAspect den.aspects.plasma) den.aspects.steve.provides.plasma-settings)
+      (den.lib.policy.when ({host, ...}: host.hasAspect den.aspects.darwin-defaults) den.aspects.steve.provides.darwin-settings)
     ];
 
     user = {
