@@ -39,7 +39,11 @@
       # Hosts take what their users hand them through provides.to-hosts
       # (steve.nix). Explicit, because den stops doing it by default in the
       # release planned for 2027-01-01 (den #694).
-      includes = [den.batteries.mutual-provider];
+      includes = [
+        den.batteries.mutual-provider
+        # Every macOS host: without it nix-darwin ignores homebrew.casks
+        den.aspects.nix-homebrew
+      ];
     };
 
     default = {
@@ -71,8 +75,6 @@
         den.batteries.hostname
         # flake inputs with the system pre-selected
         den.batteries.inputs'
-        # Every macOS host: without it nix-darwin ignores homebrew.casks
-        den.aspects.nix-homebrew
       ];
     };
   };
