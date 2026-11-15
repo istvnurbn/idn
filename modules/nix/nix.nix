@@ -6,11 +6,6 @@
         channel.enable = false;
 
         settings = {
-          # Users and groups that have additional rights when connecting to the Nix daemon
-          trusted-users = [
-            "@wheel"
-          ];
-
           # Avoid re-transferring already-substitutable paths over SSH when
           # using a remote builder
           builders-use-substitutes = true;
@@ -72,6 +67,10 @@
     };
 
     nixos = {
+      # Users and groups that have additional rights when connecting to the Nix daemon.
+      # NixOS only: macOS's wheel is just root, and @admin would skip sudo's password.
+      nix.settings.trusted-users = ["@wheel"];
+
       programs = {
         nh = {
           enable = true;
