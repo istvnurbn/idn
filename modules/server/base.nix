@@ -43,15 +43,8 @@
     };
 
     boot = {
-      loader = {
-        systemd-boot = {
-          enable = true;
-          # Servers don't need many generations kept around.
-          configurationLimit = lib.mkDefault 5;
-        };
-        efi.canTouchEfiVariables = true;
-        timeout = lib.mkDefault 3;
-      };
+      # The bootloader comes from the host: the boot aspect on UEFI, GRUB on a BIOS VPS
+      loader.timeout = lib.mkDefault 3;
 
       # Most cloud providers' only out-of-band recovery path if SSH breaks
       # is a serial console.
