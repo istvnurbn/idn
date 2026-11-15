@@ -7,7 +7,7 @@
   # Setup for den
   flake-file.inputs = {
     flake-file.url = "github:denful/flake-file/v0.7.0";
-    den.url = "github:denful/den/cbe76f223bd02a48e7611e157b33036f38425131";
+    den.url = "github:denful/den/9bdfbc2123a96c1a96ffd2e76241d321741e0dc8";
   };
 
   imports = [
