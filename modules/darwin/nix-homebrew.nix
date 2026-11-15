@@ -25,7 +25,7 @@ in {
     };
   };
 
-  den.aspects.nix-homebrew.darwin = {
+  den.aspects.nix-homebrew.darwin = {config, ...}: {
     imports = [
       inputs.nix-homebrew.darwinModules.nix-homebrew
     ];
@@ -34,8 +34,8 @@ in {
       # Install Homebrew under the default prefix
       enable = true;
 
-      # User owning the Homebrew prefix
-      user = "steve";
+      # User owning the Homebrew prefix: the Mac's primary user, which den sets
+      user = config.system.primaryUser;
 
       # Enable fully-declarative tap management
       inherit taps;
