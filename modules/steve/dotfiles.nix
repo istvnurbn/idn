@@ -13,7 +13,6 @@
       linkedPaths = [
         # Files/folders in the root of the $HOME directory
         ".abcde.conf"
-        ".face"
         ".gitconfig"
 
         # Files/folders in the .config directory
