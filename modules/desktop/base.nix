@@ -3,12 +3,6 @@
     # pkgs.unstable comes from the unstable aspect
     includes = [den.aspects.unstable];
 
-    os = {pkgs, ...}: {
-      environment.systemPackages = with pkgs; [
-        unstable.mcp-nixos # stable lagged far behind, without 26.05 for a long time
-      ];
-    };
-
     nixos = {
       host,
       lib,

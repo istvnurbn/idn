@@ -11,6 +11,9 @@
       environment.systemPackages = with pkgs; [
         unstable.claude-code
         nodejs # plugin hooks run node, ponytail's among them
+        # Started by the .mcp.json in idn and idn-primer. From unstable because
+        # stable lagged far behind, without 26.05 for a long time.
+        unstable.mcp-nixos
       ];
 
       # Claude writes its commands for bash. Under zsh, the login shell, they
