@@ -3,10 +3,19 @@
     # pkgs.unstable comes from the unstable aspect
     includes = [den.aspects.unstable];
 
-    os = {pkgs, ...}: {
+    os = {
+      lib,
+      pkgs,
+      ...
+    }: {
       environment.systemPackages = with pkgs; [
         unstable.claude-code
+        nodejs # plugin hooks run node, ponytail's among them
       ];
+
+      # Claude writes its commands for bash. Under zsh, the login shell, they
+      # trip on zsh's glob rules and on ~/.zshrc's aliases and zoxide cd.
+      environment.variables.CLAUDE_CODE_SHELL = lib.getExe pkgs.bashInteractive;
     };
 
     darwin.homebrew.casks = ["claude"];
