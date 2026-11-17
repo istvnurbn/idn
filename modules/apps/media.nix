@@ -12,7 +12,7 @@
         gimp
         picard
         vlc
-        unstable.audacious
+        unstable.audacious # Winamp skin support in its Qt UI isn't in stable
       ];
 
       services.flatpak.packages = [

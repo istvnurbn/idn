@@ -5,7 +5,7 @@
 
     os = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
-        unstable.mcp-nixos
+        unstable.mcp-nixos # stable lagged far behind, without 26.05 for a long time
       ];
     };
 
@@ -19,7 +19,7 @@
         [
           ghostty
           wl-clipboard
-          unstable.zed-editor
+          unstable.zed-editor # moves fast; stable long lacked the agent panel
           proton-pass
         ]
         ++ lib.optional (host.hasAspect den.aspects.plasma) kdePackages.ghostwriter;
