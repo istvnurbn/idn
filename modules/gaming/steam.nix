@@ -30,7 +30,6 @@
         remotePlay.openFirewall = true;
         dedicatedServer.openFirewall = true;
         localNetworkGameTransfers.openFirewall = true;
-        extest.enable = true;
         protontricks.enable = true;
         extraCompatPackages = map ({pkg, ...}: pkg) compatTools;
         extraPackages = with pkgs; [
