@@ -7,7 +7,7 @@
   # Upstream's flake tracks main, ahead of nixpkgs. Its own nixpkgs only
   # builds its packages/devShells; the NixOS module builds against host pkgs.
   flake-file.inputs.moonshine = {
-    url = "github:istvnurbn/moonshine/faugus-scanner";
+    url = "github:hgaiser/moonshine";
     inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 

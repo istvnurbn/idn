@@ -76,7 +76,7 @@
       };
     };
     moonshine = {
-      url = "github:istvnurbn/moonshine/faugus-scanner";
+      url = "github:hgaiser/moonshine";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
