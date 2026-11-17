@@ -1,13 +1,14 @@
-# Fallback unlock over SSH from the initrd, for when the local display or
-# keyboard doesn't come up. The TPM and the console prompt keep working;
-# whichever answers first unlocks the disk. Desktops only: servers stay
-# unencrypted, so they never need it.
+# Unlock over SSH from the initrd: how a server gets its passphrase after a
+# reboot, and a fallback on desktops when the local display or keyboard
+# doesn't come up. The TPM and the console prompt keep working; whichever
+# answers first unlocks the disk.
 #
 #   ssh -p 2222 root@<host>    # lands straight in the passphrase prompt
 #
 # The initrd only gets wired Ethernet with DHCP (no Wi-Fi, no Tailscale), so
-# this works from the LAN. The host's NIC driver has to be in its
-# boot.initrd.availableKernelModules (see hosts/vermilion.nix).
+# this works from the LAN, or on a public server's DHCP (IPv4) address. The
+# host's NIC driver has to be in its boot.initrd.availableKernelModules (see
+# hosts/vermilion.nix).
 #
 # The initrd sits on the unencrypted ESP, so its host key is readable by
 # anyone with the disk: use a dedicated key, never the real host key.
@@ -46,8 +47,11 @@ in {
           networkConfig.DHCP = "yes";
         };
       };
-      # NetworkManager takes over in stage 2; don't leave the initrd's lease behind
+      # Stage 2 sets up the network itself; don't leave the initrd's lease behind
       network.flushBeforeStage2 = true;
+      # Nothing here looks up names, and no firewall runs in the initrd: leave
+      # out resolved, whose LLMNR (on by default) answers on every link
+      services.resolved.enable = false;
 
       network.ssh = {
         enable = true;

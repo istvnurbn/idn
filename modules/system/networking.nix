@@ -7,8 +7,6 @@
       };
 
       # Legacy multicast name resolution, vulnerable to spoofing.
-      # Not a no-op while stage 2 runs no resolved: the luks-ssh-unlock
-      # initrd does, and its resolved.conf is built from these settings.
       services.resolved.settings.Resolve.LLMNR = lib.mkDefault "false";
     };
 
