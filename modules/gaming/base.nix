@@ -50,7 +50,6 @@
 
       services.udev.packages = with pkgs; [
         game-devices-udev-rules
-        steam-devices-udev-rules
       ];
 
       # Hosts choose the package; vermilion sets Nyx's gamescope_git.
