@@ -25,9 +25,6 @@
       tor
       media
       claude
-
-      # Services
-      docker
     ];
 
     # Published to the fleet's SSH roster (see system/openssh.nix)
