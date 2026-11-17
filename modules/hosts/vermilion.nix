@@ -80,9 +80,6 @@
         ];
       };
 
-      # Disable printing
-      services.printing.enable = false;
-
       # Wire gamescope through the host
       programs.gamescope.package = pkgs.gamescope_git;
 
