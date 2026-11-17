@@ -38,7 +38,7 @@
       };
 
       # Link the Proton-GE and Proton CachyOS nix store path to the user directory.
-      # This is needed for using these compat tools with Heroic and others.
+      # This is needed for using these compat tools with Faugus and others.
       #
       # Discussion: https://discourse.nixos.org/t/using-proton-ge-bin-package-outside-of-steam/
       systemd.user.tmpfiles = let
