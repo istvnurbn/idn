@@ -1,10 +1,13 @@
+# Who can decrypt secrets/. Managing them and recovering lost keys: secrets/README.md
 keys:
   # People: the machines you edit secrets from (~/.ssh/id_ed25519.pub)
   - &steve-hexley ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG9mUymT0rLNsntCzJp7Na4Rwj9fAMgfh1oSYmXuRvRK steve@hexley
   - &steve-vermilion ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDFAQW9uPhDsi+CiCxfwon12iT0Earea6CznTniv1Ta steve@vermilion
+  # Emergency: an age key kept only in the password manager
+  - &emergency age15jpljykjhqgkp5tk7aek6rgzyxr0k7te953nj9jganc6edpcu9xszpzjpl
   # Hosts: /etc/ssh/ssh_host_ed25519_key.pub
   - &vermilion ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfJ4iMClvTaqIYrMZNdro5oGSLk8LYG8awsuZyez7O5
 creation_rules:
   - path_regex: ^secrets/shared\.yaml$
     key_groups:
-      - age: [*steve-hexley, *steve-vermilion, *vermilion]
+      - age: [*steve-hexley, *steve-vermilion, *emergency, *vermilion]
