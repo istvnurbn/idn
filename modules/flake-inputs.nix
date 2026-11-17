@@ -5,10 +5,6 @@
 {
   flake-file = {
     inputs = {
-      flake-compat = {
-        url = "github:NixOS/flake-compat";
-        flake = false;
-      };
       flake-parts = {
         url = "github:hercules-ci/flake-parts";
         inputs.nixpkgs-lib.follows = "nixpkgs-lib";

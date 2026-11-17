@@ -27,10 +27,6 @@
         nixpkgs.follows = "nixpkgs-unstable";
       };
     };
-    flake-compat = {
-      url = "github:NixOS/flake-compat";
-      flake = false;
-    };
     flake-file.url = "github:denful/flake-file/v0.7.0";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -88,7 +84,7 @@
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/release-26.05";
       inputs = {
-        flake-compat.follows = "flake-compat";
+        flake-compat.follows = "";
         nixpkgs.follows = "nixpkgs";
       };
     };

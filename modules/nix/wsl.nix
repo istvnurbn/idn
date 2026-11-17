@@ -3,7 +3,8 @@
     url = "github:nix-community/NixOS-WSL/release-26.05";
     inputs = {
       nixpkgs.follows = "nixpkgs";
-      flake-compat.follows = "flake-compat";
+      # Only read by NixOS-WSL's non-flake default.nix, through its own lock
+      flake-compat.follows = "";
     };
   };
 
