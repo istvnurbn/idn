@@ -29,7 +29,6 @@
         enable = true;
         package = pkgs.unstable.steam;
         remotePlay.openFirewall = true;
-        dedicatedServer.openFirewall = true;
         localNetworkGameTransfers.openFirewall = true;
         protontricks.enable = true;
         extraCompatPackages = map ({pkg, ...}: pkg) compatTools;
@@ -68,7 +67,6 @@
     persistHome = {
       directories = [
         ".local/share/Steam"
-        ".cache/protontricks"
       ];
     };
   };
