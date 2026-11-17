@@ -83,6 +83,33 @@
         '';
       });
 
+      # Steam outlives the game it launched, so a scanned game's stream would
+      # land in Big Picture when the game quits. Wait for the game to start
+      # and exit, then shut Steam down: the session ends with this script,
+      # and Moonlight returns to its app list.
+      steamGame = lib.getExe (pkgs.writeShellApplication {
+        name = "moonshine-steam-game";
+        runtimeInputs = [pkgs.procps pkgs.coreutils];
+        text = ''
+          # Steam starts every game under `reaper SteamLaunch AppId=<id> -- ...`
+          game="SteamLaunch AppId=$1 "
+
+          ${steam} "steam://rungameid/$1" &
+          steam_pid=$!
+
+          # No timeout: Steam may update the game or show a dialog first.
+          # If Steam quits before the game starts, so does the session.
+          until pgrep -f "$game" >/dev/null; do
+            kill -0 "$steam_pid" 2>/dev/null || exit 0
+            sleep 1
+          done
+          while pgrep -f "$game" >/dev/null; do sleep 1; done
+
+          # A clean shutdown lets Steam finish syncing the game's cloud saves
+          ${steamStop}
+        '';
+      });
+
       # Shared by the Big Picture app and the Steam scanner
       steamSession = {
         pre_command = [[steamStop]];
@@ -172,7 +199,7 @@
               // {
                 type = "steam";
                 library = "$HOME/.local/share/Steam";
-                command = [steam "steam://rungameid/{game_id}"];
+                command = [steamGame "{game_id}"];
               })
             ++ lib.optional hasFaugus {
               # `--game` needs no pre_command: it runs Faugus' runner
