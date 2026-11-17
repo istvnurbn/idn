@@ -1,6 +1,7 @@
 {den, ...}: {
   den.aspects.faugus = {
-    # pkgs.unstable comes from the unstable aspect
+    # pkgs.unstable comes from the unstable aspect; gaming takes the latest
+    # Faugus from it
     includes = [den.aspects.unstable];
 
     nixos = {pkgs, ...}: {

@@ -6,6 +6,7 @@
 }: {
   # Upstream's flake tracks main, ahead of nixpkgs. Its own nixpkgs only
   # builds its packages/devShells; the NixOS module builds against host pkgs.
+  # moonshine moves fast and nixpkgs' own package lags; revisit if that changes.
   flake-file.inputs.moonshine = {
     url = "github:hgaiser/moonshine";
     inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -208,6 +209,7 @@
               # directly instead of forwarding to a running instance.
               type = "faugus";
               command = [
+                # The same unstable Faugus that faugus.nix installs
                 (lib.getExe pkgs.unstable.faugus-launcher)
                 "--game"
                 "{game_id}"

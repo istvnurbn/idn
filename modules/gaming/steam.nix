@@ -1,6 +1,7 @@
 {den, ...}: {
   den.aspects.steam = {
-    # pkgs.unstable comes from the unstable aspect
+    # pkgs.unstable comes from the unstable aspect; gaming takes the latest
+    # Steam and Proton-GE from it
     includes = [
       den.aspects.chaotic
       den.aspects.unstable
