@@ -26,7 +26,8 @@ in {
   den.aspects.idn-pkgs.legacyPackages = {pkgs, ...}: {
     config = import inputs.nixpkgs {
       inherit (pkgs.stdenv.hostPlatform) system;
-      config = import ./_nixpkgs-config.nix;
+      # Like the hosts: Macs also allow unsupported systems (nix-darwin.nix)
+      config = import ./_nixpkgs-config.nix // {allowUnsupportedSystem = pkgs.stdenv.hostPlatform.isDarwin;};
       overlays = [unstableOverlay];
     };
   };
