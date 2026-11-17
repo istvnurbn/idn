@@ -91,8 +91,10 @@
         name = "moonshine-steam-game";
         runtimeInputs = [pkgs.procps pkgs.coreutils];
         text = ''
-          # Steam starts every game under `reaper SteamLaunch AppId=<id> -- ...`
-          game="SteamLaunch AppId=$1 "
+          # Steam starts every game under `reaper SteamLaunch AppId=<id> -- ...`,
+          # but first its install scripts under `... AppId=<id> Install=1 -- ...`,
+          # which must not count as the game.
+          game="SteamLaunch AppId=$1 --"
 
           ${steam} "steam://rungameid/$1" &
           steam_pid=$!
