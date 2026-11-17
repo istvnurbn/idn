@@ -37,7 +37,6 @@
         enableRenice = true;
         settings = {
           general = {
-            softrealtime = "auto";
             renice = 10;
           };
         };
