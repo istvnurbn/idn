@@ -15,6 +15,7 @@
       moonshine = {
         gpu = "0000:03:00.0";
         interfaces = ["eno1"];
+        panelNetworks = ["10.0.10.0/24"];
       };
     };
   };

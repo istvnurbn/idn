@@ -33,6 +33,15 @@
       description = "LAN interfaces to open the GameStream and mDNS ports on";
     };
 
+    # Empty keeps the web control panel local-only, upstream's default. It has
+    # no password, and whoever opens it can add commands that run as the user.
+    settings.panelNetworks = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      example = ["192.168.1.0/24"];
+      description = "Address ranges (CIDR), besides loopback, that can open the web control panel";
+    };
+
     nixos = {
       config,
       host,
@@ -97,17 +106,20 @@
       ];
 
       # Upstream only has a global openFirewall. Open the GameStream ports,
-      # plus 5353/udp for its mDNS responder, on LAN or VPN-facing interfaces
-      # only; see Security in the main README. tailscale0 is already trusted.
+      # plus 5353/udp for its mDNS responder and the control panel when other
+      # networks may open it, on LAN or VPN-facing interfaces only; see
+      # Security in the main README. tailscale0 is already trusted.
       networking.firewall.interfaces = let
         s = config.services.moonshine.settings;
       in
         lib.genAttrs cfg.interfaces (_: {
-          allowedTCPPorts = [
-            (s.webserver.port_https or 47984)
-            (s.webserver.port or 47989)
-            (s.stream.port or 48010)
-          ];
+          allowedTCPPorts =
+            [
+              (s.webserver.port_https or 47984)
+              (s.webserver.port or 47989)
+              (s.stream.port or 48010)
+            ]
+            ++ lib.optional (cfg.panelNetworks != []) (s.ui.port or 47990);
           allowedUDPPorts = [
             5353
             (s.stream.video.port or 47998)
@@ -141,6 +153,10 @@
               model = "pc105";
             };
           };
+
+          # The web control panel, on port 47990. It cannot save changes, as
+          # the config file is in the store: change settings here instead.
+          ui.allowed_networks = ["127.0.0.1/32" "::1/128"] ++ cfg.panelNetworks;
 
           application = lib.optional hasSteam (steamSession
             // {
