@@ -1,0 +1,29 @@
+{
+  "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/ponytail-statusline.sh\""
+  },
+  "enabledPlugins": {
+    "ponytail@ponytail": true,
+    "cc-plugin-you-should-know@builtin": true
+  },
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  },
+  "pluginConfigs": {
+    "ponytail@ponytail": {
+      "options": {
+        "ledger": true,
+        "sendNames": true
+      }
+    }
+  },
+  "theme": "auto",
+  "autoContinueAtUsageLimit": false
+}

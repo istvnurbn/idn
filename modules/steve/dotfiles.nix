@@ -15,6 +15,12 @@
         ".abcde.conf"
         ".gitconfig"
 
+        # Files in the .claude directory. Claude Code writes settings.json in
+        # place, so the link survives; never link plugins/installed_plugins.json,
+        # which every plugin update swaps for a new file, cutting the link.
+        ".claude/settings.json"
+        ".claude/skills/caveman-commit/SKILL.md"
+
         # Files/folders in the .config directory
         ".config/atuin"
         ".config/btop/themes/catppuccin_mocha.theme"
