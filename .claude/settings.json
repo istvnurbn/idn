@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && PATH=\"$PATH:/run/current-system/sw/bin\" nix fmt >/dev/null 2>&1 || true"
+          }
+        ]
+      }
+    ]
+  }
+}
