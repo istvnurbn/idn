@@ -113,7 +113,10 @@
         '';
       });
 
-      # Shared by the Big Picture app and the Steam scanner
+      # Shared by the Big Picture app and the Steam scanner. Never wrap Steam
+      # (or Faugus) in gamemoderun or scb here: the launch options already do
+      # (`gamemoderun scb -- %command%`; Faugus: GameMode + `scb --`), and
+      # gamemoderun's LD_PRELOAD on Steam can stop the session (TIPS.md).
       steamSession = {
         pre_command = [[steamStop]];
       };

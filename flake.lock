@@ -151,16 +151,16 @@
     "ferriscope": {
       "flake": false,
       "locked": {
-        "lastModified": 1794615961,
-        "narHash": "sha256-JvJgK9Gh9Poq201M5cGST+W8CNuWayynBBtd6b31TXE=",
+        "lastModified": 1795249987,
+        "narHash": "sha256-f0yhxc3kNgnx2Iklrb+vNoGXS3WIzJEyOkxQjkAQ1Qw=",
         "owner": "hgaiser",
         "repo": "ferriscope",
-        "rev": "8638d7c425efb42443d0c1d3c20f98f4ad8ad12f",
+        "rev": "f8e2665193e2c38efb7f5dbc7ebc4fa9954338ef",
         "type": "github"
       },
       "original": {
         "owner": "hgaiser",
-        "ref": "v0.1.0",
+        "ref": "v0.2.2",
         "repo": "ferriscope",
         "type": "github"
       }
@@ -379,11 +379,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794867573,
-        "narHash": "sha256-bBtVTBIexnRNVyH8V3rf4btS1ngSsU4zah8ywdueywA=",
+        "lastModified": 1795250187,
+        "narHash": "sha256-9nHJpSQg/yK9RgTSnxPPpKcIYzAZONTMyD9DNpPbKZw=",
         "owner": "hgaiser",
         "repo": "moonshine",
-        "rev": "0ab6adce0e9312f3e77c5cf9ab51f69af40e63fc",
+        "rev": "b75683c8d20fd60a0b95b732f4718919a77cff86",
         "type": "github"
       },
       "original": {
