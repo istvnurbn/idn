@@ -17,3 +17,5 @@
 	gpgsign = true
 [gpg]
     format = ssh
+[merge]
+	ff = only
