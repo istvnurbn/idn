@@ -1,7 +1,6 @@
 {den, ...}: {
   den.aspects.steam = {
-    # pkgs.unstable comes from the unstable aspect; gaming takes the latest
-    # Steam and Proton-GE from it
+    # pkgs.unstable comes from the unstable aspect; gaming takes the latest Proton-GE from it
     includes = [
       den.aspects.chaotic
       den.aspects.unstable
@@ -27,7 +26,7 @@
     in {
       programs.steam = {
         enable = true;
-        package = pkgs.unstable.steam;
+        package = pkgs.steam;
         remotePlay.openFirewall = true;
         localNetworkGameTransfers.openFirewall = true;
         protontricks.enable = true;
