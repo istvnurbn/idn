@@ -1,6 +1,6 @@
 {
   den.aspects.amdgpu = {
-    nixos = {
+    nixos = {pkgs, ...}: {
       boot = {
         kernelParams = [
           # Allow GPU soft-reset on ring timeout instead of full hang
@@ -23,8 +23,19 @@
         };
       };
 
-      # radv 26.1 on RDNA4: non-conformance notice is expected, not a bug
-      environment.sessionVariables.MESA_VK_IGNORE_CONFORMANCE_WARNING = "1";
+      environment = {
+        systemPackages = with pkgs; [
+          amdgpu_top
+          nvtopPackages.amd
+        ];
+        sessionVariables = {
+          # radv 26.1 on RDNA4: non-conformance notice is expected, not a bug
+          MESA_VK_IGNORE_CONFORMANCE_WARNING = "1";
+          # https://wiki.cachyos.org/configuration/gaming/#increase-maximum-shader-cache-size
+          AMD_VULKAN_ICD = "RADV";
+          MESA_SHADER_CACHE_MAX_SIZE = "16G";
+        };
+      };
 
       # GameMode GPU tweaks for AMD cards; inert unless gaming-base enables
       # gamemode. gpu_device (which GPU index to target) depends on the
