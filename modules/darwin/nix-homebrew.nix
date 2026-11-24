@@ -11,7 +11,18 @@
   };
 in {
   flake-file.inputs = {
-    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
+      inputs.brew-src.follows = "brew-src";
+    };
+
+    # brew itself, moved with the taps by `just update`: nix-homebrew's own
+    # tag pin lags homebrew-core, whose formulas use new brew DSL (e.g.
+    # `manifest_sha256`, 2026-11) as soon as brew main has it.
+    brew-src = {
+      url = "github:Homebrew/brew";
+      flake = false;
+    };
 
     # Declarative tap management
     homebrew-core = {
@@ -36,6 +47,9 @@ in {
 
       # User owning the Homebrew prefix: the Mac's primary user, which den sets
       user = config.system.primaryUser;
+
+      # nix-homebrew names it after its own lock's tag; brew-src follows main
+      package = inputs.brew-src // {name = "brew-${inputs.brew-src.shortRev}";};
 
       # Enable fully-declarative tap management
       inherit taps;

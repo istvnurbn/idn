@@ -7,6 +7,10 @@
 
   inputs = {
     betterfox-userjs.url = "github:istvnurbn/betterfox-userjs-nix";
+    brew-src = {
+      url = "github:Homebrew/brew";
+      flake = false;
+    };
     chaotic = {
       url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
       inputs.home-manager.follows = "";
@@ -76,7 +80,10 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
-    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
+      inputs.brew-src.follows = "brew-src";
+    };
     nix-plist-manager = {
       url = "github:sushydev/nix-plist-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
