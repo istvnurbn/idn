@@ -19,7 +19,7 @@
           name = "GE-Proton";
         }
         {
-          pkg = proton-cachyos_x86_64_v3;
+          pkg = proton-cachyos-bin_x86_64_v3;
           name = "Proton-CachyOS";
         }
       ];
