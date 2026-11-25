@@ -53,6 +53,21 @@ Run `just` to see the full list.
 - `install-impermanence-root`, `install-impermanence-root-luks` and `install-data`: disko formats each disk layout, the host is installed onto it and booted, and the mounts and `/etc/fstab` must match the layout (one `subvol=` per subvolume mount). The impermanence root is also rebooted once: a file on `/` is gone and its old root sits under `old_roots/`, while persisted paths in `/` and in home, `/etc/machine-id` and `/var/log` keep their content.
 - `no-test-keys`: no host trusts one of nixpkgs' snakeoil SSH keys or takes an initrd secret or SSH host key from the Nix store.
 
+To drive a VM test by hand, start its interactive driver, then in its Python prompt boot the machines and open a shell on one:
+
+```console
+nix run '.#checks.x86_64-linux.<name>.driverInteractive'
+>>> start_all()
+>>> machine.shell_interact()
+```
+
+`vermilion` also builds as a VM of itself that logs `steve` in on tty1. Its VM-only settings sit under `virtualisation.vmVariant` in [`modules/hosts/vermilion.nix`](modules/hosts/vermilion.nix), so the real system is unchanged:
+
+```console
+nix build '.#nixosConfigurations.vermilion.config.system.build.vm'
+./result/bin/run-vermilion-vm   # keeps its disk in ./vermilion.qcow2
+```
+
 ## AI Notice
 
 The idea and the initial design of the work presented here are my own. However, I was assisted by Claude in catching mistakes (numerous and sometimes blatantly obvious) and working through the trickier parts as I'm learning this.
