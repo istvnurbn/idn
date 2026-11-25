@@ -6,7 +6,8 @@
 #   - a client unlocks root over initrd SSH on port 2222,
 #   - with the TPM enrolled (PCR 7 + an empty PCR 15), root unlocks by itself,
 #   - the data disk opens after root, through its keyfile on the encrypted root,
-#   - every home-manager-<user>.service comes up in the encrypted boot.
+#   - every home-manager-<user>.service comes up in the encrypted boot,
+#   - it hibernates to the swapfile and resumes from the encrypted root.
 # The machine is impermanent like vermilion, so the keys sit at their real
 # paths under /persist.
 #
@@ -31,6 +32,11 @@
   # hu swaps y and z, so typing it with send_chars only works under hu
   passphrase = "yzsecret";
 
+  # The script makes the swapfile on a fresh filesystem the same way every
+  # time, so its resume offset is pinned here and checked by the test, as
+  # NC-01 re-reads it on vermilion
+  resumeOffset = 61440;
+
   # Test-only machine settings: VM hardware, the disks, and keys
   vm = {
     config,
@@ -54,15 +60,18 @@
         # qemu-vm.nix's default OVMF has neither
         efi.OVMF = pkgs.OVMFFull.fd;
         tpm.enable = true;
-        # The encrypted root starts empty, so the store comes from the host
-        mountHostNixStore = true;
+        # The encrypted root starts empty, so the store comes from an image
+        # disk. Unlike the host store over 9p, its virtio-blk device survives
+        # a hibernation. Writable, for home-manager.
+        useNixStoreImage = true;
+        writableStore = true;
         # The store's writable layer lives on the encrypted /nix, next to the
         # Nix database boot 1 hands over, not on a tmpfs lost at reboot
         writableStoreUseTmpfs = !config.bootChain.encrypted;
         memorySize = 2048;
         emptyDiskImages = [
           {
-            size = 1024;
+            size = 2048;
             driveConfig.deviceExtraOpts.serial = "main";
           }
           {
@@ -74,7 +83,7 @@
         # With the default file systems qemu-vm.nix also drops the aspects'
         # boot.initrd.luks.devices. It replaces disko's file systems either
         # way, so the encrypted boot mounts the script's subvolumes here. The
-        # ESP stays on vda, and /nix/store comes from the host.
+        # ESP stays on vda, and /nix/store comes from the store image.
         useDefaultFilesystems = !config.bootChain.encrypted;
         fileSystems = let
           subvol = name: {
@@ -98,6 +107,9 @@
       # Boot 1 runs from vda's ext4 image, which impermanence's wipe and its
       # btrfs check refuse. It drops those two; the encrypted boot keeps both.
       boot.initrd.systemd.services.wipe-file-systems.enable = config.bootChain.encrypted;
+      # Boot 1 has no LUKS devices, and the initrd waits for a resume device
+      # without a timeout: only the encrypted boot resumes
+      boot.resumeDevice = lib.mkIf (!config.bootChain.encrypted) (lib.mkForce "");
       assertions = lib.mkIf (!config.bootChain.encrypted && !config.bootChain.unfiltered) (lib.mkForce (
         lib.filter (a: a.assertion || !lib.hasPrefix "impermanence:" a.message)
         (extendModules {modules = [{bootChain.unfiltered = true;}];}).config.assertions
@@ -106,6 +118,11 @@
       specialisation.encrypted.configuration.bootChain.encrypted = true;
 
       environment.systemPackages = with pkgs; [btrfs-progs cryptsetup gptfdisk];
+
+      # The test driver talks to the VM through its backdoor service, which a
+      # hibernation cuts; nixpkgs' hibernate test restarts it the same way
+      powerManagement.powerDownCommands = "systemctl --no-block stop backdoor.service";
+      powerManagement.resumeCommands = "systemctl --no-block restart backdoor.service";
 
       # The image is built before the VM exists, so the aspect's host key file
       # can't be its source: a snakeoil key stands in. The initrd's sshd still
@@ -163,7 +180,7 @@ in {
             "mount --mkdir /dev/mapper/crypted /mnt",
             "btrfs subvolume create /mnt/root /mnt/persist /mnt/nix /mnt/swap",
             # disko makes the swapfile it declares when it formats
-            "btrfs filesystem mkswapfile --size 64m /mnt/swap/swapfile",
+            "btrfs filesystem mkswapfile --size 1g /mnt/swap/swapfile",
             "install -d -m 700 /mnt/persist/etc/secrets",
             "dd if=/dev/urandom of=/mnt/persist/etc/secrets/data.key bs=64 count=1",
             "chmod 400 /mnt/persist/etc/secrets/data.key",
@@ -240,6 +257,22 @@ in {
 
         with subtest("the encrypted boot is healthy"):
             ${lib.concatMapStrings (home: "machine.wait_for_unit(\"home-manager-${home}.service\")\n            ") (lib.attrNames nodes.machine.home-manager.users)}
+
+        with subtest("it hibernates to the swapfile and resumes from the encrypted root"):
+            offset = machine.succeed("btrfs inspect-internal map-swapfile -r /swap/swapfile").strip()
+            assert offset == "${toString resumeOffset}", f"the swapfile's resume offset is {offset}: set resumeOffset to it"
+            boot_id = machine.succeed("cat /proc/sys/kernel/random/boot_id")
+            # logind refuses without a usable resume device; fail here, not in a
+            # wait for a shutdown that never comes
+            machine.succeed("busctl call org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager CanHibernate | grep -qx 's \"yes\"'")
+            # A fresh boot would wipe it; a resume never runs the initrd's wipe
+            machine.succeed("echo resumed > /marker-hibernate")
+            machine.execute("systemctl hibernate >&2 &", check_return=False)
+            machine.wait_for_shutdown()
+            # The TPM unlocks root, then the initrd resumes from the swapfile on it
+            machine.start()
+            assert machine.succeed("cat /proc/sys/kernel/random/boot_id") == boot_id, "booted fresh instead of resuming"
+            assert machine.succeed("cat /marker-hibernate").strip() == "resumed"
       '';
     })
     {
@@ -247,7 +280,8 @@ in {
       settings = {
         disko-btrfs-impermanence-main = {
           device = "/dev/disk/by-id/virtio-main";
-          swapSize = "64M";
+          swapSize = "1G";
+          inherit resumeOffset;
         };
         disko-btrfs-data.device = "/dev/disk/by-id/virtio-data";
       };
