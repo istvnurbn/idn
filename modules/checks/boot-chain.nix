@@ -5,7 +5,8 @@
 #   - the console passphrase prompt reads the hu keymap,
 #   - a client unlocks root over initrd SSH on port 2222,
 #   - with the TPM enrolled (PCR 7 + an empty PCR 15), root unlocks by itself,
-#   - the data disk opens after root, through its keyfile on the encrypted root.
+#   - the data disk opens after root, through its keyfile on the encrypted root,
+#   - every home-manager-<user>.service comes up in the encrypted boot.
 # The machine is impermanent like vermilion, so the keys sit at their real
 # paths under /persist.
 #
@@ -13,9 +14,10 @@
 #   nix run .#checks.x86_64-linux.vm-boot-chain.driverInteractive
 #
 # Like nixpkgs' LUKS tests, the first boot is a plain system on vda that lays
-# out the two empty disks under the partition labels disko gives them, and the
-# `encrypted` specialisation then boots from them. Disko's full layouts are the
-# install-* checks' job.
+# out the two empty disks under the partition labels and subvolumes the layout
+# aspects use, then links the `encrypted` specialisation in as generation 2,
+# which boots from them. disko formats nothing here and qemu-vm replaces its
+# file systems; proving the layouts is the install-* checks' job.
 {
   den,
   inputs,
@@ -32,22 +34,31 @@
   # Test-only machine settings: VM hardware, the disks, and keys
   vm = {
     config,
+    extendModules,
     lib,
     pkgs,
     ...
   }: {
-    options.bootChain.encrypted = lib.mkEnableOption "booting from the encrypted disks";
+    options.bootChain = {
+      encrypted = lib.mkEnableOption "booting from the encrypted disks";
+      # Set on the copy of boot 1 that its assertions are read from
+      unfiltered = lib.mkEnableOption "every assertion in boot 1" // {internal = true;};
+    };
 
     config = {
       virtualisation = {
         useBootLoader = true;
         useEFIBoot = true;
+        useSecureBoot = true;
         # Secure Boot, and the TPM support that measures it into PCR 7:
         # qemu-vm.nix's default OVMF has neither
         efi.OVMF = pkgs.OVMFFull.fd;
         tpm.enable = true;
         # The encrypted root starts empty, so the store comes from the host
         mountHostNixStore = true;
+        # The store's writable layer lives on the encrypted /nix, next to the
+        # Nix database boot 1 hands over, not on a tmpfs lost at reboot
+        writableStoreUseTmpfs = !config.bootChain.encrypted;
         memorySize = 2048;
         emptyDiskImages = [
           {
@@ -61,35 +72,36 @@
         ];
 
         # With the default file systems qemu-vm.nix also drops the aspects'
-        # boot.initrd.luks.devices. The ESP stays on vda.
+        # boot.initrd.luks.devices. It replaces disko's file systems either
+        # way, so the encrypted boot mounts the script's subvolumes here. The
+        # ESP stays on vda, and /nix/store comes from the host.
         useDefaultFilesystems = !config.bootChain.encrypted;
-        fileSystems = lib.mkIf config.bootChain.encrypted {
-          "/" = {
+        fileSystems = let
+          subvol = name: {
             device = "/dev/mapper/crypted";
             fsType = "btrfs";
-            options = ["subvol=root"];
+            options = ["subvol=${name}"];
           };
-          "/persist" = {
-            device = "/dev/mapper/crypted";
-            fsType = "btrfs";
-            options = ["subvol=persist"];
-            neededForBoot = true;
+        in
+          lib.mkIf config.bootChain.encrypted {
+            "/" = subvol "root";
+            "/persist" = subvol "persist" // {neededForBoot = true;};
+            "/nix" = subvol "nix";
+            "/swap" = subvol "swap";
+            "/mnt/data" = {
+              device = "/dev/mapper/data";
+              fsType = "btrfs";
+              options = ["nofail"];
+            };
           };
-          "/mnt/data" = {
-            device = "/dev/mapper/data";
-            fsType = "btrfs";
-            options = ["nofail"];
-          };
-        };
       };
-      # Disko's swapfile needs a subvolume this test doesn't make
-      swapDevices = lib.mkIf config.bootChain.encrypted (lib.mkForce []);
-      # The first boot runs from vda's ext4 image, which impermanence's wipe
-      # and its btrfs check refuse. The encrypted boot keeps both.
+      # Boot 1 runs from vda's ext4 image, which impermanence's wipe and its
+      # btrfs check refuse. It drops those two; the encrypted boot keeps both.
       boot.initrd.systemd.services.wipe-file-systems.enable = config.bootChain.encrypted;
-      assertions = lib.mkIf (!config.bootChain.encrypted) (lib.mkForce []);
-      # The first boot formats the data disk, so it mustn't try to open it
-      environment.etc.crypttab.enable = config.bootChain.encrypted;
+      assertions = lib.mkIf (!config.bootChain.encrypted && !config.bootChain.unfiltered) (lib.mkForce (
+        lib.filter (a: a.assertion || !lib.hasPrefix "impermanence:" a.message)
+        (extendModules {modules = [{bootChain.unfiltered = true;}];}).config.assertions
+      ));
 
       specialisation.encrypted.configuration.bootChain.encrypted = true;
 
@@ -138,8 +150,9 @@ in {
         client.succeed("install -m 600 ${keys.snakeOilEd25519PrivateKey} /root/key")
         machine.wait_for_unit("multi-user.target")
 
-        # Lay out the disks. The data key lives on the encrypted root's /persist,
-        # at the path the disko-btrfs-data aspect expects.
+        # Lay out the disks under the layout aspects' partition labels and
+        # subvolumes. The data key lives on the encrypted root's /persist, at
+        # the path the disko-btrfs-data aspect expects.
         machine.succeed(
             "sgdisk -n1:0:0 -c1:disk-main-root /dev/disk/by-id/virtio-main",
             "sgdisk -n1:0:0 -c1:disk-data-data /dev/disk/by-id/virtio-data",
@@ -148,7 +161,9 @@ in {
             f"echo -n ${passphrase} | cryptsetup open --key-file=- {root} crypted",
             "mkfs.btrfs -q -L nixos /dev/mapper/crypted",
             "mount --mkdir /dev/mapper/crypted /mnt",
-            "btrfs subvolume create /mnt/root /mnt/persist",
+            "btrfs subvolume create /mnt/root /mnt/persist /mnt/nix /mnt/swap",
+            # disko makes the swapfile it declares when it formats
+            "btrfs filesystem mkswapfile --size 64m /mnt/swap/swapfile",
             "install -d -m 700 /mnt/persist/etc/secrets",
             "dd if=/dev/urandom of=/mnt/persist/etc/secrets/data.key bs=64 count=1",
             "chmod 400 /mnt/persist/etc/secrets/data.key",
@@ -164,8 +179,22 @@ in {
             # with them and stages them for systemd-boot to enroll
             machine.wait_for_unit("prepare-sb-auto-enroll.service")
             machine.succeed("install -d /mnt/persist/var/lib && cp -a /var/lib/sbctl /mnt/persist/var/lib/")
-            entry = machine.succeed("cd /boot/EFI/Linux && echo nixos-generation-1-specialisation-encrypted-*.efi").strip()
-            machine.succeed(f"bootctl set-default {entry}", "umount /mnt", "cryptsetup close crypted")
+            # Boot the encrypted config next, as nixos-rebuild boot would. lzbt
+            # installs the system-*-link generations.
+            machine.succeed(
+                "test -L /nix/var/nix/profiles/system-1-link",
+                "ln -sn $(readlink -f /run/current-system/specialisation/encrypted) /nix/var/nix/profiles/system-2-link",
+                "ln -sfn system-2-link /nix/var/nix/profiles/system",
+                "/nix/var/nix/profiles/system/bin/switch-to-configuration boot 2>&1",
+            )
+            # The encrypted root's own /nix, with boot 1's Nix database and the
+            # paths it built, as an install leaves it
+            machine.succeed(
+                "cp -a /nix/var /mnt/nix/",
+                "mkdir /mnt/nix/.rw-store && cp -a /nix/.rw-store/upper /mnt/nix/.rw-store/",
+                "umount /mnt",
+                "cryptsetup close crypted",
+            )
             machine.shutdown()
             # systemd-boot enrolls the keys in Setup Mode, then resets the machine
             machine.start(allow_reboot=True)
@@ -208,13 +237,17 @@ in {
                 f"cryptsetup open --test-passphrase --key-file=/persist/etc/secrets/data.key {data}",
                 f"echo -n ${passphrase} | cryptsetup open --test-passphrase --key-file=- {data}",
             )
+
+        with subtest("the encrypted boot is healthy"):
+            ${lib.concatMapStrings (home: "machine.wait_for_unit(\"home-manager-${home}.service\")\n            ") (lib.attrNames nodes.machine.home-manager.users)}
       '';
     })
     {
+      # The layout aspects' whole-disk paths; disko never formats them here
       settings = {
         disko-btrfs-impermanence-main = {
           device = "/dev/disk/by-id/virtio-main";
-          swapSize = "1G";
+          swapSize = "64M";
         };
         disko-btrfs-data.device = "/dev/disk/by-id/virtio-data";
       };
