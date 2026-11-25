@@ -94,27 +94,14 @@
       programs.gamemode.settings.gpu.gpu_device = 1;
 
       # Only the VM (nixos-rebuild build-vm, …config.system.build.vm) gets
-      # these. Its root is a fresh ext4 image, which impermanence's wipe and
-      # its btrfs check refuse, so it drops those two and keeps every other
-      # assertion.
+      # these. Its root is a fresh ext4 image: no impermanence wipe or btrfs
+      # assertion, and no resume device (see system/_impermanence-vm.nix).
       virtualisation.vmVariant = {
-        config,
-        extendModules,
-        lib,
-        ...
-      }: {
-        # Set on the copy the assertions are read from
-        options.vmVariantUnfiltered = lib.mkEnableOption "every assertion" // {internal = true;};
-        config = {
-          virtualisation = {
-            memorySize = 8192;
-            cores = 4;
-          };
-          boot.initrd.systemd.services.wipe-file-systems.enable = false;
-          assertions = lib.mkIf (!config.vmVariantUnfiltered) (lib.mkForce (
-            lib.filter (a: a.assertion || !lib.hasPrefix "impermanence:" a.message)
-            (extendModules {modules = [{vmVariantUnfiltered = true;}];}).config.assertions
-          ));
+        imports = [../system/_impermanence-vm.nix];
+        impermanenceVm.enable = true;
+        virtualisation = {
+          memorySize = 8192;
+          cores = 4;
         };
       };
     };

@@ -40,16 +40,12 @@
   # Test-only machine settings: VM hardware, the disks, and keys
   vm = {
     config,
-    extendModules,
     lib,
     pkgs,
     ...
   }: {
-    options.bootChain = {
-      encrypted = lib.mkEnableOption "booting from the encrypted disks";
-      # Set on the copy of boot 1 that its assertions are read from
-      unfiltered = lib.mkEnableOption "every assertion in boot 1" // {internal = true;};
-    };
+    imports = [../system/_impermanence-vm.nix];
+    options.bootChain.encrypted = lib.mkEnableOption "booting from the encrypted disks";
 
     config = {
       virtualisation = {
@@ -104,16 +100,9 @@
             };
           };
       };
-      # Boot 1 runs from vda's ext4 image, which impermanence's wipe and its
-      # btrfs check refuse. It drops those two; the encrypted boot keeps both.
-      boot.initrd.systemd.services.wipe-file-systems.enable = config.bootChain.encrypted;
-      # Boot 1 has no LUKS devices, and the initrd waits for a resume device
-      # without a timeout: only the encrypted boot resumes
-      boot.resumeDevice = lib.mkIf (!config.bootChain.encrypted) (lib.mkForce "");
-      assertions = lib.mkIf (!config.bootChain.encrypted && !config.bootChain.unfiltered) (lib.mkForce (
-        lib.filter (a: a.assertion || !lib.hasPrefix "impermanence:" a.message)
-        (extendModules {modules = [{bootChain.unfiltered = true;}];}).config.assertions
-      ));
+      # Boot 1 runs from vda's ext4 image with no LUKS devices: no wipe, no
+      # btrfs assertion, no resume device. The encrypted boot keeps all three.
+      impermanenceVm.enable = !config.bootChain.encrypted;
 
       specialisation.encrypted.configuration.bootChain.encrypted = true;
 
@@ -256,7 +245,8 @@ in {
             )
 
         with subtest("the encrypted boot is healthy"):
-            ${lib.concatMapStrings (home: "machine.wait_for_unit(\"home-manager-${home}.service\")\n            ") (lib.attrNames nodes.machine.home-manager.users)}
+            for user in ${builtins.toJSON (lib.attrNames nodes.machine.home-manager.users)}:
+                machine.wait_for_unit(f"home-manager-{user}.service")
 
         with subtest("it hibernates to the swapfile and resumes from the encrypted root"):
             offset = machine.succeed("btrfs inspect-internal map-swapfile -r /swap/swapfile").strip()

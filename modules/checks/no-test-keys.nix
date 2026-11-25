@@ -15,10 +15,12 @@
   # The key material alone, so options or a comment around it don't hide it
   snakeoil = map (k: lib.elemAt (lib.splitString " " k) 1) [keys.snakeOilPublicKey keys.snakeOilEd25519PublicKey];
 
-  # The initrd's SSH logins (luks-ssh-unlock) and every user's
+  # The initrd's SSH logins (luks-ssh-unlock) and every user's, inline or
+  # from key files
+  keysIn = keys: files: keys ++ map builtins.readFile files;
   trusted = c:
-    (c.boot.initrd.network.ssh.authorizedKeys or [])
-    ++ lib.concatMap (u: u.openssh.authorizedKeys.keys or []) (lib.attrValues c.users.users);
+    keysIn (c.boot.initrd.network.ssh.authorizedKeys or []) (c.boot.initrd.network.ssh.authorizedKeyFiles or [])
+    ++ lib.concatMap (u: keysIn (u.openssh.authorizedKeys.keys or []) (u.openssh.authorizedKeys.keyFiles or [])) (lib.attrValues c.users.users);
   # Secrets the boot loader copies into the initrd (null: from the same
   # path at run time), and the host keys of the initrd's and the real sshd
   secretSources = c:
