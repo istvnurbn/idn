@@ -27,7 +27,9 @@
     lib.attrValues (c.boot.initrd.secrets or {})
     ++ (c.boot.initrd.network.ssh.hostKeys or [])
     ++ map (k: k.path) (c.services.openssh.hostKeys or []);
-  inStore = p: p != null && (lib.isPath p || lib.hasPrefix builtins.storeDir (toString p));
+  # An absolute path literal outside the store is read from disk at install
+  # time; a relative one (./key) is already a store path here
+  inStore = p: p != null && lib.hasPrefix builtins.storeDir (toString p);
 
   hosts = (config.flake.nixosConfigurations or {}) // (config.flake.darwinConfigurations or {});
   hostsWhere = pred: lib.attrNames (lib.filterAttrs (_: host: pred host.config) hosts);

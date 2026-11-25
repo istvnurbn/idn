@@ -81,12 +81,19 @@ in {
       rootDevice = "${utils.escapeSystemdPath root.device}.device";
       onRootSubvol = lib.elem "subvol=root" root.options || lib.elem "subvol=/root" root.options;
     in {
-      imports = [inputs.impermanence.nixosModules.impermanence];
+      imports = [
+        inputs.impermanence.nixosModules.impermanence
+        {
+          # A VM of the host on a plain root instead of the btrfs layout: no
+          # wipe and no btrfs check (set through system/_impermanence-vm.nix)
+          options.impermanence.vmRoot = lib.mkEnableOption "running on a VM's plain root";
+        }
+      ];
 
       # The wipe below recreates the `root` btrfs subvolume, so / has to be it
       assertions = [
         {
-          assertion = root.fsType == "btrfs" && onRootSubvol;
+          assertion = config.impermanence.vmRoot || (root.fsType == "btrfs" && onRootSubvol);
           message = "impermanence: / must be the `root` subvolume of a btrfs disk (see den.aspects.disko-btrfs-impermanence-main)";
         }
       ];
@@ -94,6 +101,7 @@ in {
       # Wipe root subvolume on boot, keeping old snapshots for 30 days
       boot.initrd.systemd = {
         services.wipe-file-systems = {
+          enable = !config.impermanence.vmRoot;
           # Specify dependencies explicitly
           unitConfig.DefaultDependencies = false;
           # The script needs to run to completion before this service is done
