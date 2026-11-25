@@ -55,6 +55,10 @@
       faugus
       # sunshine
       moonshine
+
+      # nixos-rebuild build-vm / .#…vermilion.config.system.build.vm logs in
+      # as steve on tty1; only the VM gets it (virtualisation.vmVariant)
+      (den.batteries.vm-autologin "steve")
     ];
 
     # Published to the fleet's SSH roster (see system/openssh.nix)
@@ -88,6 +92,31 @@
       # GPU index/PCI address specific to this machine's hardware layout.
       # See hardware/amdgpu.nix and gaming/moonshine.nix.
       programs.gamemode.settings.gpu.gpu_device = 1;
+
+      # Only the VM (nixos-rebuild build-vm, …config.system.build.vm) gets
+      # these. Its root is a fresh ext4 image, which impermanence's wipe and
+      # its btrfs check refuse, so it drops those two and keeps every other
+      # assertion.
+      virtualisation.vmVariant = {
+        config,
+        extendModules,
+        lib,
+        ...
+      }: {
+        # Set on the copy the assertions are read from
+        options.vmVariantUnfiltered = lib.mkEnableOption "every assertion" // {internal = true;};
+        config = {
+          virtualisation = {
+            memorySize = 8192;
+            cores = 4;
+          };
+          boot.initrd.systemd.services.wipe-file-systems.enable = false;
+          assertions = lib.mkIf (!config.vmVariantUnfiltered) (lib.mkForce (
+            lib.filter (a: a.assertion || !lib.hasPrefix "impermanence:" a.message)
+            (extendModules {modules = [{vmVariantUnfiltered = true;}];}).config.assertions
+          ));
+        };
+      };
     };
   };
 }
