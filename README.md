@@ -49,7 +49,9 @@ Run `just` to see the full list.
 `just check` builds every host of the current platform and runs the VM tests in [`modules/checks`](modules/checks), each described at the top of its file. To run one alone, `nix build .#checks.x86_64-linux.<name> -L`:
 
 - `vm-server` and `vm-internet-facing`: the shared server aspects and their hardening, booted next to a client.
-- `vm-impermanence`: the impermanence aspect on a btrfs disk, rebooted once. A file on `/` is gone and its old root sits under `old_roots/`, while a persisted directory, a persisted single file and `/etc/machine-id` keep their content.
+- `vm-boot-chain`: the encrypted desktop boot on UEFI with Secure Boot and a software TPM. Lanzaboote boots with Secure Boot on, root unlocks at the `hu` console prompt, over initrd SSH and by the TPM, the data disk opens through its keyfile, and home-manager comes up.
+- `install-impermanence-root`, `install-impermanence-root-luks` and `install-data`: disko formats each disk layout, the host is installed onto it and booted, and the mounts and `/etc/fstab` must match the layout (one `subvol=` per subvolume mount). The impermanence root is also rebooted once: a file on `/` is gone and its old root sits under `old_roots/`, while persisted paths in `/` and in home, `/etc/machine-id` and `/var/log` keep their content.
+- `no-test-keys`: no host trusts one of nixpkgs' snakeoil SSH keys or takes an initrd secret or SSH host key from the Nix store.
 
 ## AI Notice
 
