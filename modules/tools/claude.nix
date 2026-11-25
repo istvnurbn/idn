@@ -9,7 +9,11 @@
       ...
     }: {
       environment.systemPackages = with pkgs; [
-        unstable.claude-code
+        # The wrapper puts alsa-lib on LD_LIBRARY_PATH for claude's audio, and
+        # every program it starts inherits that. Stable's alsa-lib is built
+        # against the older glibc, so stable programs can load it too; the
+        # unstable one broke them (GLIBC_2.43 not found).
+        (unstable.claude-code.override {inherit alsa-lib;})
         nodejs # plugin hooks run node, ponytail's among them
         # Started by the .mcp.json in idn and idn-primer. From unstable because
         # stable lagged far behind, without 26.05 for a long time.
