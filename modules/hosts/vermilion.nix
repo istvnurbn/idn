@@ -95,10 +95,9 @@
 
       # Only the VM (nixos-rebuild build-vm, …config.system.build.vm) gets
       # these. Its root is a fresh ext4 image: no impermanence wipe or btrfs
-      # assertion, and no resume device (see system/_impermanence-vm.nix).
+      # assertion, and no resume device (impermanence.vmRoot).
       virtualisation.vmVariant = {
-        imports = [../system/_impermanence-vm.nix];
-        impermanenceVm.enable = true;
+        impermanence.vmRoot = true;
         virtualisation = {
           memorySize = 8192;
           cores = 4;

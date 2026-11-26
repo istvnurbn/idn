@@ -44,7 +44,6 @@
     pkgs,
     ...
   }: {
-    imports = [../system/_impermanence-vm.nix];
     options.bootChain.encrypted = lib.mkEnableOption "booting from the encrypted disks";
 
     config = {
@@ -102,7 +101,7 @@
       };
       # Boot 1 runs from vda's ext4 image with no LUKS devices: no wipe, no
       # btrfs assertion, no resume device. The encrypted boot keeps all three.
-      impermanenceVm.enable = !config.bootChain.encrypted;
+      impermanence.vmRoot = !config.bootChain.encrypted;
       # Boot 1 has no data keyfile, so systemd-cryptsetup@data can ask for a
       # passphrase on the console. That agent takes over the serial device the
       # test backdoor writes stderr to, and later writes fail with EIO

@@ -85,7 +85,8 @@ in {
         inputs.impermanence.nixosModules.impermanence
         {
           # A VM of the host on a plain root instead of the btrfs layout: no
-          # wipe and no btrfs check (set through system/_impermanence-vm.nix)
+          # wipe, no btrfs check and no resume device, which the initrd would
+          # wait for forever on the VM's disk
           options.impermanence.vmRoot = lib.mkEnableOption "running on a VM's plain root";
         }
       ];
@@ -97,6 +98,8 @@ in {
           message = "impermanence: / must be the `root` subvolume of a btrfs disk (see den.aspects.disko-btrfs-impermanence-main)";
         }
       ];
+
+      boot.resumeDevice = lib.mkIf config.impermanence.vmRoot (lib.mkForce "");
 
       # Wipe root subvolume on boot, keeping old snapshots for 30 days
       boot.initrd.systemd = {
