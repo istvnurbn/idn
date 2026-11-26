@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   den,
   ...
@@ -6,7 +7,7 @@
   unstableOverlay = final: prev: {
     unstable = import inputs.nixpkgs-unstable {
       inherit (final.stdenv.hostPlatform) system;
-      # Same config as the host's pkgs (_nixpkgs-config.nix)
+      # Same config as the host's pkgs (idn.nixpkgsConfig)
       inherit (final) config;
     };
   };
@@ -27,7 +28,7 @@ in {
     config = import inputs.nixpkgs {
       inherit (pkgs.stdenv.hostPlatform) system;
       # Like the hosts: Macs also allow unsupported systems (nix-darwin.nix)
-      config = import ./_nixpkgs-config.nix // {allowUnsupportedSystem = pkgs.stdenv.hostPlatform.isDarwin;};
+      config = config.idn.nixpkgsConfig // {allowUnsupportedSystem = pkgs.stdenv.hostPlatform.isDarwin;};
       overlays = [unstableOverlay];
     };
   };
