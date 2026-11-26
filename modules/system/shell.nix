@@ -36,11 +36,26 @@
         zsh-completions
         zsh-fast-syntax-highlighting
         zsh-fzf-tab
-        unstable.pure-prompt # 1.28+ for prompt_pure_precustom, which ~/.zshrc uses
       ];
 
       # zsh-fzf-tab installs to share/fzf-tab, outside the share/zsh that is linked
       environment.pathsToLink = ["/share/fzf-tab"];
+    };
+
+    # Pure 1.28+ for prompt_pure_precustom, which ~/.zshrc uses. Stable NixOS
+    # hosts (loophole) fall back to unstable's until their pkgs has it.
+    nixos = {
+      lib,
+      pkgs,
+      ...
+    }: {
+      environment.systemPackages = [
+        (
+          if lib.versionAtLeast pkgs.pure-prompt.version "1.28"
+          then pkgs.pure-prompt
+          else pkgs.unstable.pure-prompt
+        )
+      ];
     };
 
     darwin = {pkgs, ...}: {
@@ -48,6 +63,7 @@
         coreutils
         gnutar # macOS tar fails me sometimes
         nano
+        unstable.pure-prompt # see nixos above
       ];
     };
 
