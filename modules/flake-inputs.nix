@@ -30,6 +30,11 @@
         url = "github:nix-community/home-manager/release-${config.idn.stableRelease}";
         inputs.nixpkgs.follows = "nixpkgs";
       };
+      # Home Manager for hosts built from nixpkgs-unstable (vermilion, hosts.nix)
+      home-manager-unstable = {
+        url = "github:nix-community/home-manager";
+        inputs.nixpkgs.follows = "nixpkgs-unstable";
+      };
       import-tree.url = "github:denful/import-tree";
       nixpkgs.url = "github:NixOS/nixpkgs/nixos-${config.idn.stableRelease}";
       nixpkgs-lib.follows = "nixpkgs";

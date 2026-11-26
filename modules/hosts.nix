@@ -1,9 +1,13 @@
-{
+{inputs, ...}: {
   # macOS hosts
   den.hosts.aarch64-darwin.hexley.users.steve = {};
 
   # NixOS hosts
   den.hosts.x86_64-linux.vermilion = {
+    # Built from nixpkgs-unstable (Nyx's pin), Home Manager to match. Every
+    # other host stays on stable. stateVersion is unaffected (dendritic.nix).
+    instantiate = inputs.nixpkgs-unstable.lib.nixosSystem;
+    home-manager.module = inputs.home-manager-unstable.nixosModules.home-manager;
     users.steve = {};
     settings = {
       disko-btrfs-impermanence-main = {
