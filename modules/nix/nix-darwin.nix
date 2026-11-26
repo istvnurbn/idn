@@ -1,6 +1,6 @@
-{
+{config, ...}: {
   flake-file.inputs.darwin = {
-    url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+    url = "github:nix-darwin/nix-darwin/nix-darwin-${config.idn.stableRelease}";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 

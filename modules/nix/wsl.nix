@@ -1,6 +1,6 @@
-{
+{config, ...}: {
   flake-file.inputs.nixos-wsl = {
-    url = "github:nix-community/NixOS-WSL/release-26.05";
+    url = "github:nix-community/NixOS-WSL/release-${config.idn.stableRelease}";
     inputs = {
       nixpkgs.follows = "nixpkgs";
       # Only read by NixOS-WSL's non-flake default.nix, through its own lock

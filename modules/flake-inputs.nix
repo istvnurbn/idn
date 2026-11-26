@@ -3,7 +3,20 @@
 # collects them all to regenerate flake.nix.
 # Run `nix run .#write-flake` or `just write` after adding or changing any input.
 {
-  flake-file = {
+  config,
+  lib,
+  ...
+}: {
+  # The stable release every stable input tracks (also nix/wsl.nix and
+  # nix/nix-darwin.nix). `just bump-stable <version>` rewrites the line below.
+  # Not stateVersion: that records each host's install release (dendritic.nix).
+  options.idn.stableRelease = lib.mkOption {
+    type = lib.types.str;
+    description = "NixOS release the stable inputs track";
+  };
+  config.idn.stableRelease = "26.05";
+
+  config.flake-file = {
     inputs = {
       flake-parts = {
         url = "github:hercules-ci/flake-parts";
@@ -14,11 +27,11 @@
         inputs.systems.follows = "systems";
       };
       home-manager = {
-        url = "github:nix-community/home-manager/release-26.05";
+        url = "github:nix-community/home-manager/release-${config.idn.stableRelease}";
         inputs.nixpkgs.follows = "nixpkgs";
       };
       import-tree.url = "github:denful/import-tree";
-      nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+      nixpkgs.url = "github:NixOS/nixpkgs/nixos-${config.idn.stableRelease}";
       nixpkgs-lib.follows = "nixpkgs";
       # pkgs.unstable (nix/unstable.nix) and every input that follows
       # nixpkgs-unstable use Nyx's pin, so Nyx's binary cache matches.
