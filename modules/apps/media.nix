@@ -1,18 +1,14 @@
 {den, ...}: {
   den.aspects.media = {
-    # services.flatpak.packages below comes from the nix-flatpak module;
-    # pkgs.unstable comes from the unstable aspect
-    includes = [
-      den.aspects.flatpak
-      den.aspects.unstable
-    ];
+    # services.flatpak.packages below comes from the nix-flatpak module
+    includes = [den.aspects.flatpak];
 
     nixos = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         gimp
         picard
         vlc
-        unstable.audacious # Winamp skin support in its Qt UI isn't in stable
+        audacious
       ];
 
       services.flatpak.packages = [

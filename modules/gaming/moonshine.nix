@@ -13,9 +13,6 @@
   };
 
   den.aspects.moonshine = {
-    # pkgs.unstable comes from the unstable aspect
-    includes = [den.aspects.unstable];
-
     # Static aspect: Den only discovers `settings` outside a function.
     # Set per host in hosts.nix, e.g. settings.moonshine.gpu.
     settings.gpu = lib.mkOption {
@@ -212,8 +209,8 @@
               # directly instead of forwarding to a running instance.
               type = "faugus";
               command = [
-                # The same unstable Faugus that faugus.nix installs
-                (lib.getExe pkgs.unstable.faugus-launcher)
+                # The same Faugus that faugus.nix installs
+                (lib.getExe pkgs.faugus-launcher)
                 "--game"
                 "{game_id}"
               ];

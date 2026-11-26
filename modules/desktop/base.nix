@@ -1,8 +1,5 @@
 {den, ...}: {
   den.aspects.desktop-base = {
-    # pkgs.unstable comes from the unstable aspect
-    includes = [den.aspects.unstable];
-
     nixos = {
       host,
       lib,
@@ -13,7 +10,7 @@
         [
           ghostty
           wl-clipboard
-          unstable.zed-editor # moves fast; stable long lacked the agent panel
+          zed-editor
           proton-pass
         ]
         ++ lib.optional (host.hasAspect den.aspects.plasma) kdePackages.ghostwriter;

@@ -1,11 +1,7 @@
-{den, ...}: {
+{
   den.aspects.faugus = {
-    # pkgs.unstable comes from the unstable aspect; gaming takes the latest
-    # Faugus from it
-    includes = [den.aspects.unstable];
-
     nixos = {pkgs, ...}: {
-      environment.systemPackages = with pkgs; [unstable.faugus-launcher];
+      environment.systemPackages = with pkgs; [faugus-launcher];
     };
 
     persistHome = {

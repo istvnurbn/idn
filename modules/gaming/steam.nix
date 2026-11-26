@@ -1,10 +1,7 @@
 {den, ...}: {
   den.aspects.steam = {
-    # pkgs.unstable comes from the unstable aspect; gaming takes the latest Proton-GE from it
-    includes = [
-      den.aspects.chaotic
-      den.aspects.unstable
-    ];
+    # Proton-CachyOS comes from Nyx
+    includes = [den.aspects.chaotic];
 
     nixos = {
       lib,
@@ -15,7 +12,7 @@
       # Using pkg.steamcompattool.name would rename symlinks on every update, orphaning per-game Proton selection.
       compatTools = with pkgs; [
         {
-          pkg = unstable.proton-ge-bin;
+          pkg = proton-ge-bin;
           name = "GE-Proton";
         }
         {
