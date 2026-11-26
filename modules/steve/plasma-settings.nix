@@ -93,6 +93,15 @@
                   "org.kde.plasma.bluetooth"
                   "org.kde.plasma.networkmanagement"
                 ];
+                # Only these optional widgets load; leaving out org.kde.plasma.clipboard disables Klipper.
+                extra = [
+                  "org.kde.plasma.volume"
+                  "org.kde.plasma.brightness"
+                  "org.kde.plasma.bluetooth"
+                  "org.kde.plasma.networkmanagement"
+                  "org.kde.plasma.battery"
+                  "org.kde.plasma.notifications"
+                ];
               };
             }
             "org.kde.plasma.digitalclock"
