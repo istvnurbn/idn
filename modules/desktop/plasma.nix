@@ -6,7 +6,12 @@
   };
 
   den.aspects.plasma = {
-    nixos = {pkgs, ...}: {
+    nixos = {
+      config,
+      lib,
+      pkgs,
+      ...
+    }: {
       services = {
         displayManager.plasma-login-manager.enable = true;
         desktopManager.plasma6.enable = true;
@@ -44,16 +49,20 @@
 
       services.orca.enable = false;
 
-      environment.plasma6.excludePackages = with pkgs.kdePackages; [
-        elisa
-        kate
-        konsole
-        ktexteditor
-        khelpcenter
-        kwin-x11
-        print-manager
-        qrca
-      ];
+      environment.plasma6.excludePackages = with pkgs.kdePackages;
+        [
+          elisa
+          kate
+          konsole
+          ktexteditor
+          khelpcenter
+        ]
+        # 26.11 removed kwin-x11 (EOL upstream; vermilion runs unstable)
+        ++ lib.optional (lib.versionOlder config.system.nixos.release "26.11") kwin-x11
+        ++ [
+          print-manager
+          qrca
+        ];
     };
 
     provides.to-users.homeManager = {

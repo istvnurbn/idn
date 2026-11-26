@@ -19,6 +19,9 @@
     nixos = {pkgs, ...}: {
       # The flake's module, for its agent service (nixpkgs' module has none)
       imports = [inputs.openlogi.nixosModules.default];
+      # Unstable added its own programs.openlogi (no agent); it would clash with
+      # the flake's. 26.05 has no such module, so this is a no-op there.
+      disabledModules = ["programs/openlogi.nix"];
 
       programs.openlogi = {
         enable = true;

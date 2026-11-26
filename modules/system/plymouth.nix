@@ -1,6 +1,11 @@
 {
   den.aspects.plymouth = {
-    nixos = {pkgs, ...}: {
+    nixos = {
+      config,
+      lib,
+      pkgs,
+      ...
+    }: {
       boot = {
         plymouth = {
           enable = true;
@@ -12,7 +17,8 @@
 
         # Enable "Silent boot"
         consoleLogLevel = 3;
-        initrd.verbose = false;
+        # 26.11 removed scripted stage 1 and this option with it (vermilion runs unstable)
+        initrd.verbose = lib.mkIf (lib.versionOlder config.system.nixos.release "26.11") false;
         kernelParams = [
           "quiet"
           "udev.log_level=3"
