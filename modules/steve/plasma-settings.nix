@@ -1,5 +1,5 @@
 {
-  den.aspects.steve.provides.plasma-settings.homeManager = {
+  den.aspects.steve.provides.plasma-settings.homeManager = {pkgs, ...}: {
     xdg.mimeApps = {
       enable = true;
       defaultApplications = let
@@ -103,6 +103,7 @@
 
       workspace = {
         clickItemTo = "select";
+        wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Grey";
         cursor = {
           animationTime = 5;
           cursorFeedback = "Bouncing";
