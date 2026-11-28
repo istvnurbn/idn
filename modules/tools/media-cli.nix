@@ -1,6 +1,25 @@
 {
   den.aspects.media-cli = {
     os = {pkgs, ...}: let
+      # Shared by rip-cd and encode-wav
+      common = ''
+        # read a setting from abcde's config without running abcde
+        read_conf() {
+            # shellcheck source=/dev/null
+            ( . "''${ABCDE_CONF:-$HOME/.abcde.conf}" >/dev/null 2>&1; v=''${!1:-}; printf '%s' "''${v:-$2}" )
+        }
+
+        # show one status line: redrawn in place on a terminal, one per update otherwise
+        cols=$(tput cols 2>/dev/null || echo 80)
+        show() {
+            if [[ -t 1 ]]; then
+                printf '\r\033[K%s' "''${1:0:cols-1}"
+            else
+                printf '%s\n' "$1"
+            fi
+        }
+      '';
+
       # One-line progress wrapper around abcde (reads ~/.abcde.conf).
       rip-cd = pkgs.writeShellApplication {
         name = "rip-cd";
@@ -18,15 +37,9 @@
           # without questions. Its output goes to a log; you get one status line.
           # Reads ~/.abcde.conf (and $ABCDE_CONF if set).
 
-          conf=''${ABCDE_CONF:-$HOME/.abcde.conf}
+          ${common}
           conf_args=()
           [[ -n ''${ABCDE_CONF:-} ]] && conf_args=(-c "$ABCDE_CONF")
-
-          # read settings from the config without running abcde
-          read_conf() {
-              # shellcheck source=/dev/null
-              ( . "$conf" >/dev/null 2>&1; v=''${!1:-}; printf '%s' "''${v:-$2}" )
-          }
           staging=$(read_conf OUTPUTDIR "$HOME/Music/staging")
           outputtype=$(read_conf OUTPUTTYPE flac)
           IFS=, read -ra fmts <<< "$outputtype"
@@ -64,7 +77,6 @@
           pid=$!
           trap 'kill -- -"$pid" 2>/dev/null; echo; echo "rip-cd: stopped, log: $log" >&2; exit 130' INT TERM
 
-          cols=$(tput cols 2>/dev/null || echo 80)
           last=""
           count() { local n; n=$(grep -cE "^$1" "$status" 2>/dev/null); echo "''${n:-0}"; }
 
@@ -80,11 +92,7 @@
                   "$r" "$tracks" "$e" "$all" "$t" "$all" "''${1:-$album}"
               [[ $line == "$last" ]] && return
               last=$line
-              if [[ -t 1 ]]; then
-                  printf '\r\033[K%s' "''${line:0:cols-1}"
-              else
-                  printf '%s\n' "$line"
-              fi
+              show "$line"
           }
 
           start=$SECONDS
@@ -103,7 +111,7 @@
           all='?'; [[ $tracks != '?' ]] && all=$(( tracks * ''${#fmts[@]} ))
           printf -v done_line 'rip %s/%s | encode %s/%s | tag %s/%s | done in %dm%ds' \
               "$tracks" "$tracks" "$all" "$all" "$all" "$all" $(( elapsed / 60 )) $(( elapsed % 60 ))
-          if [[ -t 1 ]]; then printf '\r\033[K%s\n' "$done_line"; else echo "$done_line"; fi
+          show "$done_line"; [[ -t 1 ]] && echo
           echo "-> $staging/  (log: $log)"
         '';
       };
@@ -117,16 +125,13 @@
           # encode-wav: turn a folder of purchased WAVs into FLAC + MP3 for Picard.
           # Usage is in usage() below. The WAVs are left alone.
 
-          # Encoder settings come from FLACOPTS/LAMEOPTS in ~/.abcde.conf
-          # (or $ABCDE_CONF), so CD rips and WAV encodes stay the same.
-          read_conf() {
-              # shellcheck source=/dev/null
-              ( . "''${ABCDE_CONF:-$HOME/.abcde.conf}" >/dev/null 2>&1; v=''${!1:-}; printf '%s' "''${v:-$2}" )
-          }
+          # Encoder settings and the staging root come from FLACOPTS/LAMEOPTS/OUTPUTDIR
+          # in ~/.abcde.conf (or $ABCDE_CONF), so CD rips and WAV encodes stay the same.
+          ${common}
           read -ra flacopts <<< "$(read_conf FLACOPTS '-s -e -V -5')"
           read -ra lameopts <<< "$(read_conf LAMEOPTS '-V 0 -h --silent')"
 
-          out_root="$HOME/Music/staging"
+          out_root=$(read_conf OUTPUTDIR "$HOME/Music/staging")
           jobs_max=$(nproc 2>/dev/null || echo 2)
           formats="flac,mp3"
 
@@ -135,7 +140,7 @@
           encode-wav [-o DIR] [-j JOBS] [-f flac,mp3] [SOURCE_DIR]
 
             SOURCE_DIR  folder with .wav files (default: current folder)
-            -o DIR      staging root (default: $HOME/Music/staging)
+            -o DIR      staging root (default: OUTPUTDIR from ~/.abcde.conf)
             -j JOBS     parallel encoders (default: number of CPUs)
             -f LIST     formats to make (default: flac,mp3)
 
@@ -190,7 +195,6 @@
           total=$(( ''${#wavs[@]} * ''${#fmts[@]} ))
           launched=0 reaped=0 fails=0
           start=$SECONDS
-          cols=$(tput cols 2>/dev/null || echo 80)
           declare -A label
 
           draw() {   # $1 = what just finished
@@ -201,11 +205,7 @@
               local line
               printf -v line '[%s] %3d%%  %d/%d  %s%s' "$bar" "$pct" "$reaped" "$total" \
                   "$( (( fails )) && echo "$fails FAILED  ")" "$1"
-              if [[ -t 1 ]]; then
-                  printf '\r\033[K%s' "''${line:0:cols-1}"
-              else
-                  printf '%s\n' "$line"
-              fi
+              show "$line"
           }
 
           reap() {
@@ -255,6 +255,58 @@
           exit 0
         '';
       };
+      # ReplayGain 2.0 for library albums that have none yet (rsgain easy).
+      music-gain = pkgs.writeShellApplication {
+        name = "music-gain";
+        runtimeInputs = with pkgs; [rsgain coreutils];
+        text = ''
+          # music-gain: add ReplayGain 2.0 tags to library albums that don't have them yet.
+          # Usage is in usage() below.
+          #
+          # Runs `rsgain easy` (-18 LUFS, track + album gain, one album per folder).
+          # Run it after Picard has moved files into the library, never on staging:
+          # encode-wav puts FLAC and MP3 in one staging folder, which spoils album gain.
+
+          usage() {
+              cat <<'USAGE'
+          music-gain [-f] [DIR...]
+
+            DIR   folders to scan (default: ~/Music/FLAC and ~/Music/MP3)
+            -f    rescan everything, even albums that already have tags
+          USAGE
+              exit "''${1:-0}"
+          }
+
+          skip=(--skip-existing)
+          while getopts ":fh" opt; do
+              case $opt in
+                  f) skip=() ;;
+                  h) usage 0 ;;
+                  *) usage 1 ;;
+              esac
+          done
+          shift $((OPTIND - 1))
+
+          dirs=("$@")
+          if (( ''${#dirs[@]} == 0 )); then
+              for d in "$HOME/Music/FLAC" "$HOME/Music/MP3"; do
+                  if [[ -d $d ]]; then dirs+=("$d"); fi
+              done
+          fi
+          (( ''${#dirs[@]} )) || { echo "music-gain: nothing to scan (no ~/Music/FLAC or ~/Music/MP3)" >&2; exit 1; }
+
+          rc=0
+          for d in "''${dirs[@]}"; do
+              if [[ $(realpath -m "$d") == "$(realpath -m "$HOME/Music/staging")"* ]]; then
+                  echo "music-gain: skipping $d (staging; run after Picard)" >&2
+                  continue
+              fi
+              echo "== $d"
+              rsgain easy "''${skip[@]}" --multithread MAX "$d" || rc=1
+          done
+          exit "$rc"
+        '';
+      };
     in {
       environment.systemPackages = with pkgs; [
         abcde
@@ -267,8 +319,10 @@
         imagemagick
         lame
         libcdio-paranoia
+        rsgain
         rip-cd
         encode-wav
+        music-gain
       ];
     };
   };
